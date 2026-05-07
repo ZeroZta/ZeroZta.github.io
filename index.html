@@ -3,59 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guía CBT 4 - Revisión</title>
+    <title>Obsidian Publish | CBT 4</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
     <style>
-        body { font-family: sans-serif; background-color: #f0f2f5; color: #1c1e21; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        .header { background: #d32f2f; color: white; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
-        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; border-left: 5px solid #d32f2f; }
-        .tag { background: #ffebee; color: #c62828; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
-        h2 { margin-top: 0; color: #d32f2f; }
-        .urgente { background: #fff9c4; border: 1px dashed #fbc02d; padding: 10px; border-radius: 5px; font-size: 0.9em; }
-        ul { padding-left: 20px; }
+        :root {
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #262626;
+            --text-normal: #dcddde;
+            --text-muted: #99aab5;
+            --interactive-accent: #7b5eea;
+            --inline-code: #e9967a;
+            --nav-width: 250px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-normal);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .workspace {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        /* Estilo de los encabezados de Obsidian */
+        h1, h2, h3 { color: #ffffff; font-weight: 700; margin-top: 1.5em; }
+        h1 { border-bottom: 1px solid #3e3e3e; padding-bottom: 10px; font-size: 2em; }
+        h2 { color: var(--interactive-accent); border-bottom: 1px solid #333; font-size: 1.5em; }
+
+        /* Estilo de los enlaces tipo [[WikiLink]] */
+        .wikilink {
+            color: var(--interactive-accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .wikilink:hover { text-decoration: underline; }
+
+        /* Estilo de los Checkboxes interactivos con JS */
+        .task-list-item { list-style: none; margin: 10px 0; display: flex; align-items: center; }
+        .task-list-item input { margin-right: 10px; accent-color: var(--interactive-accent); transform: scale(1.2); }
+
+        /* Callouts (Esos bloques de colores que te gustan) */
+        .callout {
+            background-color: rgba(123, 94, 234, 0.1);
+            border: 1px solid var(--interactive-accent);
+            border-left: 4px solid var(--interactive-accent);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        /* Código inline */
+        code { background: #2f2f2f; color: var(--inline-code); padding: 2px 5px; border-radius: 4px; font-family: monospace; }
+
+        .footer { margin-top: 50px; color: var(--text-muted); font-size: 0.8em; text-align: center; border-top: 1px solid #333; padding-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📋 Guía de Revisión</h1>
-            <p>Práctica Ciudadana - Mtra. Dayana</p>
-        </div>
 
-        <div class="urgente">
-            <strong>⚠️ AVISO PARA HOY:</strong> La Tarea 4 (Casos) se copia <strong>A MANO</strong>. No imprimas esta pantalla para entregar.
-        </div>
-
-        <h2>Tareas Principales</h2>
-
-        <div class="card">
-            <span class="tag">24 ABR</span>
-            <h3>Tarea 3: Infografía</h3>
-            <ul>
-                <li>Dibujo de silueta humana (señales físicas).</li>
-                <li>Semáforo: Rojo, Amarillo y Verde.</li>
-                <li>Técnica 4-7-8 y Tiempo Fuera.</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <span class="tag">01 MAY</span>
-            <h3>Tarea 4: Análisis de Casos</h3>
-            <p>Los casos resueltos están en el archivo README del repositorio. ¡Cópialos igual que en el cuaderno!</p>
-        </div>
-
-        <div class="card">
-            <span class="tag">08 MAY</span>
-            <h3>Tarea 5: Proyecto Final (30%)</h3>
-            <ul>
-                <li>Llevar rúbrica impresa obligatoriamente.</li>
-                <li>Exponer sin leer el cartel.</li>
-            </ul>
-        </div>
-
-        <footer style="text-align: center; color: #888; font-size: 0.8em; margin-top: 20px;">
-            CBT No.4 Huehuetoca - Alan 2026
-        </footer>
+<div class="workspace">
+    <div class="header">
+        <span class="text-muted">📁 notas / clases / mayo</span>
+        <h1>[[2026-05-07]] Guía de Práctica Ciudadana</h1>
     </div>
+
+    <div class="callout">
+        <strong>⚠️ Importante:</strong> Esta es una copia espejo de mi Obsidian. Los <code>Tips de Oro</code> son vitales para la revisión de la Maestra Dayana.
+    </div>
+
+    <h2>📋 Checklist de Revisión</h2>
+    <div id="checklist-container">
+        <li class="task-list-item"><input type="checkbox"> Portada relacionada con Emociones/Violencia</li>
+        <li class="task-list-item"><input type="checkbox"> Reglamento pegado después de la portada</li>
+        <li class="task-list-item"><input type="checkbox"> Rúbricas pegadas al final de cada sesión</li>
+        <li class="task-list-item"><input type="checkbox"> Tarea 4 hecha TOTALMENTE A MANO</li>
+    </div>
+
+    <h2>📝 Tarea 5: Campaña (30%)</h2>
+    <p>La exposición debe ser fluida. No olvides que el link de este repo es parte de la "Transformación Social" que pide la rúbrica.</p>
+
+    <div class="footer">
+        Renderizado con el motor de Alan v1.0 | CBT 4 Huehuetoca
+    </div>
+</div>
+
+<script>
+    // JavaScript para que los checkboxes guarden su estado en el navegador del usuario
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox, index) => {
+        // Cargar estado guardado
+        const saved = localStorage.getItem('task-' + index);
+        if (saved === 'true') checkbox.checked = true;
+
+        // Guardar al hacer click
+        checkbox.addEventListener('change', () => {
+            localStorage.setItem('task-' + index, checkbox.checked);
+        });
+    });
+</script>
+
 </body>
 </html>
