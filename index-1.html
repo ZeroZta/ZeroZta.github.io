@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Tareas – Práctica y Colaboración Ciudadana</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #1e1e2e;
+    --bg-secondary: #252535;
+    --bg-card: #2a2a3e;
+    --bg-hover: #313148;
+    --accent-purple: #c792ea;
+    --accent-cyan: #89ddff;
+    --accent-green: #c3e88d;
+    --accent-yellow: #ffcb6b;
+    --accent-red: #f07178;
+    --accent-orange: #f78c6c;
+    --text-primary: #cdd6f4;
+    --text-secondary: #a6adc8;
+    --text-muted: #6c7086;
+    --border: #383850;
+    --border-accent: #44445a;
+    --checkbox-done: #c3e88d;
+    --link: #89ddff;
+    --tag-bg: #2d2d4a;
+    --callout-bg: rgba(137, 221, 255, 0.07);
+    --callout-border: #89ddff;
+    --hr: #383850;
+    --blockquote-border: #c792ea;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* Layout */
+  .app-shell {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 260px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo .vault-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-logo .note-title {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    color: var(--accent-purple);
+    font-weight: 600;
+  }
+
+  .toc-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    padding: 0 20px;
+    margin-bottom: 8px;
+  }
+
+  .toc-list {
+    list-style: none;
+  }
+
+  .toc-list li a {
+    display: block;
+    padding: 5px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .toc-list li a:hover,
+  .toc-list li a.active {
+    color: var(--accent-cyan);
+    background: var(--bg-hover);
+    border-left-color: var(--accent-cyan);
+  }
+
+  .toc-list li a.h3 { padding-left: 36px; font-size: 12px; }
+
+  .main {
+    margin-left: 260px;
+    flex: 1;
+    padding: 0 0 80px;
+    max-width: calc(100% - 260px);
+  }
+
+  /* Top bar */
+  .topbar {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .topbar-path span { color: var(--accent-purple); }
+
+  .progress-pill {
+    margin-left: auto;
+    background: var(--tag-bg);
+    border: 1px solid var(--border-accent);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-green);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .progress-bar {
+    width: 60px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent-green);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* Content */
+  .content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 48px 0;
+  }
+
+  /* Date wikilink */
+  .wikilink {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--link);
+    background: rgba(137,221,255,0.08);
+    border: 1px solid rgba(137,221,255,0.2);
+    border-radius: 4px;
+    padding: 2px 8px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 28px;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--hr);
+    margin: 36px 0;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5 {
+    font-family: 'Lora', serif;
+    line-height: 1.3;
+  }
+
+  h1 {
+    font-size: 28px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  h2 {
+    font-size: 20px;
+    color: var(--accent-cyan);
+    margin: 36px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  h3 {
+    font-size: 16px;
+    color: var(--accent-yellow);
+    margin: 28px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  h4 {
+    font-size: 14px;
+    color: var(--accent-purple);
+    margin: 18px 0 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  h5 {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 14px 0 6px;
+    font-style: italic;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+  }
+
+  p {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  strong { color: var(--accent-yellow); font-weight: 600; }
+  em { color: var(--accent-orange); font-style: italic; }
+
+  /* Lists */
+  ul, ol {
+    margin: 8px 0 12px 20px;
+    color: var(--text-primary);
+  }
+
+  li { margin-bottom: 4px; }
+
+  /* Bullet lists with custom marker */
+  ul > li::marker { color: var(--accent-purple); }
+  ol > li::marker { color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  /* Key-value pairs from * **Key:** Value */
+  .kv-list {
+    list-style: none;
+    margin-left: 0;
+  }
+
+  /* Checklist */
+  .task-list {
+    list-style: none;
+    margin-left: 0;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .task-item:hover { background: var(--bg-hover); }
+
+  .task-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    border: 2px solid var(--text-muted);
+    border-radius: 3px;
+    margin-top: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    background: transparent;
+  }
+
+  .task-item input[type="checkbox"]:checked {
+    background: var(--checkbox-done);
+    border-color: var(--checkbox-done);
+  }
+
+  .task-item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 1px;
+    width: 6px;
+    height: 9px;
+    border: 2px solid var(--bg-primary);
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+  }
+
+  .task-item label {
+    cursor: pointer;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  .task-item.done label {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+
+  /* Callout / tip boxes */
+  .callout {
+    background: var(--callout-bg);
+    border-left: 3px solid var(--callout-border);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+  }
+
+  .callout.tip { border-color: var(--accent-yellow); background: rgba(255,203,107,0.06); }
+  .callout.warning { border-color: var(--accent-red); background: rgba(240,113,120,0.06); }
+  .callout.info { border-color: var(--accent-cyan); background: rgba(137,221,255,0.06); }
+
+  .callout-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--accent-yellow);
+  }
+
+  .callout.info .callout-title { color: var(--accent-cyan); }
+  .callout.warning .callout-title { color: var(--accent-red); }
+
+  /* Image placeholder */
+  .obs-image {
+    background: var(--bg-card);
+    border: 1px dashed var(--border-accent);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin: 16px 0;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  .obs-image img {
+    max-width: 100%;
+    border-radius: 6px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .obs-image .img-label {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Semaforo visual */
+  .semaforo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+  }
+
+  .semaforo-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .semaforo-item.rojo { background: rgba(240,113,120,0.12); border-left: 3px solid #f07178; }
+  .semaforo-item.amarillo { background: rgba(255,203,107,0.10); border-left: 3px solid #ffcb6b; }
+  .semaforo-item.verde { background: rgba(195,232,141,0.10); border-left: 3px solid #c3e88d; }
+
+  .semaforo-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .rojo .semaforo-dot { background: #f07178; box-shadow: 0 0 8px rgba(240,113,120,0.5); }
+  .amarillo .semaforo-dot { background: #ffcb6b; box-shadow: 0 0 8px rgba(255,203,107,0.5); }
+  .verde .semaforo-dot { background: #c3e88d; box-shadow: 0 0 8px rgba(195,232,141,0.5); }
+
+  /* Quote destacado */
+  blockquote {
+    border-left: 3px solid var(--blockquote-border);
+    padding: 12px 20px;
+    margin: 16px 0;
+    background: rgba(199,146,234,0.06);
+    border-radius: 0 8px 8px 0;
+    font-family: 'Lora', serif;
+    font-style: italic;
+    color: var(--accent-purple);
+    font-size: 15px;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    background: var(--tag-bg);
+    border: 1px solid var(--border-accent);
+    border-radius: 4px;
+    padding: 1px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-cyan);
+    margin: 2px;
+  }
+
+  /* Section card */
+  .section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .section-card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-accent);
+    border-radius: 20px;
+    padding: 2px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-purple);
+  }
+
+  /* Case grid */
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 600px) {
+    .case-grid { grid-template-columns: 1fr; }
+  }
+
+  .case-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .case-card:hover {
+    border-color: var(--accent-cyan);
+    background: var(--bg-hover);
+  }
+
+  .case-card.selected {
+    border-color: var(--accent-green);
+    background: rgba(195,232,141,0.05);
+  }
+
+  .case-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .case-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .case-detail {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .case-card.selected .case-detail { display: block; }
+
+  .case-kv { margin-bottom: 4px; }
+  .case-kv strong { color: var(--accent-yellow); font-size: 11px; display: block; }
+
+  /* PDF file embed placeholder */
+  .file-embed {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  .file-embed .file-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .file-embed .file-info .file-name {
+    color: var(--accent-cyan);
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  .file-embed .file-info .file-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* Mobile sidebar toggle */
+  .sidebar-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 200;
+    background: var(--accent-purple);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(199,146,234,0.4);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .main {
+      margin-left: 0;
+      max-width: 100%;
+    }
+
+    .content {
+      padding: 24px 20px 0;
+    }
+
+    .topbar {
+      padding: 12px 20px;
+    }
+
+    .sidebar-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-card, h2, h3 {
+    animation: fadeIn 0.3s ease both;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- Sidebar TOC -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="vault-name">📔 Mi Vault</div>
+      <div class="note-title">Práctica y Colaboración</div>
+    </div>
+    <div class="toc-title">En esta nota</div>
+    <ul class="toc-list" id="toc">
+      <li><a href="#datos">📋 Datos Generales</a></li>
+      <li><a href="#tips-orden" class="h3">💡 Tips – Revisión</a></li>
+      <li><a href="#tarea1">Tarea 1 – Portada</a></li>
+      <li><a href="#tarea2">Tarea 2 – 17 Abr</a></li>
+      <li><a href="#tarea3">Tarea 3 – Infografía</a></li>
+      <li><a href="#tarea4">Tarea 4 – Análisis</a></li>
+      <li><a href="#tarea5">Tarea 5 – Campaña</a></li>
+      <li><a href="#impresion">🖨️ Lista de Impresión</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-path">Vault / Materias / <span>Práctica y Colaboración Ciudadana</span></span>
+      <div class="progress-pill" id="progress-pill">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <span id="progress-text">0 / 0</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <a href="#" class="wikilink">📅 2026-04-17</a>
+
+      <h1>GUÍA DE TAREAS<br><small style="font-size:16px;color:var(--text-secondary);font-weight:400;">Práctica y Colaboración Ciudadana</small></h1>
+
+      <hr>
+
+      <!-- DATOS GENERALES -->
+      <h2 id="datos">📋 Datos Generales y Evaluación</h2>
+      <div class="section-card" data-num="ℹ info">
+        <ul class="kv-list">
+          <li style="margin-bottom:8px"><strong>Criterios de evaluación:</strong>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+              <span class="tag">Asistencia 20%</span>
+              <span class="tag">Participación 10%</span>
+              <span class="tag">Trabajos Diarios 40%</span>
+              <span class="tag">Trabajo Final 30%</span>
+            </div>
+          </li>
+          <li><strong>Reglamento:</strong> Debe ir pegado justo después de la Portada (deja una hoja libre).</li>
+        </ul>
+      </div>
+
+      <hr>
+
+      <!-- DESCRIPCIÓN CRONOLÓGICA -->
+      <h2 id="descripcion">📝 Descripción Cronológica</h2>
+      <p style="color:var(--text-muted);font-size:13px;margin-top:-8px;margin-bottom:20px">Orden de la Libreta</p>
+
+      <!-- Tips generales -->
+      <h3 id="tips-orden">💡 Tips de Oro – Revisión de Libreta</h3>
+      <div class="callout tip">
+        <div class="callout-title">✦ Tips de Oro</div>
+        <ul class="task-list" id="tips-list">
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>El Filtro de la Portada:</strong> Si la portada no se relaciona con "Emociones y Violencia", la maestra no revisará el resto de la libreta. ¡Asegúrate de que la tuya esté lista!</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Hojas de Respeto:</strong> Deja el espacio para el reglamento justo después de la portada. Si no lo tienes, pon un Post-it avisando que ahí va.</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>El Orden es Ley:</strong> Revisa que el orden sea: Portada → Criterios/Reglamento → 17 Abr → 24 Abr → 01 May.</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Pegado de Rúbricas:</strong> Pega las rúbricas de cada sesión al final de su apunte correspondiente. La maestra las busca para validar la fecha.</label>
+          </li>
+        </ul>
+      </div>
+
+      <hr>
+
+      <!-- TAREA 1 -->
+      <h3 id="tarea1">Tarea 1: La Portada <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(Obligatoria)</span></h3>
+      <div class="section-card" data-num="📌 inicio de semestre">
+        <ul class="kv-list">
+          <li style="margin-bottom:6px"><strong>Fecha:</strong> Inicio de semestre.</li>
+          <li style="margin-bottom:10px"><strong>Instrucciones:</strong> Realizar un diseño creativo que responda a la pregunta: <em>"¿Qué relación tienen nuestras emociones con la violencia?"</em></li>
+        </ul>
+        <div class="callout warning">
+          <div class="callout-title">⚠ Importante</div>
+          Es el filtro de la maestra. Si no tiene relación con el tema, no te revisa lo demás.
+        </div>
+        <h4>Idea de diseño</h4>
+        <div class="obs-image">
+          <img src="Recursos/1778141143248.png" alt="Idea portada" onerror="this.parentElement.innerHTML='<div style=\'padding:16px\'>🖼️ <strong>1778141143248.png</strong><br><span style=\'font-size:11px\'>Coloca la imagen en la carpeta <code>Recursos/</code></span></div>'">
+          <div class="img-label">📎 1778141143248.png</div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- TAREA 2 -->
+      <h3 id="tarea2">Tarea 2: Primera Sesión <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(17 de Abril)</span></h3>
+      <div class="section-card" data-num="📅 17 abr">
+        <ul class="kv-list">
+          <li style="margin-bottom:6px"><strong>Descripción:</strong> Preguntas de diagnóstico inicial.</li>
+          <li style="margin-bottom:6px"><strong>¿Cómo se hace?:</strong> Contestar a mano el cuestionario dictado en clase.</li>
+          <li><strong>Dato Clave:</strong> Pegar la <em>Rúbrica de la Sesión 1</em> al terminar el apunte.</li>
+        </ul>
+
+        <h4>Preguntas del cuestionario</h4>
+        <ol>
+          <li>¿Qué entiendes por violencia?</li>
+          <li>¿Qué emociones consideras que pueden generar un conflicto?</li>
+          <li>Menciona una situación en la que hayas visto que alguien actuó mal por no controlar sus emociones.</li>
+          <li>¿Qué crees que ayude a mejorar la convivencia en la escuela?</li>
+          <li>¿Crees que una emoción pueda justificar una mala acción?</li>
+        </ol>
+
+        <h4>💡 Guía de Reflexión Crítica</h4>
+        <div class="callout info">
+          <div class="callout-title">💬 Para "¿Las emociones justifican nuestras acciones?"</div>
+          <ol style="margin-left:16px">
+            <li><strong>Postura clara:</strong> <em>No, las emociones son impulsos, las acciones son decisiones.</em></li>
+            <li><strong>Argumento:</strong> <em>Si los celos justificaran los gritos, no habría respeto en las parejas.</em></li>
+            <li><strong>Ejemplo real:</strong> Usa algo que te haya pasado en el taller, en casa o con amigos.</li>
+            <li><strong>Opinión contraria:</strong> Reconoce que otros creen que es difícil controlarse, pero que para eso se estudia la cultura de paz.</li>
+          </ol>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- TAREA 3 -->
+      <h3 id="tarea3">Tarea 3: Infografía de Emociones <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(24 de Abril)</span></h3>
+      <div class="section-card" data-num="📅 24 abr">
+        <p><strong>Descripción:</strong> Esquema visual sobre identificación de sentimientos.</p>
+
+        <h5>¿Cómo se hace?</h5>
+        <ul>
+          <li>Debe ser un trabajo muy visual (colores, dibujos de siluetas o símbolos).</li>
+          <li>Debe explicar dónde se sienten las emociones en el cuerpo.</li>
+          <li>Debe estar pegada físicamente en la libreta; no puede estar suelta.</li>
+        </ul>
+
+        <h4>Qué debe incluir obligatoriamente</h4>
+
+        <p><strong>El Mapa de las Emociones (Identificación):</strong></p>
+        <ul>
+          <li><strong>Dibujo:</strong> Una silueta humana.</li>
+          <li><strong>Contenido:</strong> Señalar con colores las zonas donde se sienten las emociones (nudo en la garganta por tristeza, puños cerrados por enojo, mariposas/nudos en el estómago por miedo o celos).</li>
+          <li><strong>Nota:</strong> Escribir que el primer paso para el autocontrol es reconocer la señal física.</li>
+        </ul>
+
+        <p style="margin-top:14px"><strong>El Semáforo del Autocontrol:</strong></p>
+        <div class="semaforo">
+          <div class="semaforo-item rojo">
+            <div class="semaforo-dot"></div>
+            <div><strong>Rojo – Alto:</strong> Detente. No hables, no actúes, respira.</div>
+          </div>
+          <div class="semaforo-item amarillo">
+            <div class="semaforo-dot"></div>
+            <div><strong>Amarillo – Pensar:</strong> ¿Qué siento? ¿Cuáles serán las consecuencias si actúo así?</div>
+          </div>
+          <div class="semaforo-item verde">
+            <div class="semaforo-dot"></div>
+            <div><strong>Verde – Actuar:</strong> Buscar una solución pacífica o hablar de forma asertiva.</div>
+          </div>
+        </div>
+
+        <p style="margin-top:14px"><strong>Herramientas de "Primeros Auxilios" Emocionales:</strong></p>
+        <ul>
+          <li><strong>Técnica 4-7-8:</strong> Inhalar (4 seg), mantener (7 seg) y exhalar (8 seg).</li>
+          <li><strong>Tiempo Fuera:</strong> Alejarte de la situación que te enoja por al menos 5 minutos para enfriar la cabeza.</li>
+          <li><strong>Comunicación Asertiva:</strong> Expresar cómo te sientes sin insultar.</li>
+        </ul>
+
+        <blockquote>
+          "Tus emociones son mensajeros, no jefes. Tú decides cómo actuar"
+        </blockquote>
+
+        <h4>💡 Tip de Oro</h4>
+        <ul class="task-list" id="tip3-list">
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Relación directa:</strong> Asegúrate de que el título o una nota en tu infografía diga claramente: <em>"Identificación de emociones para prevenir la violencia"</em>. Esto amarra el diseño con el objetivo principal de la materia.</label>
+          </li>
+        </ul>
+
+        <h4>Idea de diseño</h4>
+        <div class="obs-image">
+          <img src="Recursos/1778141869227.png" alt="Idea infografía" onerror="this.parentElement.innerHTML='<div style=\'padding:16px\'>🖼️ <strong>1778141869227.png</strong><br><span style=\'font-size:11px\'>Coloca la imagen en la carpeta <code>Recursos/</code></span></div>'">
+          <div class="img-label">📎 1778141869227.png</div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- TAREA 4 -->
+      <h3 id="tarea4">Tarea 4: Análisis Individual <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(01 de Mayo)</span></h3>
+      <div class="section-card" data-num="📅 01 may">
+        <p><strong>Descripción:</strong> Ejercicio de reflexión escrita <em>a mano</em> sobre cómo las emociones influyen en nuestras acciones.</p>
+
+        <h4>Instrucciones Detalladas</h4>
+        <ol>
+          <li><strong>Encabezado:</strong> Fecha (01 de mayo) y título: <em>"Identificando la violencia derivada de emociones mal gestionadas"</em>.</li>
+          <li><strong>Análisis del Caso:</strong> Elige <strong>UNO</strong> de la lista de abajo y responde 4 preguntas.</li>
+          <li><strong>Reflexión Crítica:</strong> Responde a la pregunta: <em>¿Las emociones justifican nuestras acciones?</em> (postura, argumentos, ejemplo real, opinión contraria).</li>
+          <li><strong>Autoevaluación:</strong> Responde las preguntas de la rúbrica.</li>
+        </ol>
+
+        <div class="callout info" style="margin-top:14px">
+          <div class="callout-title">📋 Preguntas de autoevaluación (Rúbrica)</div>
+          <ul style="margin-left:16px">
+            <li>¿Qué aprendí sobre mis emociones y cómo influyen en lo que hago?</li>
+            <li>¿Qué puedo mejorar al reaccionar ante situaciones difíciles?</li>
+            <li>¿Cómo aplico esto para evitar violencia en mi entorno?</li>
+            <li>¿De qué manera promuevo el respeto y la inclusión diariamente?</li>
+          </ul>
+        </div>
+
+        <h4>Listado de Casos – Elige uno</h4>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Haz clic en un caso para ver su resolución de ejemplo.</p>
+        <div class="case-grid">
+          <div class="case-card" onclick="toggleCase(this)" id="caso1">
+            <div class="case-label">Caso 1 · Escuela</div>
+            <div class="case-title">Alumno que empuja y grita por burlas</div>
+            <div class="case-detail">
+              <div class="case-kv"><strong>¿Qué emoción?</strong> Enojo e impotencia.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> De forma física y verbal (empujando y gritando).</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Reportes escolares, mala relación con compañeros y posible escalada a pelea física.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Aplicando el "Tiempo Fuera" para calmar la ira y después reportar la burla con un docente o usar comunicación asertiva.</div>
+            </div>
+          </div>
+          <div class="case-card" onclick="toggleCase(this)" id="caso2">
+            <div class="case-label">Caso 2 · Pareja</div>
+            <div class="case-title">Discusión por revisar el celular por celos</div>
+            <div class="case-detail">
+              <div class="case-kv"><strong>¿Qué emoción?</strong> Celos e inseguridad.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Invasión de la privacidad y discusión fuerte.</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Pérdida de confianza, toxicidad en la relación y daño emocional para ambos.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Hablando honestamente sobre las inseguridades antes de actuar impulsivamente.</div>
+            </div>
+          </div>
+          <div class="case-card" onclick="toggleCase(this)" id="caso3">
+            <div class="case-label">Caso 3 · Familia</div>
+            <div class="case-title">Joven que insulta a sus padres por frustración</div>
+            <div class="case-detail">
+              <div class="case-kv"><strong>¿Qué emoción?</strong> Frustración.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Mediante insultos y falta de respeto hacia la autoridad familiar.</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Castigos, ruptura del ambiente de paz en el hogar y sentimientos de culpa posteriores.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Usando la técnica de respiración 4-7-8 antes de responder.</div>
+            </div>
+          </div>
+          <div class="case-card" onclick="toggleCase(this)" id="caso4">
+            <div class="case-label">Caso 4 · Redes Sociales</div>
+            <div class="case-title">Estudiante que publica ofensas en internet</div>
+            <div class="case-detail">
+              <div class="case-kv"><strong>¿Qué emoción?</strong> Hostilidad o resentimiento.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Ciberacoso mediante publicaciones ofensivas.</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Daño a la reputación de la otra persona, posibles sanciones legales o escolares.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Pensando en las consecuencias antes de publicar (usar el semáforo).</div>
+            </div>
+          </div>
+          <div class="case-card" onclick="toggleCase(this)" id="caso5">
+            <div class="case-label">Caso 5 · Amistades</div>
+            <div class="case-title">Persona que habla mal por sentirse excluida</div>
+            <div class="case-detail">
+              <div class="case-kv"><strong>¿Qué emoción?</strong> Tristeza y rechazo.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> De forma pasivo-agresiva, difamando a los demás.</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Aislamiento real del grupo, pérdida de credibilidad y ambiente escolar negativo.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Validando la propia tristeza y buscando nuevos círculos sociales o preguntando directamente con asertividad.</div>
+            </div>
+          </div>
+        </div>
+
+        <h4>💡 Tips de Oro – Tarea 4</h4>
+        <ul class="task-list" id="tips4-list">
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Cero IA:</strong> La maestra Dayana fue muy clara. Si el texto se nota muy "robótico" o perfecto, bajará puntos.</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Tono Natural:</strong> Al escribir la resolución, usa palabras que tú usarías. No digas "gestión de la psique", mejor "aprender a controlarse" o "pensar antes de regarla".</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Escritura a Mano:</strong> Prohibido imprimir esta parte. Todo el análisis de los casos debe estar transcrito en la libreta con tu propia letra.</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Validación Emocional:</strong> Asegúrate de mencionar que sentir la emoción (enojo, celos, etc.) es normal; lo malo es la acción violenta que sigue.</label>
+          </li>
+        </ul>
+      </div>
+
+      <hr>
+
+      <!-- TAREA 5 -->
+      <h3 id="tarea5">Tarea 5: Campaña de Concientización <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(08 de Mayo)</span></h3>
+      <div class="section-card" data-num="🏆 trabajo final 30%">
+        <ul class="kv-list">
+          <li style="margin-bottom:6px"><strong>Descripción:</strong> Proyecto final grupal (Valor: 30%).</li>
+          <li style="margin-bottom:6px"><strong>Tema Central:</strong> <em>"No todo lo que siento justifica cómo actúo"</em>.</li>
+          <li><strong>Objetivo:</strong> Promover una cultura de paz y transformación social en el CBT a través de soluciones reales.</li>
+        </ul>
+
+        <h4>Elementos Obligatorios</h4>
+        <ul>
+          <li><strong>Nombre de la campaña:</strong> Debe ser creativo, original y llamativo.</li>
+          <li><strong>Problema específico:</strong> Abordar una problemática real (ej. bullying, ciberacoso, violencia en el noviazgo o exclusión).</li>
+          <li><strong>Emoción base:</strong> Identificar qué sentimiento se está trabajando (frustración, celos, ira, envidia).</li>
+          <li><strong>Propuesta de transformación:</strong> Debe ser una solución <strong>aplicable y con impacto</strong> en el entorno escolar.</li>
+          <li><strong>Medio de difusión:</strong> Cartel, tríptico, video, podcast o infografía.</li>
+        </ul>
+
+        <h4>Requisitos de Exposición (Rúbrica)</h4>
+        <ul>
+          <li><strong>Dominio del tema:</strong> Explicar con seguridad, profundidad y <strong>SIN LEER</strong>.</li>
+          <li><strong>Pensamiento crítico:</strong> Analizar causas y consecuencias de la problemática elegida.</li>
+          <li><strong>Valores:</strong> Integrar conceptos de respeto, inclusión, solidaridad y tolerancia.</li>
+          <li><strong>Organización:</strong> El mensaje debe ser claro, ordenado y fácil de entender para el grupo.</li>
+        </ul>
+
+        <h4>Idea de diseño</h4>
+        <div class="obs-image">
+          <img src="Recursos/1778145441124.png" alt="Idea campaña" onerror="this.parentElement.innerHTML='<div style=\'padding:16px\'>🖼️ <strong>1778145441124.png</strong><br><span style=\'font-size:11px\'>Coloca la imagen en la carpeta <code>Recursos/</code></span></div>'">
+          <div class="img-label">📎 1778145441124.png</div>
+        </div>
+
+        <h4>💡 Tips de Oro – Tarea 5</h4>
+        <ul class="task-list" id="tips5-list">
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Rúbrica en Mano:</strong> Es obligatorio llevar la rúbrica del 08 de mayo impresa para que la maestra asiente la calificación.</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Sin Lectura:</strong> Si leen el cartel o fichas, la calificación baja automáticamente de "Excelente" a "Regular".</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Trabajo Colaborativo:</strong> La maestra evaluará que todos los integrantes participen activamente y se note preparación previa.</label>
+          </li>
+          <li class="task-item" onclick="toggleTask(this)">
+            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+            <label><strong>Uso del Tiempo:</strong> Respetar el tiempo asignado para la exposición (ni muy breve, ni excederse).</label>
+          </li>
+        </ul>
+      </div>
+
+      <hr>
+
+      <!-- LISTA DE IMPRESIÓN -->
+      <h2 id="impresion">🖨️ Lista de Impresión</h2>
+      <ul class="task-list" id="print-list">
+        <li class="task-item" onclick="toggleTask(this)">
+          <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+          <label><strong>Reglamento</strong> (para la hoja 2). — <em>Pendiente aún</em></label>
+        </li>
+        <li class="task-item" onclick="toggleTask(this)">
+          <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+          <label><strong>Rúbrica Actividad 01 Mayo</strong> (para la tarea de los casos).</label>
+        </li>
+        <li class="task-item" onclick="toggleTask(this)">
+          <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
+          <label><strong>Rúbrica Trabajo Final 08 Mayo</strong> (para la exposición).</label>
+        </li>
+      </ul>
+
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+        <div class="file-embed">
+          <div class="file-icon">📄</div>
+          <div class="file-info">
+            <div class="file-name">RUBRICA ACT 01 MAYO.pdf</div>
+            <div class="file-note">Coloca el archivo en la carpeta Rubricas/ de tu repositorio</div>
+          </div>
+        </div>
+        <div class="file-embed">
+          <div class="file-icon">📄</div>
+          <div class="file-info">
+            <div class="file-name">RÚBRICA DE EVALUACIÓN trabajo final 8 mayo.pdf</div>
+            <div class="file-note">Coloca el archivo en la carpeta Rubricas/ de tu repositorio</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:60px"></div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-shell -->
+
+<button class="sidebar-toggle" onclick="toggleSidebar()" id="sidebarToggle">☰</button>
+
+<script>
+  // Toggle task checkboxes
+  function toggleTask(el) {
+    const cb = el.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    el.classList.toggle('done', cb.checked);
+    updateProgress();
+  }
+
+  // Update progress bar
+  function updateProgress() {
+    const all = document.querySelectorAll('.task-item input[type="checkbox"]');
+    const done = document.querySelectorAll('.task-item input[type="checkbox"]:checked');
+    const pct = all.length ? Math.round((done.length / all.length) * 100) : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = done.length + ' / ' + all.length;
+  }
+
+  // Toggle case card
+  function toggleCase(el) {
+    const wasSelected = el.classList.contains('selected');
+    document.querySelectorAll('.case-card').forEach(c => c.classList.remove('selected'));
+    if (!wasSelected) el.classList.add('selected');
+  }
+
+  // Sidebar on mobile
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // TOC active link on scroll
+  const sections = document.querySelectorAll('[id]');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
+  });
+
+  updateProgress();
+</script>
+</body>
+</html>
