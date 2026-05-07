@@ -867,58 +867,134 @@
         </div>
 
         <h4>Listado de Casos – Elige uno</h4>
-        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Haz clic en un caso para ver su resolución de ejemplo.</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Haz clic en un caso para ver su resolución completa (análisis + reflexión crítica + autoevaluación).</p>
         <div class="case-grid">
+
+          <!-- CASO 1 -->
           <div class="case-card" onclick="toggleCase(this)" id="caso1">
             <div class="case-label">Caso 1 · Escuela</div>
             <div class="case-title">Alumno que empuja y grita por burlas</div>
             <div class="case-detail">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
               <div class="case-kv"><strong>¿Qué emoción?</strong> Enojo e impotencia.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> De forma física y verbal (empujando y gritando).</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Reportes escolares, mala relación con compañeros y posible escalada a pelea física.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Aplicando el "Tiempo Fuera" para calmar la ira y después reportar la burla con un docente o usar comunicación asertiva.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> De forma física y verbal: empujando y gritando a sus compañeros.</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Reportes escolares, deterioro de la convivencia y posible escalada a una pelea física.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Aplicar el "Tiempo Fuera" para enfriar el enojo y luego reportar la burla con un docente o poner un límite con comunicación asertiva.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
+              <div class="case-kv"><strong>Postura:</strong> No, las emociones no justifican las acciones. Sentir enojo es normal, pero empujar es una decisión.</div>
+              <div class="case-kv"><strong>Argumento:</strong> Si el enojo justificara los golpes, nadie estaría seguro en la escuela. La emoción avisa que algo nos molesta, no nos obliga a agredir.</div>
+              <div class="case-kv"><strong>Ejemplo real:</strong> Cuando alguien nos provoca en clase, la ira aparece sola, pero respirar antes de responder es algo que sí podemos controlar.</div>
+              <div class="case-kv"><strong>Opinión contraria:</strong> Algunos dirán que cuando las burlas son constantes es muy difícil aguantar, y tienen razón en que duele; pero para eso existe la cultura de paz: para aprender a reaccionar diferente.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
+              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que el enojo puede nublarnos y hacernos actuar de formas que luego nos traen problemas. Reconocer que me estoy enojando es el primer paso para no explotar.</div>
+              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Identificar antes la señal física del enojo (tensión en el pecho, puños cerrados) para pedir el tiempo fuera antes de que escale.</div>
+              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> Si alguien me molesta en la escuela, primero me alejo, respiro y después busco una forma de hablar sin agredir.</div>
+              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> No me uno cuando otros se burlan de alguien y, si veo que un compañero está a punto de perder el control, le digo que se calme antes de que pase algo.</div>
             </div>
           </div>
+
+          <!-- CASO 2 -->
           <div class="case-card" onclick="toggleCase(this)" id="caso2">
             <div class="case-label">Caso 2 · Pareja</div>
             <div class="case-title">Discusión por revisar el celular por celos</div>
             <div class="case-detail">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
               <div class="case-kv"><strong>¿Qué emoción?</strong> Celos e inseguridad.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Invasión de la privacidad y discusión fuerte.</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Pérdida de confianza, toxicidad en la relación y daño emocional para ambos.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Hablando honestamente sobre las inseguridades antes de actuar impulsivamente.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Invadiendo la privacidad de la otra persona y generando una discusión fuerte.</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Pérdida de confianza, relación tóxica y daño emocional para ambas partes.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Hablando honestamente sobre las inseguridades en lugar de actuar de forma impulsiva; estableciendo acuerdos de respeto y confianza.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
+              <div class="case-kv"><strong>Postura:</strong> No. Los celos son una emoción, pero revisar el celular de alguien sin permiso es una acción que viola la confianza y eso sí es una elección.</div>
+              <div class="case-kv"><strong>Argumento:</strong> Si los celos justificaran controlar a la pareja, no habría respeto en ninguna relación. El miedo a perder a alguien no te da derecho a invadir su privacidad.</div>
+              <div class="case-kv"><strong>Ejemplo real:</strong> Sentir celos de vez en cuando es humano, pero actuar sobre ellos sin comunicarse primero siempre termina haciendo más daño que bien.</div>
+              <div class="case-kv"><strong>Opinión contraria:</strong> Hay quienes piensan que si hay razones para desconfiar, revisar el celular es válido; sin embargo, eso rompe la base de cualquier relación sana: la confianza.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
+              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que los celos vienen de la inseguridad propia, no del comportamiento del otro, y que actuar desde esa inseguridad daña la relación más que cualquier otra cosa.</div>
+              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Aprender a comunicar lo que siento con palabras antes de tomar decisiones impulsivas que afecten a otra persona.</div>
+              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> Si siento celos o desconfianza, primero hablo con la persona involucrada de forma tranquila y honesta, sin acusaciones.</div>
+              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> Respetando la privacidad de los demás y promoviendo entre mis amigos que las relaciones sanas se basan en comunicación, no en control.</div>
             </div>
           </div>
+
+          <!-- CASO 3 -->
           <div class="case-card" onclick="toggleCase(this)" id="caso3">
             <div class="case-label">Caso 3 · Familia</div>
             <div class="case-title">Joven que insulta a sus padres por frustración</div>
             <div class="case-detail">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
               <div class="case-kv"><strong>¿Qué emoción?</strong> Frustración.</div>
               <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Mediante insultos y falta de respeto hacia la autoridad familiar.</div>
               <div class="case-kv"><strong>¿Qué consecuencias?</strong> Castigos, ruptura del ambiente de paz en el hogar y sentimientos de culpa posteriores.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Usando la técnica de respiración 4-7-8 antes de responder.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Usar la técnica 4-7-8 antes de responder para que la frustración baje y después expresar el punto de vista de forma calmada.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
+              <div class="case-kv"><strong>Postura:</strong> No. La frustración es una emoción válida, pero insultar a los padres es una acción que uno elige aunque no lo parezca en el momento.</div>
+              <div class="case-kv"><strong>Argumento:</strong> Si la frustración justificara los insultos, cualquier persona podría herir a quienes la rodean sin responsabilidad. Aprender a controlarse es parte de crecer.</div>
+              <div class="case-kv"><strong>Ejemplo real:</strong> Hay momentos en casa en que uno se siente incomprendido y la tensión sube; respirar antes de hablar cambia completamente el resultado de esa conversación.</div>
+              <div class="case-kv"><strong>Opinión contraria:</strong> Algunos dicen que a veces los jóvenes explotan porque no se sienten escuchados, y puede ser cierto; pero insultar cierra la comunicación en lugar de abrirla.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
+              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que la frustración acumulada explota cuando no la expreso a tiempo. Si hablo de lo que me molesta antes de llegar al límite, evito las explosiones.</div>
+              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Pedir un espacio para calmarme en lugar de responder en caliente, y regresar a la conversación cuando ya pueda hablar sin gritar.</div>
+              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> Practicando la técnica 4-7-8 cuando sienta que la frustración está subiendo, antes de que se convierta en palabras que dañen.</div>
+              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> Hablando con respeto aunque esté enojado, y reconociendo cuando me equivoco para pedir disculpas y reparar el daño.</div>
             </div>
           </div>
+
+          <!-- CASO 4 -->
           <div class="case-card" onclick="toggleCase(this)" id="caso4">
             <div class="case-label">Caso 4 · Redes Sociales</div>
             <div class="case-title">Estudiante que publica ofensas en internet</div>
             <div class="case-detail">
-              <div class="case-kv"><strong>¿Qué emoción?</strong> Hostilidad o resentimiento.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Ciberacoso mediante publicaciones ofensivas.</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Daño a la reputación de la otra persona, posibles sanciones legales o escolares.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Pensando en las consecuencias antes de publicar (usar el semáforo).</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
+              <div class="case-kv"><strong>¿Qué emoción?</strong> Hostilidad y resentimiento.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Ciberacoso mediante publicaciones ofensivas dirigidas a otra persona.</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Daño a la reputación de la víctima, posibles sanciones escolares o legales por bullying digital.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Usar el semáforo: detenerse antes de publicar, pensar en las consecuencias y resolver el conflicto en privado y de frente.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
+              <div class="case-kv"><strong>Postura:</strong> No. El resentimiento puede ser muy intenso, pero publicar ofensas es una decisión consciente con consecuencias reales para otra persona.</div>
+              <div class="case-kv"><strong>Argumento:</strong> Lo que se publica en internet no desaparece. El daño a la reputación de alguien puede durar años, y eso no lo justifica ninguna emoción.</div>
+              <div class="case-kv"><strong>Ejemplo real:</strong> A veces uno siente el impulso de "desquitarse" en redes cuando algo le duele, pero ese segundo de satisfacción puede costar meses de problemas.</div>
+              <div class="case-kv"><strong>Opinión contraria:</strong> Hay quienes creen que en internet todo es más libre y que expresarse así es solo desahogarse; pero cuando va dirigido a una persona específica, deja de ser desahogo y se convierte en agresión.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
+              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que las redes sociales amplifican cualquier emoción negativa y que publicar cuando uno está enojado casi siempre termina mal. Pensar antes de postear es una forma de autocontrol.</div>
+              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Cerrar la app cuando esté alterado y esperar a que se me pase antes de escribir cualquier cosa sobre alguien.</div>
+              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> No compartir ni dar "me gusta" a publicaciones que atacan a otras personas, porque eso también es parte del problema.</div>
+              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> Usando las redes para cosas constructivas y hablando directamente con la persona si tengo un conflicto, en lugar de hacerlo público.</div>
             </div>
           </div>
+
+          <!-- CASO 5 -->
           <div class="case-card" onclick="toggleCase(this)" id="caso5">
             <div class="case-label">Caso 5 · Amistades</div>
             <div class="case-title">Persona que habla mal por sentirse excluida</div>
             <div class="case-detail">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
               <div class="case-kv"><strong>¿Qué emoción?</strong> Tristeza y rechazo.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> De forma pasivo-agresiva, difamando a los demás.</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Aislamiento real del grupo, pérdida de credibilidad y ambiente escolar negativo.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Validando la propia tristeza y buscando nuevos círculos sociales o preguntando directamente con asertividad.</div>
+              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> De forma pasivo-agresiva, difamando a los demás para sentirse superior o vengarse.</div>
+              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Aislamiento real del grupo, pérdida de credibilidad y creación de un ambiente escolar negativo.</div>
+              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Validar la propia tristeza y preguntar directamente al grupo el motivo de la exclusión con asertividad, o buscar nuevos vínculos sociales.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
+              <div class="case-kv"><strong>Postura:</strong> No. Sentirse excluido duele muchísimo, pero hablar mal de otros para lidiar con ese dolor es una elección que acaba haciendo más daño.</div>
+              <div class="case-kv"><strong>Argumento:</strong> Difamar a alguien no resuelve la exclusión; al contrario, aleja más a las personas y confirma que algo no está bien en la forma de relacionarse.</div>
+              <div class="case-kv"><strong>Ejemplo real:</strong> Cuando uno se siente fuera de un grupo y empieza a criticar a sus integrantes, al final nadie quiere acercarse porque la actitud se nota negativa.</div>
+              <div class="case-kv"><strong>Opinión contraria:</strong> Algunos dirán que es normal desahogarse hablando mal de quien te lastimó; sin embargo, hay formas de desahogarse que no afectan a terceros ni empeoran la situación.</div>
+
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
+              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que el rechazo duele, pero reaccionar con agresión pasiva lo único que hace es profundizar el problema. Reconocer y validar mi tristeza es el primer paso para manejarlo bien.</div>
+              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Hablar de frente cuando me sienta excluido en lugar de guardar el resentimiento hasta que explote de forma indirecta.</div>
+              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> Si noto que alguien del grupo se está quedando fuera, incluirlo en lugar de ignorarlo, porque yo sé cómo se siente esa situación.</div>
+              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> No participando en chismes ni en comentarios negativos sobre otros, y promoviendo que los conflictos se resuelvan hablando directamente.</div>
             </div>
           </div>
+
         </div>
 
         <h4>💡 Tips de Oro – Tarea 4</h4>
@@ -1001,36 +1077,42 @@
 
       <!-- LISTA DE IMPRESIÓN -->
       <h2 id="impresion">🖨️ Lista de Impresión</h2>
-      <ul class="task-list" id="print-list">
-        <li class="task-item" onclick="toggleTask(this)">
+      <div style="display:flex;flex-direction:column;gap:6px">
+
+        <!-- Reglamento -->
+        <div class="task-item" onclick="toggleTask(this)">
           <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
           <label><strong>Reglamento</strong> (para la hoja 2). — <em>Pendiente aún</em></label>
-        </li>
-        <li class="task-item" onclick="toggleTask(this)">
+        </div>
+
+        <!-- Rúbrica 01 Mayo -->
+        <div class="task-item" onclick="toggleTask(this)">
           <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
           <label><strong>Rúbrica Actividad 01 Mayo</strong> (para la tarea de los casos).</label>
-        </li>
-        <li class="task-item" onclick="toggleTask(this)">
+        </div>
+        <a class="file-embed" href="Rubricas/RUBRICA ACT 01 MAYO.pdf" download style="text-decoration:none;cursor:pointer;margin-left:26px;margin-top:-2px;" onmouseover="this.style.borderColor='var(--accent-cyan)'" onmouseout="this.style.borderColor='var(--border-accent)'">
+          <div class="file-icon">📄</div>
+          <div class="file-info" style="flex:1">
+            <div class="file-name">RUBRICA ACT 01 MAYO.pdf</div>
+            <div class="file-note">Rúbrica para la actividad del 01 de mayo</div>
+          </div>
+          <div style="font-size:18px;color:var(--accent-cyan);margin-left:auto;padding-left:12px">⬇</div>
+        </a>
+
+        <!-- Rúbrica 08 Mayo -->
+        <div class="task-item" style="margin-top:4px" onclick="toggleTask(this)">
           <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
           <label><strong>Rúbrica Trabajo Final 08 Mayo</strong> (para la exposición).</label>
-        </li>
-      </ul>
-
-      <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-        <div class="file-embed">
-          <div class="file-icon">📄</div>
-          <div class="file-info">
-            <div class="file-name">RUBRICA ACT 01 MAYO.pdf</div>
-            <div class="file-note">Coloca el archivo en la carpeta Rubricas/ de tu repositorio</div>
-          </div>
         </div>
-        <div class="file-embed">
+        <a class="file-embed" href="Rubricas/RÚBRICA DE EVALUACIÓN trabajo final 8 mayo.pdf" download style="text-decoration:none;cursor:pointer;margin-left:26px;margin-top:-2px;" onmouseover="this.style.borderColor='var(--accent-cyan)'" onmouseout="this.style.borderColor='var(--border-accent)'">
           <div class="file-icon">📄</div>
-          <div class="file-info">
+          <div class="file-info" style="flex:1">
             <div class="file-name">RÚBRICA DE EVALUACIÓN trabajo final 8 mayo.pdf</div>
-            <div class="file-note">Coloca el archivo en la carpeta Rubricas/ de tu repositorio</div>
+            <div class="file-note">Rúbrica para el trabajo final del 08 de mayo</div>
           </div>
-        </div>
+          <div style="font-size:18px;color:var(--accent-cyan);margin-left:auto;padding-left:12px">⬇</div>
+        </a>
+
       </div>
 
       <div style="height:60px"></div>
