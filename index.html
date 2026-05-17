@@ -2861,8 +2861,133 @@ ${stepsTable || 'No se detectaron pasos con ='}
       markCompleted(exId);
       celebrate(textarea);
     } else {
-      showFeedback(exId, 'incorrect', 'No encontré la respuesta correcta. Deberías llegar a x = 13/3 (aproximadamente 4.33). Revisa tu desarrollo paso a paso.');
+      // Analizar el desarrollo para detectar errores específicos
+      const errorAnalysis = analyzeFracDevelopment(text);
+      const feedbackMsg = generateFracErrorFeedback(errorAnalysis, text);
+      showFeedback(exId, 'incorrect', feedbackMsg);
     }
+  }
+
+  // Analizar el desarrollo de E11 para detectar errores específicos
+  function analyzeFracDevelopment(text) {
+    const lines = text.split('\n').map(l => l.trim().toLowerCase()).filter(l => l);
+    const errors = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // Error 1: Distribución incorrecta con signo 2(-4) → +8 en vez de -8
+      if (line.match(/6x\s*\+\s*8/) || line.match(/6x\+8/) || 
+          line.match(/6\s*\*\s*x\s*\+\s*8/) || line.match(/6x\s*\+\s*8\s*\+\s*5/)) {
+        errors.push({
+          type: 'distribucion_signo',
+          line: i + 1,
+          message: 'Error de distribución con signo negativo',
+          hint: '2 × (-4) = -8 (no +8)'
+        });
+      }
+
+      // Error 2: No distribuir el 2 correctamente
+      if (line.match(/3x\s*[-+]\s*4\s*=/)) {
+        errors.push({
+          type: 'no_distribucion',
+          line: i + 1,
+          message: 'No distribuiste el 2',
+          hint: '2(3x - 4) = 6x - 8'
+        });
+      }
+
+      // Error 3: Error al mover el +5 (signo invertido)
+      if (line.match(/23\s*\+\s*5/) || line.match(/=\s*23\s*\+\s*5/)) {
+        errors.push({
+          type: 'signo_movimiento',
+          line: i + 1,
+          message: 'Error de signo al mover término',
+          hint: '+5 pasa al otro lado como -5'
+        });
+      }
+
+      // Error 4: División incorrecta
+      if (line.match(/x\s*=\s*\d+\/\d+/) && !line.includes('13/3') && !line.includes('13 / 3')) {
+        const match = line.match(/x\s*=\s*(\d+)\/(\d+)/);
+        if (match) {
+          const num = parseInt(match[1]);
+          const den = parseInt(match[2]);
+          if (num !== 13 || den !== 3) {
+            errors.push({
+              type: 'division_incorrecta',
+              line: i + 1,
+              message: `División incorrecta: ${num}/${den}`,
+              hint: 'El resultado debería ser 13/3'
+            });
+          }
+        }
+      }
+    }
+
+    return { errors, lines };
+  }
+
+  // Generar feedback tipo IA para errores en fracciones
+  function generateFracErrorFeedback(analysis, originalText) {
+    if (analysis.errors.length === 0) {
+      return `❌ **Respuesta incorrecta**
+
+No encontré el resultado correcto (13/3) en tu desarrollo.
+
+**Tus pasos:**
+${analysis.lines.slice(0, 5).map((l, i) => `· Paso ${i + 1}: \`${l}\``).join('<br>')}
+
+**Respuesta correcta:** x = 13/3 ≈ 4.33
+
+💡 Revisa tu desarrollo paso a paso.`;
+    }
+
+    const error = analysis.errors[0];
+    let explanation = '';
+
+    switch (error.type) {
+      case 'distribucion_signo':
+        explanation = `**Explicación:**<br>
+Cuando distribuyes \`2(3x - 4)\`:<br>
+• \`2 × 3x = 6x\` ✓<br>
+• \`2 × (-4) = -8\` (el signo negativo se conserva)<br><br>
+El error común es olvidar que \`2 × (-4) = -8\`, no \`+8\`.`;
+        break;
+
+      case 'no_distribucion':
+        explanation = `**Explicación:**<br>
+Debes distribuir el 2 a ambos términos dentro del paréntesis:<br>
+\`2(3x - 4) = 2×3x - 2×4 = 6x - 8\``;
+        break;
+
+      case 'signo_movimiento':
+        explanation = `**Explicación:**<br>
+Cuando mueves un término al otro lado de la igualdad, cambia su operación:<br>
+\`6x + 8 + 5 = 23\` → \`6x + 8 = 23 - 5\` (el +5 se convierte en -5)`;
+        break;
+
+      case 'division_incorrecta':
+        explanation = `**Explicación:**<br>
+Revisa tu división final. Deberías obtener \`13/3\`, no \`${error.message.split(':')[1].trim()}\`.`;
+        break;
+    }
+
+    const linesPreview = analysis.lines.slice(0, Math.min(4, error.line)).map((l, i) => {
+      const marker = (i + 1 === error.line) ? '❌' : '·';
+      return `${marker} Paso ${i + 1}: \`${l}\``;
+    }).join('<br>');
+
+    return `❌ **Respuesta incorrecta**
+
+**Tipo de error:** ${error.message}
+
+**Tu desarrollo:**
+${linesPreview}
+
+${explanation}
+
+**Respuesta correcta:** x = 13/3 ≈ 4.33`;
   }
 
   // Enter key support for exercise inputs
