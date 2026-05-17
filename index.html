@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Álgebra — Despejar X & Sistemas de Ecuaciones</title>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/lib/browser/math.js"></script>
   <style>
     :root {
       --bg: #0e0e10;
@@ -486,6 +487,187 @@
       .nav-links { display: none; }
       .exercises-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── SOLVER SECTION ── */
+    .solver-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .solver-input-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .solver-input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      transition: border-color .2s;
+    }
+
+    .solver-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .solver-input::placeholder {
+      color: var(--muted);
+    }
+
+    .solver-btn {
+      background: var(--accent);
+      color: #0e0e10;
+      border: none;
+      border-radius: 8px;
+      padding: .75rem 1.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .solver-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(240,192,64,.3);
+    }
+
+    .solver-result {
+      display: none;
+      margin-top: 1.5rem;
+    }
+
+    .solver-result.visible {
+      display: block;
+    }
+
+    .solver-steps {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .solver-step {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      padding: .3rem 0;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .solver-step-num {
+      font-size: .7rem;
+      color: var(--muted);
+      min-width: 22px;
+    }
+
+    .solver-answer {
+      font-family: 'DM Mono', monospace;
+      color: var(--accent2);
+      font-size: 1.1rem;
+      margin-top: .5rem;
+    }
+
+    .practice-section {
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .practice-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .practice-input-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .practice-label {
+      font-family: 'DM Mono', monospace;
+      color: var(--text);
+    }
+
+    .practice-input {
+      width: 100px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .5rem .75rem;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      text-align: center;
+    }
+
+    .practice-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .feedback-box {
+      display: none;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    .feedback-box.visible {
+      display: block;
+    }
+
+    .feedback-correct {
+      background: rgba(94,232,176,.1);
+      border: 1px solid rgba(94,232,176,.3);
+    }
+
+    .feedback-incorrect {
+      background: rgba(240,112,112,.1);
+      border: 1px solid rgba(240,112,112,.3);
+    }
+
+    .feedback-title {
+      font-weight: 500;
+      margin-bottom: .5rem;
+    }
+
+    .feedback-correct .feedback-title {
+      color: var(--accent2);
+    }
+
+    .feedback-incorrect .feedback-title {
+      color: var(--accent3);
+    }
+
+    .feedback-explanation {
+      font-size: .9rem;
+      color: var(--muted);
+    }
+
+    .solver-error {
+      color: var(--accent3);
+      font-size: .9rem;
+      margin-top: .5rem;
+    }
   </style>
 </head>
 <body>
@@ -499,6 +681,7 @@
     <li><a href="#despejar">Despejar X</a></li>
     <li><a href="#sistemas">Sistemas</a></li>
     <li><a href="#ejercicios-x">Ejercicios</a></li>
+    <li><a href="#solver">Solver</a></li>
   </ul>
 </nav>
 
@@ -1182,6 +1365,56 @@
   </div>
 </section>
 
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════
+     SOLVER INTERACTIVO
+════════════════════════════════════════ -->
+<section id="solver">
+  <div class="section-label">Herramienta</div>
+  <h2>Solver Interactivo</h2>
+  <p>Ingresa cualquier ecuación lineal para ver la solución paso a paso. Luego intenta resolver tú mismo y verifica tu respuesta.</p>
+
+  <div class="solver-container reveal">
+    <div class="solver-input-group">
+      <input type="text" id="equationInput" class="solver-input" placeholder="Ej: 2x + 5 = 15" />
+      <button class="solver-btn" onclick="solveEquation()">Resolver</button>
+    </div>
+    <div id="solverError" class="solver-error"></div>
+
+    <div id="solverResult" class="solver-result">
+      <h3 style="font-family: 'Fraunces', serif; font-size: 1.1rem; margin-bottom: 1rem; color: var(--text);">Solución paso a paso:</h3>
+      <div id="solverSteps" class="solver-steps"></div>
+      <div class="solver-answer" id="finalAnswer"></div>
+
+      <div class="practice-section">
+        <div class="practice-title">Prueba tú mismo</div>
+        <p style="color: var(--muted); font-size: .9rem; margin-bottom: 1rem;">Ingresa tu respuesta para verificar si es correcta:</p>
+        <div class="practice-input-group">
+          <span class="practice-label">x = </span>
+          <input type="text" id="userAnswer" class="practice-input" placeholder="?" />
+          <button class="solver-btn" onclick="checkAnswer()">Verificar</button>
+        </div>
+        <div id="feedbackBox" class="feedback-box">
+          <div class="feedback-title" id="feedbackTitle"></div>
+          <div class="feedback-explanation" id="feedbackExplanation"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejemplos rápidos -->
+  <div style="margin-top: 1.5rem;">
+    <p style="color: var(--muted); font-size: .85rem; margin-bottom: .75rem;">Ejemplos para probar:</p>
+    <div class="rules-list">
+      <button class="rule-pill" onclick="setEquation('2x + 8 = 20')" style="cursor: pointer;">2x + 8 = 20</button>
+      <button class="rule-pill" onclick="setEquation('3x - 7 = 14')" style="cursor: pointer;">3x - 7 = 14</button>
+      <button class="rule-pill" onclick="setEquation('x/4 + 3 = 8')" style="cursor: pointer;">x/4 + 3 = 8</button>
+      <button class="rule-pill" onclick="setEquation('5x = 3x + 12')" style="cursor: pointer;">5x = 3x + 12</button>
+    </div>
+  </div>
+</section>
+
 <footer>
   <p>Hecho con ♥ para aprender Álgebra · <a href="https://github.com">Ver en GitHub</a></p>
   <p style="margin-top:.5rem; font-size:.75rem; opacity:.5">Algebra Guide — Open Source</p>
@@ -1314,6 +1547,269 @@
 
   // draw graph if visible on load
   if (document.getElementById('tab-grafica').classList.contains('active')) drawGraph();
+
+  /* ── SOLVER FUNCTIONS ── */
+  let currentSolution = null;
+  let currentEquation = null;
+
+  function setEquation(eq) {
+    document.getElementById('equationInput').value = eq;
+    document.getElementById('solverResult').classList.remove('visible');
+    document.getElementById('solverError').textContent = '';
+    document.getElementById('feedbackBox').classList.remove('visible');
+    solveEquation();
+  }
+
+  function solveEquation() {
+    const input = document.getElementById('equationInput').value.trim();
+    const errorDiv = document.getElementById('solverError');
+    const resultDiv = document.getElementById('solverResult');
+    const stepsDiv = document.getElementById('solverSteps');
+    const answerDiv = document.getElementById('finalAnswer');
+
+    errorDiv.textContent = '';
+    resultDiv.classList.remove('visible');
+
+    if (!input) {
+      errorDiv.textContent = 'Por favor ingresa una ecuación.';
+      return;
+    }
+
+    try {
+      const solution = solveLinearEquation(input);
+      if (!solution) {
+        errorDiv.textContent = 'No se pudo resolver. Verifica que sea una ecuación lineal válida (ej: 2x + 5 = 15).';
+        return;
+      }
+
+      currentSolution = solution.value;
+      currentEquation = input;
+
+      // Render steps
+      stepsDiv.innerHTML = solution.steps.map((step, i) =>
+        `<div class="solver-step">
+          <span class="solver-step-num">${i + 1}</span>
+          <span>${step}</span>
+        </div>`
+      ).join('');
+
+      answerDiv.innerHTML = `<span style="color: var(--accent);">✓</span> x = ${solution.displayValue}`;
+
+      // Clear previous practice
+      document.getElementById('userAnswer').value = '';
+      document.getElementById('feedbackBox').classList.remove('visible');
+
+      resultDiv.classList.add('visible');
+    } catch (e) {
+      errorDiv.textContent = 'Error al procesar la ecuación. Usa el formato: ax + b = c';
+    }
+  }
+
+  function solveLinearEquation(equation) {
+    // Normalize input
+    let eq = equation.replace(/\s/g, '').replace(/−/g, '-').replace(/–/g, '-');
+
+    // Split by =
+    const parts = eq.split('=');
+    if (parts.length !== 2) return null;
+
+    let [left, right] = parts;
+
+    // Parse expressions to get coefficient of x and constant
+    const parseSide = (expr) => {
+      // Handle implicit multiplication like 2x, x, -x, +x
+      let xCoeff = 0;
+      let constant = 0;
+
+      // Insert + before - for easier splitting, handling the start of string
+      expr = expr.replace(/^-/, '0-');
+      if (expr[0] !== '+' && expr[0] !== '-') {
+        expr = '+' + expr;
+      }
+
+      // Add + before - to split properly
+      expr = expr.replace(/-/g, '+-');
+      const terms = expr.split('+').filter(t => t);
+
+      for (const term of terms) {
+        if (term.includes('x')) {
+          // x term
+          let coeff = term.replace('x', '');
+          if (coeff === '' || coeff === '+') coeff = '1';
+          if (coeff === '-') coeff = '-1';
+          xCoeff += parseFloat(coeff);
+        } else if (term) {
+          // constant term
+          constant += parseFloat(term);
+        }
+      }
+
+      return { xCoeff, constant };
+    };
+
+    const leftSide = parseSide(left);
+    const rightSide = parseSide(right);
+
+    // Move everything to left: (left.x - right.x) * x + (left.c - right.c) = 0
+    const a = leftSide.xCoeff - rightSide.xCoeff;
+    const b = leftSide.constant - rightSide.constant;
+
+    if (Math.abs(a) < 1e-10) {
+      return null; // Not a valid linear equation (no x or infinite solutions)
+    }
+
+    const x = -b / a;
+    const isFraction = !Number.isInteger(x) && Math.abs(x - Math.round(x)) > 1e-10;
+
+    // Generate steps
+    const steps = [];
+
+    // Original equation
+    steps.push(`${left} = ${right}`);
+
+    // Show moving terms
+    const xSide = a > 0 ? 'izquierdo' : 'derecho';
+    const bSide = b > 0 ? 'derecho' : 'izquierdo';
+
+    if (Math.abs(leftSide.xCoeff) > 0 && Math.abs(rightSide.xCoeff) > 0) {
+      steps.push(`Reorganizando términos con x...`);
+    }
+
+    if (Math.abs(leftSide.constant) > 0 && Math.abs(rightSide.constant) > 0) {
+      steps.push(`Moviendo constantes al otro lado...`);
+    }
+
+    if (Math.abs(a) !== 1) {
+      if (b === 0) {
+        steps.push(`${a}x = 0`);
+        steps.push(`x = 0 ÷ ${a}`);
+      } else {
+        const sign = -b > 0 ? '+' : '';
+        steps.push(`${a}x = ${-b}`);
+        steps.push(`x = ${-b} ÷ ${a}`);
+      }
+    } else {
+      steps.push(`x = ${-b}`);
+    }
+
+    return {
+      value: x,
+      displayValue: isFraction ? `${x.toFixed(4)}... (${formatFraction(x)})` : x.toString(),
+      steps: steps
+    };
+  }
+
+  function formatFraction(decimal) {
+    const tolerance = 1e-10;
+    const maxDenominator = 1000;
+
+    let numerator = 1;
+    let denominator = 1;
+    let bestError = Math.abs(decimal - numerator / denominator);
+
+    for (let d = 1; d <= maxDenominator; d++) {
+      const n = Math.round(decimal * d);
+      const error = Math.abs(decimal - n / d);
+      if (error < bestError) {
+        bestError = error;
+        numerator = n;
+        denominator = d;
+      }
+      if (error < tolerance) break;
+    }
+
+    if (denominator === 1) return numerator.toString();
+
+    // Simplify
+    const gcd = (a, b) => b ? gcd(b, a % b) : a;
+    const g = gcd(Math.abs(numerator), denominator);
+
+    return `${numerator / g}/${denominator / g}`;
+  }
+
+  function checkAnswer() {
+    const userInput = document.getElementById('userAnswer').value.trim();
+    const feedbackBox = document.getElementById('feedbackBox');
+    const feedbackTitle = document.getElementById('feedbackTitle');
+    const feedbackExplanation = document.getElementById('feedbackExplanation');
+
+    if (!userInput || currentSolution === null) return;
+
+    // Parse user answer
+    let userValue;
+    try {
+      // Handle fractions like "3/4"
+      if (userInput.includes('/')) {
+        const [num, den] = userInput.split('/').map(parseFloat);
+        userValue = num / den;
+      } else {
+        userValue = parseFloat(userInput);
+      }
+    } catch (e) {
+      feedbackBox.className = 'feedback-box feedback-incorrect visible';
+      feedbackTitle.textContent = '⚠ Formato inválido';
+      feedbackExplanation.textContent = 'Ingresa un número (ej: 5, -3, 2.5, 3/4)';
+      return;
+    }
+
+    if (isNaN(userValue)) {
+      feedbackBox.className = 'feedback-box feedback-incorrect visible';
+      feedbackTitle.textContent = '⚠ Formato inválido';
+      feedbackExplanation.textContent = 'Ingresa un número válido.';
+      return;
+    }
+
+    // Check with tolerance for decimals
+    const tolerance = 1e-9;
+    const isCorrect = Math.abs(userValue - currentSolution) < tolerance;
+
+    if (isCorrect) {
+      feedbackBox.className = 'feedback-box feedback-correct visible';
+      feedbackTitle.textContent = '¡Correcto! 🎉';
+
+      // Generate explanation
+      const exactMatch = userValue === currentSolution;
+      if (exactMatch) {
+        feedbackExplanation.textContent = `Tu respuesta x = ${userInput} es exactamente correcta. ¡Bien hecho!`;
+      } else {
+        feedbackExplanation.textContent = `Tu respuesta x ≈ ${userInput} es correcta (la solución exacta es x = ${currentSolution}).`;
+      }
+    } else {
+      feedbackBox.className = 'feedback-box feedback-incorrect visible';
+      feedbackTitle.textContent = 'Incorrecto ❌';
+
+      // Generate helpful explanation
+      const diff = userValue - currentSolution;
+      let explanation = `La respuesta correcta es x = ${formatNumber(currentSolution)}. `;
+
+      if (Math.abs(diff) < 0.1) {
+        explanation += `Estuviste muy cerca. Revisa tus cálculos aritméticos.`;
+      } else if (Math.abs(diff) < 1) {
+        explanation += `Revisa los signos al mover términos de un lado a otro.`;
+      } else {
+        explanation += `Intenta seguir los pasos mostrados arriba: primero mueve las constantes, luego los coeficientes de x.`;
+      }
+
+      feedbackExplanation.textContent = explanation;
+    }
+  }
+
+  function formatNumber(num) {
+    if (Number.isInteger(num)) return num.toString();
+    const frac = formatFraction(num);
+    if (frac !== num.toFixed(4) + '...') return frac;
+    return num.toString();
+  }
+
+  // Allow Enter key to solve
+  document.getElementById('equationInput')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') solveEquation();
+  });
+
+  // Allow Enter key to check answer
+  document.getElementById('userAnswer')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkAnswer();
+  });
 </script>
 </body>
 </html>
