@@ -668,6 +668,199 @@
       font-size: .9rem;
       margin-top: .5rem;
     }
+
+    /* ── INTERACTIVE EXERCISES ── */
+    .ex-body {
+      padding: 1.25rem;
+      display: none;
+    }
+    .ex-body.open { display: block; }
+
+    .ex-interactive {
+      margin-top: 1rem;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1rem;
+    }
+
+    .mode-btn {
+      padding: .4rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: .8rem;
+      transition: all .2s;
+    }
+
+    .mode-btn.active {
+      background: var(--accent);
+      color: #0e0e10;
+      border-color: var(--accent);
+    }
+
+    .ex-input-group {
+      display: flex;
+      gap: .75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .ex-input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .5rem .75rem;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: .9rem;
+      width: 80px;
+      text-align: center;
+      transition: border-color .2s;
+    }
+
+    .ex-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .ex-input.wide {
+      width: 140px;
+    }
+
+    .ex-label {
+      font-family: 'DM Mono', monospace;
+      color: var(--text);
+      font-size: .9rem;
+    }
+
+    .ex-verify-btn {
+      background: var(--accent);
+      color: #0e0e10;
+      border: none;
+      border-radius: 6px;
+      padding: .5rem 1rem;
+      font-size: .8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+
+    .ex-verify-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .ex-feedback {
+      display: none;
+      padding: .75rem 1rem;
+      border-radius: 6px;
+      margin-top: .75rem;
+      font-size: .85rem;
+    }
+
+    .ex-feedback.visible {
+      display: block;
+    }
+
+    .ex-feedback.correct {
+      background: rgba(94,232,176,.1);
+      border: 1px solid rgba(94,232,176,.3);
+      color: var(--accent2);
+    }
+
+    .ex-feedback.incorrect {
+      background: rgba(240,112,112,.1);
+      border: 1px solid rgba(240,112,112,.3);
+      color: var(--accent3);
+    }
+
+    .ex-feedback.hint {
+      background: rgba(240,192,64,.1);
+      border: 1px solid rgba(240,192,64,.3);
+      color: var(--accent);
+    }
+
+    .step-container {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .step-container.visible {
+      display: block;
+    }
+
+    .step-row {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      margin-bottom: .75rem;
+    }
+
+    .step-number {
+      font-size: .7rem;
+      color: var(--muted);
+      min-width: 50px;
+    }
+
+    .step-input {
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .step-status {
+      font-size: 1rem;
+      margin-left: .5rem;
+    }
+
+    .completed-check {
+      display: inline-block;
+      color: var(--accent2);
+      margin-left: .5rem;
+      font-size: 1rem;
+    }
+
+    .progress-indicator {
+      display: flex;
+      gap: .25rem;
+      margin-bottom: 1rem;
+    }
+
+    .progress-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background .3s;
+    }
+
+    .progress-dot.completed {
+      background: var(--accent2);
+    }
+
+    .progress-dot.current {
+      background: var(--accent);
+    }
+
+    .hint-btn {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      padding: .4rem .8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: .75rem;
+      margin-left: auto;
+    }
+
+    .hint-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -833,14 +1026,55 @@
   <div class="exercises-grid" style="margin-top:2rem">
 
     <!-- E1 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="x + 9 = 14" data-answer="5" data-steps='["x = 14 - 9","x = 5"]' data-easy="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">x + 9 = 14</span>
         <span class="ex-badge badge-easy">Fácil</span>
+        <span class="completed-check" id="check-e1" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Aísla x restando 9 en ambos lados.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e1', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e1', 'guided', this)">Paso a paso</button>
+          </div>
+
+          <!-- Modo Rápido -->
+          <div id="mode-e1-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e1-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e1', 'fast')">Verificar</button>
+            </div>
+          </div>
+
+          <!-- Modo Guiado -->
+          <div id="mode-e1-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e1-1"></div>
+              <div class="progress-dot" id="dot-e1-2"></div>
+            </div>
+            <div class="step-row" id="step-e1-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e1-step1" class="ex-input wide" placeholder="14 - 9" />
+              <button class="ex-verify-btn" onclick="checkStep('e1', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e1-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e1-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e1', 2)">Verificar</button>
+            </div>
+          </div>
+
+          <div id="feedback-e1" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e1')">💡 Necesito una pista</button>
+        </div>
+
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>x + 9 = 14</p>
           <p>x = 14 − 9</p>
@@ -1809,6 +2043,226 @@
   // Allow Enter key to check answer
   document.getElementById('userAnswer')?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') checkAnswer();
+  });
+
+  /* ── INTERACTIVE EXERCISES FUNCTIONS ── */
+  const progress = JSON.parse(localStorage.getItem('algebra_progress') || '{}');
+
+  function setMode(exId, mode, btn) {
+    const container = document.querySelector(`[data-equation][id="${exId}"]`) || 
+                      document.querySelector(`[data-equation]`).closest(`#mode-${exId}-fast`)?.closest('.exercise-card');
+    const card = document.querySelector(`[data-equation][id="${exId}"]`) || 
+                 document.querySelector(`.exercise-card:has(#mode-${exId}-fast)`);
+
+    // Update buttons
+    const buttons = btn.parentElement.querySelectorAll('.mode-btn');
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Toggle visibility
+    const fastMode = document.getElementById(`mode-${exId}-fast`);
+    const guidedMode = document.getElementById(`mode-${exId}-guided`);
+
+    if (fastMode) fastMode.style.display = mode === 'fast' ? 'block' : 'none';
+    if (guidedMode) {
+      guidedMode.style.display = mode === 'guided' ? 'block' : 'none';
+      guidedMode.classList.toggle('visible', mode === 'guided');
+    }
+
+    // Clear feedback
+    const feedback = document.getElementById(`feedback-${exId}`);
+    if (feedback) {
+      feedback.classList.remove('visible', 'correct', 'incorrect', 'hint');
+    }
+  }
+
+  function checkExercise(exId, mode) {
+    const input = document.getElementById(`input-${exId}-${mode}`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = input.closest('.exercise-card');
+    const answer = card.dataset.answer;
+    const equation = card.dataset.equation;
+
+    if (!input || !feedback) return;
+
+    const userValue = parseFloat(input.value.trim());
+    const correctValue = parseFloat(answer);
+
+    if (isNaN(userValue)) {
+      showFeedback(exId, 'incorrect', 'Ingresa un número válido.');
+      return;
+    }
+
+    const tolerance = 1e-9;
+    const isCorrect = Math.abs(userValue - correctValue) < tolerance;
+
+    if (isCorrect) {
+      showFeedback(exId, 'correct', `¡Correcto! x = ${answer} es la solución. ¡Bien hecho! 🎉`);
+      markCompleted(exId);
+      celebrate(input);
+    } else {
+      const explanation = analyzeError(equation, userValue, correctValue);
+      showFeedback(exId, 'incorrect', `Incorrecto. ${explanation}`);
+    }
+  }
+
+  function checkStep(exId, stepNum) {
+    const input = document.getElementById(`input-${exId}-step${stepNum}`);
+    const card = input.closest('.exercise-card');
+    const steps = JSON.parse(card.dataset.steps || '[]');
+    const feedback = document.getElementById(`feedback-${exId}`);
+
+    if (!input || !feedback) return;
+
+    const userInput = input.value.trim().replace(/\s/g, '').replace(/−/g, '-');
+    const expectedStep = steps[stepNum - 1]?.replace(/\s/g, '').replace(/−/g, '-');
+
+    // Check if it's just the number (simplified)
+    const userNum = parseFloat(userInput);
+    const expectedNum = parseFloat(expectedStep?.split('=')[1] || expectedStep);
+
+    const isCorrect = userInput === expectedStep || 
+                      (!isNaN(userNum) && !isNaN(expectedNum) && Math.abs(userNum - expectedNum) < 1e-9);
+
+    if (isCorrect) {
+      showFeedback(exId, 'correct', `¡Paso ${stepNum} correcto! ✅`);
+
+      // Mark step completed
+      const dot = document.getElementById(`dot-${exId}-${stepNum}`);
+      if (dot) dot.classList.add('completed');
+
+      // Enable next step or mark complete
+      const nextStep = document.getElementById(`step-${exId}-${stepNum + 1}`);
+      if (nextStep) {
+        nextStep.style.display = 'flex';
+        const nextDot = document.getElementById(`dot-${exId}-${stepNum + 1}`);
+        if (nextDot) nextDot.classList.add('current');
+        input.disabled = true;
+      } else {
+        // Last step completed
+        markCompleted(exId);
+        showFeedback(exId, 'correct', '¡Ejercicio completado! Has despejado correctamente. 🎉');
+        celebrate(input);
+      }
+    } else {
+      let hint = '';
+      if (stepNum === 1) {
+        hint = 'Recuerda: pasa el número al otro lado con la operación inversa.';
+      } else {
+        hint = 'Simplifica la operación aritmética.';
+      }
+      showFeedback(exId, 'incorrect', `Paso incorrecto. ${hint}`);
+    }
+  }
+
+  function analyzeError(equation, userAnswer, correctAnswer) {
+    const diff = userAnswer - correctAnswer;
+    const absDiff = Math.abs(diff);
+
+    // Common error patterns for x + 9 = 14
+    if (equation === 'x + 9 = 14') {
+      if (userAnswer === 23) return 'Sumaste 9 en vez de restarlo. Recuerda: la operación inversa de sumar es restar.';
+      if (userAnswer === 5.44) return 'Parece que dividiste. Solo necesitas restar 9.';
+    }
+
+    // Common error patterns for 3x = 27
+    if (equation === '3x = 27') {
+      if (userAnswer === 81) return 'Multiplicaste en vez de dividir. Para despejar x, divide ambos lados entre 3.';
+      if (userAnswer === 24) return 'Restaste en vez de dividir. Cuando x está multiplicando, divides.';
+    }
+
+    // Generic feedback based on error magnitude
+    if (absDiff < 0.1) {
+      return 'Estuviste muy cerca. Revisa tus cálculos aritméticos.';
+    } else if (absDiff < 1) {
+      return 'Revisa los signos al mover términos de un lado a otro.';
+    } else if (userAnswer === 0) {
+      return 'No puedes dejar x = 0. Revisa qué operación necesitas hacer.';
+    } else {
+      return `La respuesta correcta es x = ${correctAnswer}. Revisa: ¿qué operación inversa necesitas aplicar?`;
+    }
+  }
+
+  function showFeedback(exId, type, message) {
+    const feedback = document.getElementById(`feedback-${exId}`);
+    if (!feedback) return;
+
+    feedback.className = `ex-feedback ${type} visible`;
+    feedback.textContent = message;
+  }
+
+  function showHint(exId) {
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = feedback.closest('.exercise-card');
+    const equation = card.dataset.equation;
+
+    let hint = '';
+    if (equation === 'x + 9 = 14') {
+      hint = '💡 Pista: Para aislar x, resta 9 de ambos lados. La ecuación queda: x = 14 - 9';
+    } else if (equation === '3x = 27') {
+      hint = '💡 Pista: x está multiplicado por 3. Divide ambos lados entre 3 para despejar x.';
+    } else {
+      hint = '💡 Pista: Aplica la operación inversa para aislar x. Lo que suma, resta. Lo que multiplica, divide.';
+    }
+
+    showFeedback(exId, 'hint', hint);
+  }
+
+  function markCompleted(exId) {
+    const check = document.getElementById(`check-${exId}`);
+    if (check) check.style.display = 'inline-block';
+
+    // Save to localStorage
+    if (!progress[exId]) {
+      progress[exId] = { completed: true, date: new Date().toISOString() };
+      localStorage.setItem('algebra_progress', JSON.stringify(progress));
+    }
+  }
+
+  function celebrate(element) {
+    // Simple visual feedback - could add confetti here
+    element.style.animation = 'pulse 0.5s ease';
+    setTimeout(() => {
+      element.style.animation = '';
+    }, 500);
+  }
+
+  // Add pulse animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Load progress on page load
+  window.addEventListener('load', () => {
+    Object.keys(progress).forEach(exId => {
+      if (progress[exId].completed) {
+        const check = document.getElementById(`check-${exId}`);
+        if (check) check.style.display = 'inline-block';
+      }
+    });
+  });
+
+  // Enter key support for exercise inputs
+  document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && e.target.classList.contains('ex-input')) {
+      const id = e.target.id;
+      const match = id.match(/input-(e\d+)-(fast|step\d+)/);
+      if (match) {
+        const exId = match[1];
+        const type = match[2];
+        if (type === 'fast') {
+          checkExercise(exId, 'fast');
+        } else {
+          const stepNum = parseInt(type.replace('step', ''));
+          checkStep(exId, stepNum);
+        }
+      }
+    }
   });
 </script>
 </body>
