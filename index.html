@@ -2321,7 +2321,7 @@
   }
 
   // Modo libre - Verificar desarrollo completo
-  function checkFreeMode(exId) {
+  async function checkFreeMode(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
     const card = textarea.closest('.exercise-card');
@@ -2361,21 +2361,74 @@
     const isCorrect = Math.abs(finalAnswer - correctValue) < tolerance;
 
     if (isCorrect) {
-      // Verificar si llegó por camino ineficiente
-      const analysis = analyzeSteps(lines, equation, answer);
-
-      if (analysis.hasIssues) {
-        const feedbackMsg = generateIAFeedbackCorrect(analysis, answer, equation);
-        showFeedback(exId, 'correct', feedbackMsg);
-      } else {
-        showFeedback(exId, 'correct', generateIAFeedbackPerfect(answer));
-      }
-      markCompleted(exId);
-      celebrate(textarea);
+      // Usar Gemini API para feedback inteligente
+      await getGeminiFeedback(exId, text, equation, answer, finalAnswer, true);
     } else {
-      const analysis = analyzeSteps(lines, equation, correctValue.toString());
-      const explanation = generateIAFeedbackError(analysis, finalAnswer, correctValue, equation);
-      showFeedback(exId, 'incorrect', explanation);
+      // Usar Gemini API para feedback de error
+      await getGeminiFeedback(exId, text, equation, correctValue.toString(), finalAnswer, false);
+    }
+  }
+
+  // Llamar al backend para obtener feedback de Gemini
+  async function getGeminiFeedback(exId, userDevelopment, equation, correctAnswer, userAnswer, isCorrect) {
+    const feedbackEl = document.getElementById(`feedback-${exId}`);
+    
+    // Mostrar estado de carga
+    showFeedback(exId, isCorrect ? 'correct' : 'incorrect', 
+      `🤖 Analizando tu desarrollo${isCorrect ? '' : ' y buscando errores'}...<br><small>Esto tomará unos segundos</small>`);
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seg timeout
+
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userDevelopment,
+          equation,
+          correctAnswer,
+          userAnswer,
+          isCorrect
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.fallback) {
+        // Usar feedback local como fallback
+        const fallbackMsg = isCorrect 
+          ? `✅ ¡Correcto! x = ${correctAnswer}. ¡Bien hecho! 🎉`
+          : `❌ Incorrecto. La respuesta es x = ${correctAnswer}. Revisa tu desarrollo.`;
+        showFeedback(exId, isCorrect ? 'correct' : 'incorrect', fallbackMsg);
+      } else {
+        showFeedback(exId, isCorrect ? 'correct' : 'incorrect', data.feedback);
+      }
+
+      if (isCorrect) {
+        markCompleted(exId);
+        celebrate(feedbackEl);
+      }
+
+    } catch (error) {
+      console.error('Gemini API error:', error);
+      // Fallback a mensaje simple
+      const fallbackMsg = isCorrect 
+        ? `✅ ¡Correcto! x = ${correctAnswer}. ¡Bien hecho! 🎉`
+        : `❌ Incorrecto. La respuesta es x = ${correctAnswer}. Revisa tu desarrollo.`;
+      showFeedback(exId, isCorrect ? 'correct' : 'incorrect', fallbackMsg);
+      
+      if (isCorrect) {
+        markCompleted(exId);
+        celebrate(feedbackEl);
+      }
     }
   }
 
@@ -2807,7 +2860,7 @@ ${stepsTable || 'No se detectaron pasos con ='}
   }
 
   // Modo libre para ejercicios con potencias (E10: x² = 64)
-  function checkFreeModePow(exId) {
+  async function checkFreeModePow(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
 
@@ -2826,20 +2879,16 @@ ${stepsTable || 'No se detectaron pasos con ='}
     const hasNeg8 = text.includes('-8') || text.includes('= -8');
 
     if (has8) {
-      if (hasNeg8) {
-        showFeedback(exId, 'correct', '¡Correcto! x = ±8. Recuerda que la raíz cuadrada tiene dos soluciones. 🎉');
-      } else {
-        showFeedback(exId, 'correct', '¡Correcto! x = 8. ⚠️ Nota: Recuerda que también x = -8 es solución (±8).');
-      }
-      markCompleted(exId);
-      celebrate(textarea);
+      // Usar Gemini API para feedback inteligente
+      await getGeminiFeedback(exId, text, 'x² = 64', '±8', '8', hasNeg8);
     } else {
-      showFeedback(exId, 'incorrect', 'No encontré la respuesta correcta. Recuerda aplicar raíz cuadrada: √x² = √64 → x = ±8.');
+      // Usar Gemini API para explicar el error
+      await getGeminiFeedback(exId, text, 'x² = 64', '±8', '?', false);
     }
   }
 
   // Modo libre para ejercicios con fracciones (E11: x = 13/3)
-  function checkFreeModeFrac(exId) {
+  async function checkFreeModeFrac(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
 
@@ -2857,14 +2906,11 @@ ${stepsTable || 'No se detectaron pasos con ='}
     const hasDec = text.includes('4.33') || text.includes('4,33') || text.includes('4.333');
 
     if (hasFrac || hasDec) {
-      showFeedback(exId, 'correct', '¡Excelente! Llegaste a x = 13/3 ≈ 4.33. ¡Gran trabajo con fracciones! 🎉');
-      markCompleted(exId);
-      celebrate(textarea);
+      // Usar Gemini API para feedback inteligente aunque sea correcto
+      await getGeminiFeedback(exId, text, '2(3x - 4) + 5 = 23', '13/3', '13/3', true);
     } else {
-      // Analizar el desarrollo para detectar errores específicos
-      const errorAnalysis = analyzeFracDevelopment(text);
-      const feedbackMsg = generateFracErrorFeedback(errorAnalysis, text);
-      showFeedback(exId, 'incorrect', feedbackMsg);
+      // Usar Gemini API para detectar errores
+      await getGeminiFeedback(exId, text, '2(3x - 4) + 5 = 23', '13/3', '?', false);
     }
   }
 
