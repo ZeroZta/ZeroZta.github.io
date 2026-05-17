@@ -894,6 +894,57 @@
       from { opacity: 0; transform: translateY(-5px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ── AI TOGGLE ── */
+    .ai-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+    .ai-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .ai-toggle input {
+      display: none;
+    }
+    .ai-toggle .switch {
+      width: 36px;
+      height: 18px;
+      background: var(--border);
+      border-radius: 9px;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .ai-toggle .switch::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: var(--text);
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+    .ai-toggle input:checked + .switch {
+      background: var(--accent);
+    }
+    .ai-toggle input:checked + .switch::after {
+      transform: translateX(18px);
+      background: #0e0e10;
+    }
+    .ai-toggle .label-text {
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
   </style>
 </head>
 <body>
@@ -909,6 +960,11 @@
     <li><a href="#ejercicios-x">Ejercicios</a></li>
     <li><a href="#solver">Solver</a></li>
   </ul>
+  <label class="ai-toggle" title="Activar/desactivar feedback con IA">
+    <input type="checkbox" id="ai-mode-toggle" checked onchange="toggleAIMode()">
+    <span class="switch"></span>
+    <span class="label-text">🤖 IA</span>
+  </label>
 </nav>
 
 <!-- HERO -->
@@ -2373,6 +2429,20 @@
   async function getGeminiFeedback(exId, userDevelopment, equation, correctAnswer, userAnswer, isCorrect) {
     const feedbackEl = document.getElementById(`feedback-${exId}`);
     
+    // Check if AI mode is enabled
+    if (!getAIMode()) {
+      // Use simple feedback instead of AI
+      const fallbackMsg = isCorrect 
+        ? `✅ ¡Correcto! x = ${correctAnswer}. ¡Bien hecho! 🎉`
+        : `❌ Incorrecto. La respuesta es x = ${correctAnswer}. Revisa tu desarrollo.`;
+      showFeedback(exId, isCorrect ? 'correct' : 'incorrect', fallbackMsg);
+      if (isCorrect) {
+        markCompleted(exId);
+        celebrate(feedbackEl);
+      }
+      return;
+    }
+    
     // Mostrar estado de carga
     showFeedback(exId, isCorrect ? 'correct' : 'incorrect', 
       `🤖 Analizando tu desarrollo${isCorrect ? '' : ' y buscando errores'}...<br><small>Esto tomará unos segundos</small>`);
@@ -3035,6 +3105,33 @@ ${explanation}
 
 **Respuesta correcta:** x = 13/3 ≈ 4.33`;
   }
+
+  // AI Mode management
+  function getAIMode() {
+    return localStorage.getItem('ai_feedback_mode') !== 'false';
+  }
+
+  function setAIMode(enabled) {
+    localStorage.setItem('ai_feedback_mode', enabled ? 'true' : 'false');
+    const toggle = document.getElementById('ai-mode-toggle');
+    if (toggle) toggle.checked = enabled;
+  }
+
+  function toggleAIMode() {
+    const toggle = document.getElementById('ai-mode-toggle');
+    const enabled = toggle ? toggle.checked : true;
+    setAIMode(enabled);
+    console.log('AI Mode:', enabled ? 'ON' : 'OFF');
+  }
+
+  function initAIMode() {
+    const enabled = getAIMode();
+    const toggle = document.getElementById('ai-mode-toggle');
+    if (toggle) toggle.checked = enabled;
+  }
+
+  // Initialize AI mode on page load
+  initAIMode();
 
   // Enter key support for exercise inputs
   document.addEventListener('keypress', (e) => {
