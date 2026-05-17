@@ -2677,7 +2677,7 @@ ${stepsTable || 'No se detectaron pasos con ='}
     if (!feedback) return;
 
     feedback.className = `ex-feedback ${type} visible`;
-    feedback.textContent = message;
+    feedback.innerHTML = message;
   }
 
   function showHint(exId) {
