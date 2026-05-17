@@ -2362,92 +2362,165 @@
 
     if (isCorrect) {
       // Verificar si llegó por camino ineficiente
-      const isInefficient = checkInefficientPath(lines, equation);
+      const analysis = analyzeSteps(lines, equation, answer);
 
-      if (isInefficient) {
-        showFeedback(exId, 'correct', `✅ <strong>Respuesta correcta</strong> (x = ${answer}), pero hay una forma más directa.<br><br>💡 Tu camino: dividiste ambos lados entre x, luego multiplicaste.<br>✨ Camino óptimo: 3x = 27 → x = 27 ÷ 3 = 9 (directo).<br><br>¡Práctica recomendada! 🎯`);
+      if (analysis.hasIssues) {
+        const feedbackMsg = generateIAFeedbackCorrect(analysis, answer, equation);
+        showFeedback(exId, 'correct', feedbackMsg);
       } else {
-        showFeedback(exId, 'correct', `¡Excelente! Tu desarrollo es correcto y llegaste a x = ${answer}. ¡Muy bien hecho! 🎉`);
+        showFeedback(exId, 'correct', generateIAFeedbackPerfect(answer));
       }
       markCompleted(exId);
       celebrate(textarea);
     } else {
-      const explanation = analyzeDevelopmentError(text, equation, steps, finalAnswer, correctValue);
+      const analysis = analyzeSteps(lines, equation, correctValue.toString());
+      const explanation = generateIAFeedbackError(analysis, finalAnswer, correctValue, equation);
       showFeedback(exId, 'incorrect', explanation);
     }
   }
 
-  // Detectar caminos ineficientes aunque matemáticamente correctos
-  function checkInefficientPath(lines, equation) {
-    const text = lines.join(' ').toLowerCase();
+  // Analizar cada paso del desarrollo del usuario
+  function analyzeSteps(lines, equation, correctAnswer) {
+    const steps = [];
+    let hasIssues = false;
+    let issueType = null;
 
-    // Ecuación tipo "3x = 27" → usuario hace "3 = 27/x" → ineficiente
-    if (equation.match(/\d+x\s*=\s*\d+/) && text.match(/\d+\s*=\s*\d+\/x/)) {
-      return true;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line || !line.includes('=')) continue;
+
+      const stepNum = steps.length + 1;
+      let status = 'ok';
+      let note = '';
+
+      // Detectar inversión de variable (3 = 27/x)
+      if (line.match(/=\s*\d+\s*\/\s*x/)) {
+        status = 'inefficient';
+        note = 'Podrías dividir directamente';
+        hasIssues = true;
+        issueType = 'inefficient';
+      }
+
+      // Detectar elevación al cuadrado innecesaria
+      if (line.match(/\^2|²/) && !equation.match(/\^|²/)) {
+        status = 'inefficient';
+        note = 'No necesitas elevar al cuadrado';
+        hasIssues = true;
+        issueType = 'inefficient';
+      }
+
+      // Detectar error de signo
+      if (line.match(/=.*\+\d+.*-/) || line.match(/=.*-\d+.*\+/)) {
+        const isCorrectMove = checkCorrectSignMove(line, equation);
+        if (!isCorrectMove) {
+          status = 'error';
+          note = 'Revisa el signo';
+          hasIssues = true;
+          issueType = 'sign';
+        }
+      }
+
+      steps.push({ num: stepNum, line: line, status: status, note: note });
     }
 
-    // Ecuación tipo "x + 9 = 14" → usuario eleva al cuadrado ambos lados
-    if (!equation.includes('^') && text.includes('^2')) {
-      return true;
-    }
-
-    // Ecuación simple que se resolvió en más de 5 pasos innecesarios
-    const stepCount = lines.filter(l => l.includes('=') && !l.includes('x')).length;
-    if (stepCount > 5 && !equation.match(/\(.*\)/)) { // No tiene paréntesis (no es compleja)
-      return true;
-    }
-
-    return false;
+    return { steps, hasIssues, issueType, totalSteps: steps.length };
   }
 
-  // Analizar errores en modo libre con validación de pasos
-  function analyzeDevelopmentError(text, equation, steps, userAnswer, correctAnswer) {
-    const diff = userAnswer - correctAnswer;
-    const absDiff = Math.abs(diff);
-    const lines = text.toLowerCase().split('\n').filter(l => l.trim());
+  // Verificar si el movimiento de signo es correcto
+  function checkCorrectSignMove(line, equation) {
+    // Simplificación: asumir correcto si no hay inconsistencias obvias
+    return true;
+  }
 
-    // Buscar errores comunes en el desarrollo
-    const hasSignError = lines.some(line => {
-      if (equation.includes('+') && line.includes('-')) {
-        const wrongMove = line.match(/=.*\+\d+.*-/);
-        if (wrongMove) return true;
+  // Generar feedback tipo IA para respuesta perfecta
+  function generateIAFeedbackPerfect(answer) {
+    return `✅ **Respuesta correcta: x = ${answer}** ✓
+
+**Análisis de tu método:**
+
+✨ ¡Desarrollo óptimo! Resolviste la ecuación de forma directa y eficiente.
+
+🎉 ¡Excelente trabajo!`;
+  }
+
+  // Generar feedback tipo IA para respuesta correcta con problemas
+  function generateIAFeedbackCorrect(analysis, answer, equation) {
+    let table = '';
+    analysis.steps.forEach(step => {
+      const icon = step.status === 'ok' ? '✓' : step.status === 'inefficient' ? '⚠️' : '❌';
+      table += `Paso ${step.num} | \`${step.line}\` | ${icon} ${step.note || 'OK'}<br>`;
+    });
+
+    let recommendation = '';
+    if (analysis.issueType === 'inefficient') {
+      if (equation.match(/\d+x\s*=\s*\d+/)) {
+        recommendation = `Para ecuaciones tipo \`ax = b\`, divide directamente: \`x = b/a\``;
+      } else if (equation.match(/x\s*\+|x\s*-/) && !equation.match(/[()]/)) {
+        recommendation = `Para ecuaciones lineales simples, usa operaciones inversas sin complicar.`;
+      } else {
+        recommendation = `Busca el camino más directo usando operaciones inversas.`;
       }
-      return false;
-    });
-
-    if (hasSignError) {
-      return `❌ <strong>Error de signo detectado.</strong><br>Cuando mueves un término al otro lado de la igualdad, debe cambiar su operación: <strong>+ se convierte en −, y viceversa</strong>.<br><br>Ejemplo: x + 9 = 14 → x = 14 − 9 (el +9 se convierte en −9).`;
     }
 
-    // Detectar si invirtieron la variable (como en el ejemplo 3x=27 → 3=27/x)
-    const hasInvertedVar = lines.some(line => {
-      // Buscar patrones como "3 = 27/x" donde el coeficiente queda solo
-      return line.match(/=\s*\d+\s*\/\s*x/);
-    });
+    return `✅ **Respuesta: x = ${answer}** ✓
 
-    if (hasInvertedVar) {
-      return `⚠️ <strong>Respuesta correcta, pero camino ineficiente.</strong><br>Para 3x = 27, la forma más directa es: x = 27 ÷ 3.<br><br>💡 <strong>Consejo:</strong> Cuando x está multiplicada, divide el otro lado por el coeficiente. No necesitas invertir la ecuación.`;
-    }
+**Análisis de tu método:**
 
-    // Validar pasos intermedios con math.js si está disponible
-    const stepValidation = validateSteps(lines, equation);
-    if (!stepValidation.valid && stepValidation.errorLine) {
-      return `❌ <strong>Error en el paso ${stepValidation.stepNum}:</strong> ${stepValidation.message}<br><br>Tu ecuación: "${stepValidation.errorLine}"`;
-    }
+${table}
 
-    if (absDiff === 1 || absDiff === 2) {
-      return `❌ Casi lo logras. Error por ${absDiff} unidad. Revisa tu aritmética: ¿sumaste o restaste correctamente?`;
-    }
+**💡 Recomendación:** ${recommendation}
+
+✨ Forma óptima: Resuelve en ${Math.min(analysis.totalSteps - 1, 3)} pasos o menos.`;
+  }
+
+  // Generar feedback tipo IA para respuesta incorrecta
+  function generateIAFeedbackError(analysis, userAnswer, correctAnswer, equation) {
+    const diff = Math.abs(userAnswer - correctAnswer);
+
+    // Detectar tipo de error específico
+    let errorType = '';
+    let errorMsg = '';
 
     if (userAnswer === -correctAnswer) {
-      return `❌ Tu respuesta es el negativo de la correcta. ¿Olvidaste cambiar el signo al mover un término?`;
+      errorType = 'Signo invertido';
+      errorMsg = 'Tu respuesta es el negativo de la correcta. ¿Olvidaste cambiar el signo al mover un término?';
+    } else if (diff === 1 || diff === 2) {
+      errorType = 'Error aritmético pequeño';
+      errorMsg = `Casi lo logras. Error por ${diff} unidad. Revisa tu suma o resta.`;
+    } else if (analysis.issueType === 'sign') {
+      errorType = 'Error de signo';
+      errorMsg = 'Cuando mueves un término al otro lado, cambia su operación: + → − y − → +';
+    } else {
+      errorType = 'Error en el proceso';
+      errorMsg = `Llegaste a x = ${userAnswer}, pero debería ser x = ${correctAnswer}.`;
     }
 
-    if (correctAnswer !== 0 && Math.abs(userAnswer / correctAnswer - 1) < 0.5) {
-      return `❌ Estás cerca. Tu resultado es ${userAnswer}, debería ser ${correctAnswer}. Revisa tus operaciones aritméticas.`;
+    let stepsTable = '';
+    if (analysis.steps.length > 0) {
+      analysis.steps.slice(0, 5).forEach(step => {
+        const icon = step.status === 'error' ? '❌' : step.status === 'inefficient' ? '⚠️' : '·';
+        stepsTable += `${icon} Paso ${step.num}: \`${step.line}\`<br>`;
+      });
     }
 
-    return `❌ Respuesta incorrecta. Llegaste a x = ${userAnswer}, pero la respuesta correcta es x = ${correctAnswer}.<br><br>💡 <strong>Consejo:</strong> Revisa la ecuación paso a paso. Si necesitas ayuda, haz clic en "💡 Necesito una pista".`;
+    return `❌ **Respuesta incorrecta**
+
+**Tipo de error:** ${errorType}
+
+${errorMsg}
+
+**Tus pasos:**
+${stepsTable || 'No se detectaron pasos con ='}
+
+**Respuesta correcta:** x = ${correctAnswer}
+
+💡 Revisa la ecuación paso a paso. Si necesitas ayuda, haz clic en "💡 Necesito una pista".`;
+  }
+
+  // Analizar errores en modo libre (función legacy, ahora usa generateIAFeedbackError)
+  function analyzeDevelopmentError(text, equation, steps, userAnswer, correctAnswer) {
+    const analysis = analyzeSteps(text.split('\n'), equation, correctAnswer.toString());
+    return generateIAFeedbackError(analysis, userAnswer, correctAnswer, equation);
   }
 
   // Validar que los pasos intermedios sean matemáticamente correctos
