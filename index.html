@@ -2361,7 +2361,14 @@
     const isCorrect = Math.abs(finalAnswer - correctValue) < tolerance;
 
     if (isCorrect) {
-      showFeedback(exId, 'correct', `¡Excelente! Tu desarrollo es correcto y llegaste a x = ${answer}. ¡Muy bien hecho! 🎉`);
+      // Verificar si llegó por camino ineficiente
+      const isInefficient = checkInefficientPath(lines, equation);
+
+      if (isInefficient) {
+        showFeedback(exId, 'correct', `✅ <strong>Respuesta correcta</strong> (x = ${answer}), pero hay una forma más directa.<br><br>💡 Tu camino: dividiste ambos lados entre x, luego multiplicaste.<br>✨ Camino óptimo: 3x = 27 → x = 27 ÷ 3 = 9 (directo).<br><br>¡Práctica recomendada! 🎯`);
+      } else {
+        showFeedback(exId, 'correct', `¡Excelente! Tu desarrollo es correcto y llegaste a x = ${answer}. ¡Muy bien hecho! 🎉`);
+      }
       markCompleted(exId);
       celebrate(textarea);
     } else {
@@ -2370,17 +2377,38 @@
     }
   }
 
-  // Analizar errores en modo libre
+  // Detectar caminos ineficientes aunque matemáticamente correctos
+  function checkInefficientPath(lines, equation) {
+    const text = lines.join(' ').toLowerCase();
+
+    // Ecuación tipo "3x = 27" → usuario hace "3 = 27/x" → ineficiente
+    if (equation.match(/\d+x\s*=\s*\d+/) && text.match(/\d+\s*=\s*\d+\/x/)) {
+      return true;
+    }
+
+    // Ecuación tipo "x + 9 = 14" → usuario eleva al cuadrado ambos lados
+    if (!equation.includes('^') && text.includes('^2')) {
+      return true;
+    }
+
+    // Ecuación simple que se resolvió en más de 5 pasos innecesarios
+    const stepCount = lines.filter(l => l.includes('=') && !l.includes('x')).length;
+    if (stepCount > 5 && !equation.match(/\(.*\)/)) { // No tiene paréntesis (no es compleja)
+      return true;
+    }
+
+    return false;
+  }
+
+  // Analizar errores en modo libre con validación de pasos
   function analyzeDevelopmentError(text, equation, steps, userAnswer, correctAnswer) {
     const diff = userAnswer - correctAnswer;
     const absDiff = Math.abs(diff);
-    const lines = text.toLowerCase().split('\n');
+    const lines = text.toLowerCase().split('\n').filter(l => l.trim());
 
     // Buscar errores comunes en el desarrollo
     const hasSignError = lines.some(line => {
-      // Detectar si movieron un número con el signo incorrecto
       if (equation.includes('+') && line.includes('-')) {
-        // Podría ser moviendo +9 como -9 (correcto) o como +9 (error)
         const wrongMove = line.match(/=.*\+\d+.*-/);
         if (wrongMove) return true;
       }
@@ -2389,6 +2417,22 @@
 
     if (hasSignError) {
       return `❌ <strong>Error de signo detectado.</strong><br>Cuando mueves un término al otro lado de la igualdad, debe cambiar su operación: <strong>+ se convierte en −, y viceversa</strong>.<br><br>Ejemplo: x + 9 = 14 → x = 14 − 9 (el +9 se convierte en −9).`;
+    }
+
+    // Detectar si invirtieron la variable (como en el ejemplo 3x=27 → 3=27/x)
+    const hasInvertedVar = lines.some(line => {
+      // Buscar patrones como "3 = 27/x" donde el coeficiente queda solo
+      return line.match(/=\s*\d+\s*\/\s*x/);
+    });
+
+    if (hasInvertedVar) {
+      return `⚠️ <strong>Respuesta correcta, pero camino ineficiente.</strong><br>Para 3x = 27, la forma más directa es: x = 27 ÷ 3.<br><br>💡 <strong>Consejo:</strong> Cuando x está multiplicada, divide el otro lado por el coeficiente. No necesitas invertir la ecuación.`;
+    }
+
+    // Validar pasos intermedios con math.js si está disponible
+    const stepValidation = validateSteps(lines, equation);
+    if (!stepValidation.valid && stepValidation.errorLine) {
+      return `❌ <strong>Error en el paso ${stepValidation.stepNum}:</strong> ${stepValidation.message}<br><br>Tu ecuación: "${stepValidation.errorLine}"`;
     }
 
     if (absDiff === 1 || absDiff === 2) {
@@ -2404,6 +2448,48 @@
     }
 
     return `❌ Respuesta incorrecta. Llegaste a x = ${userAnswer}, pero la respuesta correcta es x = ${correctAnswer}.<br><br>💡 <strong>Consejo:</strong> Revisa la ecuación paso a paso. Si necesitas ayuda, haz clic en "💡 Necesito una pista".`;
+  }
+
+  // Validar que los pasos intermedios sean matemáticamente correctos
+  function validateSteps(lines, originalEquation) {
+    const result = { valid: true, stepNum: null, errorLine: null, message: '' };
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line || line.includes('→') || line.includes('=>')) continue;
+
+      // Extraer la parte ecuacional (después de =)
+      const eqMatch = line.match(/=\s*(.+)/);
+      if (!eqMatch) continue;
+
+      const rightSide = eqMatch[1].trim();
+
+      // Intentar evaluar con math.js si está disponible
+      if (typeof math !== 'undefined') {
+        try {
+          // Reemplazar notación de división / por ÷ para evaluación
+          const evalExpr = rightSide.replace(/\//g, '/');
+          math.evaluate(evalExpr);
+        } catch (e) {
+          result.valid = false;
+          result.stepNum = i + 1;
+          result.errorLine = line;
+          result.message = 'Esta operación parece tener un error matemático.';
+          return result;
+        }
+      }
+
+      // Detectar pasos que complican innecesariamente (como elevar al cuadrado)
+      if (line.match(/\d+\^2|\d+²/) && !originalEquation.includes('^') && !originalEquation.includes('²')) {
+        result.valid = false;
+        result.stepNum = i + 1;
+        result.errorLine = line;
+        result.message = '¿Por qué elevas al cuadrado? Esta ecuación lineal se resuelve con operaciones básicas (suma, resta, multiplicación, división). El cuadrado complica el problema.';
+        return result;
+      }
+    }
+
+    return result;
   }
 
   function checkExercise(exId, mode) {
