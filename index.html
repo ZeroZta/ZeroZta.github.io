@@ -2151,6 +2151,19 @@
     // Normalize input
     let eq = equation.replace(/\s/g, '').replace(/−/g, '-').replace(/–/g, '-');
 
+    // Helper: evaluate superscript exponents (², ³, ⁴, etc.)
+    const evaluateExponents = (str) => {
+      const superscripts = { '²': 2, '³': 3, '⁴': 4, '⁵': 5, '⁶': 6, '⁷': 7, '⁸': 8, '⁹': 9, '⁰': 0 };
+      // Replace patterns like "5²" with "25", "2³" with "8", etc.
+      return str.replace(/(\d+)([²³⁴⁵⁶⁷⁸⁹⁰])/g, (match, base, exp) => {
+        const power = superscripts[exp];
+        return Math.pow(parseInt(base), power);
+      });
+    };
+
+    // Evaluate exponents before parsing
+    eq = evaluateExponents(eq);
+
     // Split by =
     const parts = eq.split('=');
     if (parts.length !== 2) return null;
