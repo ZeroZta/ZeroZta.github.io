@@ -1,1174 +1,1319 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guía de Tareas – Práctica y Colaboración Ciudadana</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg-primary: #1e1e2e;
-    --bg-secondary: #252535;
-    --bg-card: #2a2a3e;
-    --bg-hover: #313148;
-    --accent-purple: #c792ea;
-    --accent-cyan: #89ddff;
-    --accent-green: #c3e88d;
-    --accent-yellow: #ffcb6b;
-    --accent-red: #f07178;
-    --accent-orange: #f78c6c;
-    --text-primary: #cdd6f4;
-    --text-secondary: #a6adc8;
-    --text-muted: #6c7086;
-    --border: #383850;
-    --border-accent: #44445a;
-    --checkbox-done: #c3e88d;
-    --link: #89ddff;
-    --tag-bg: #2d2d4a;
-    --callout-bg: rgba(137, 221, 255, 0.07);
-    --callout-border: #89ddff;
-    --hr: #383850;
-    --blockquote-border: #c792ea;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    line-height: 1.75;
-    min-height: 100vh;
-  }
-
-  /* Layout */
-  .app-shell {
-    display: flex;
-    min-height: 100vh;
-  }
-
-  .sidebar {
-    width: 260px;
-    background: var(--bg-secondary);
-    border-right: 1px solid var(--border);
-    padding: 24px 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 100;
-    transition: transform 0.3s ease;
-  }
-
-  .sidebar-logo {
-    padding: 0 20px 20px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 16px;
-  }
-
-  .sidebar-logo .vault-name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 4px;
-  }
-
-  .sidebar-logo .note-title {
-    font-family: 'Lora', serif;
-    font-size: 14px;
-    color: var(--accent-purple);
-    font-weight: 600;
-  }
-
-  .toc-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text-muted);
-    padding: 0 20px;
-    margin-bottom: 8px;
-  }
-
-  .toc-list {
-    list-style: none;
-  }
-
-  .toc-list li a {
-    display: block;
-    padding: 5px 20px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 13px;
-    border-left: 2px solid transparent;
-    transition: all 0.15s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .toc-list li a:hover,
-  .toc-list li a.active {
-    color: var(--accent-cyan);
-    background: var(--bg-hover);
-    border-left-color: var(--accent-cyan);
-  }
-
-  .toc-list li a.h3 { padding-left: 36px; font-size: 12px; }
-
-  .main {
-    margin-left: 260px;
-    flex: 1;
-    padding: 0 0 80px;
-    max-width: calc(100% - 260px);
-  }
-
-  /* Top bar */
-  .topbar {
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 48px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .topbar-path {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  .topbar-path span { color: var(--accent-purple); }
-
-  .progress-pill {
-    margin-left: auto;
-    background: var(--tag-bg);
-    border: 1px solid var(--border-accent);
-    border-radius: 20px;
-    padding: 3px 12px;
-    font-size: 11px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--accent-green);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .progress-bar {
-    width: 60px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: var(--accent-green);
-    border-radius: 2px;
-    transition: width 0.4s ease;
-  }
-
-  /* Content */
-  .content {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 48px 48px 0;
-  }
-
-  /* Date wikilink */
-  .wikilink {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--link);
-    background: rgba(137,221,255,0.08);
-    border: 1px solid rgba(137,221,255,0.2);
-    border-radius: 4px;
-    padding: 2px 8px;
-    text-decoration: none;
-    display: inline-block;
-    margin-bottom: 28px;
-  }
-
-  hr {
-    border: none;
-    border-top: 1px solid var(--hr);
-    margin: 36px 0;
-  }
-
-  /* Headings */
-  h1, h2, h3, h4, h5 {
-    font-family: 'Lora', serif;
-    line-height: 1.3;
-  }
-
-  h1 {
-    font-size: 28px;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-    font-weight: 600;
-  }
-
-  h2 {
-    font-size: 20px;
-    color: var(--accent-cyan);
-    margin: 36px 0 14px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  h3 {
-    font-size: 16px;
-    color: var(--accent-yellow);
-    margin: 28px 0 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  h4 {
-    font-size: 14px;
-    color: var(--accent-purple);
-    margin: 18px 0 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  h5 {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin: 14px 0 6px;
-    font-style: italic;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
-  }
-
-  p {
-    color: var(--text-primary);
-    margin-bottom: 10px;
-  }
-
-  strong { color: var(--accent-yellow); font-weight: 600; }
-  em { color: var(--accent-orange); font-style: italic; }
-
-  /* Lists */
-  ul, ol {
-    margin: 8px 0 12px 20px;
-    color: var(--text-primary);
-  }
-
-  li { margin-bottom: 4px; }
-
-  /* Bullet lists with custom marker */
-  ul > li::marker { color: var(--accent-purple); }
-  ol > li::marker { color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
-
-  /* Key-value pairs from * **Key:** Value */
-  .kv-list {
-    list-style: none;
-    margin-left: 0;
-  }
-
-  /* Checklist */
-  .task-list {
-    list-style: none;
-    margin-left: 0;
-  }
-
-  .task-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    margin-bottom: 4px;
-    transition: background 0.15s;
-    cursor: pointer;
-  }
-
-  .task-item:hover { background: var(--bg-hover); }
-
-  .task-item input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    min-width: 16px;
-    border: 2px solid var(--text-muted);
-    border-radius: 3px;
-    margin-top: 3px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    background: transparent;
-  }
-
-  .task-item input[type="checkbox"]:checked {
-    background: var(--checkbox-done);
-    border-color: var(--checkbox-done);
-  }
-
-  .task-item input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 3px;
-    top: 1px;
-    width: 6px;
-    height: 9px;
-    border: 2px solid var(--bg-primary);
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg);
-  }
-
-  .task-item label {
-    cursor: pointer;
-    color: var(--text-primary);
-    flex: 1;
-  }
-
-  .task-item.done label {
-    color: var(--text-muted);
-    text-decoration: line-through;
-  }
-
-  /* Callout / tip boxes */
-  .callout {
-    background: var(--callout-bg);
-    border-left: 3px solid var(--callout-border);
-    border-radius: 0 8px 8px 0;
-    padding: 14px 18px;
-    margin: 16px 0;
-  }
-
-  .callout.tip { border-color: var(--accent-yellow); background: rgba(255,203,107,0.06); }
-  .callout.warning { border-color: var(--accent-red); background: rgba(240,113,120,0.06); }
-  .callout.info { border-color: var(--accent-cyan); background: rgba(137,221,255,0.06); }
-
-  .callout-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--accent-yellow);
-  }
-
-  .callout.info .callout-title { color: var(--accent-cyan); }
-  .callout.warning .callout-title { color: var(--accent-red); }
-
-  /* Image placeholder */
-  .obs-image {
-    background: var(--bg-card);
-    border: 1px dashed var(--border-accent);
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    margin: 16px 0;
-    color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-  }
-
-  .obs-image img {
-    max-width: 100%;
-    border-radius: 6px;
-    display: block;
-    margin: 0 auto;
-  }
-
-  .obs-image .img-label {
-    margin-top: 8px;
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  /* Semaforo visual */
-  .semaforo {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 12px 0;
-  }
-
-  .semaforo-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-  }
-
-  .semaforo-item.rojo { background: rgba(240,113,120,0.12); border-left: 3px solid #f07178; }
-  .semaforo-item.amarillo { background: rgba(255,203,107,0.10); border-left: 3px solid #ffcb6b; }
-  .semaforo-item.verde { background: rgba(195,232,141,0.10); border-left: 3px solid #c3e88d; }
-
-  .semaforo-dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .rojo .semaforo-dot { background: #f07178; box-shadow: 0 0 8px rgba(240,113,120,0.5); }
-  .amarillo .semaforo-dot { background: #ffcb6b; box-shadow: 0 0 8px rgba(255,203,107,0.5); }
-  .verde .semaforo-dot { background: #c3e88d; box-shadow: 0 0 8px rgba(195,232,141,0.5); }
-
-  /* Quote destacado */
-  blockquote {
-    border-left: 3px solid var(--blockquote-border);
-    padding: 12px 20px;
-    margin: 16px 0;
-    background: rgba(199,146,234,0.06);
-    border-radius: 0 8px 8px 0;
-    font-family: 'Lora', serif;
-    font-style: italic;
-    color: var(--accent-purple);
-    font-size: 15px;
-  }
-
-  /* Tags */
-  .tag {
-    display: inline-block;
-    background: var(--tag-bg);
-    border: 1px solid var(--border-accent);
-    border-radius: 4px;
-    padding: 1px 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--accent-cyan);
-    margin: 2px;
-  }
-
-  /* Section card */
-  .section-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px 28px;
-    margin: 24px 0;
-    position: relative;
-  }
-
-  .section-card::before {
-    content: attr(data-num);
-    position: absolute;
-    top: -14px;
-    left: 20px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-accent);
-    border-radius: 20px;
-    padding: 2px 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--accent-purple);
-  }
-
-  /* Case grid */
-  .case-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin: 16px 0;
-  }
-
-  @media (max-width: 600px) {
-    .case-grid { grid-template-columns: 1fr; }
-  }
-
-  .case-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .case-card:hover {
-    border-color: var(--accent-cyan);
-    background: var(--bg-hover);
-  }
-
-  .case-card.selected {
-    border-color: var(--accent-green);
-    background: rgba(195,232,141,0.05);
-  }
-
-  .case-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-  }
-
-  .case-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-  }
-
-  .case-detail {
-    display: none;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-
-  .case-card.selected .case-detail { display: block; }
-
-  .case-kv { margin-bottom: 4px; }
-  .case-kv strong { color: var(--accent-yellow); font-size: 11px; display: block; }
-
-  /* PDF file embed placeholder */
-  .file-embed {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-accent);
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin: 10px 0;
-    color: var(--text-secondary);
-    font-size: 13px;
-  }
-
-  .file-embed .file-icon {
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-
-  .file-embed .file-info .file-name {
-    color: var(--accent-cyan);
-    font-weight: 500;
-    font-size: 13px;
-  }
-
-  .file-embed .file-info .file-note {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-  }
-
-  /* Mobile sidebar toggle */
-  .sidebar-toggle {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 200;
-    background: var(--accent-purple);
-    color: var(--bg-primary);
-    border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(199,146,234,0.4);
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .sidebar {
-      transform: translateX(-100%);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Álgebra — Despejar X & Sistemas de Ecuaciones</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0e10;
+      --surface: #16161a;
+      --surface2: #1e1e24;
+      --border: #2a2a35;
+      --accent: #f0c040;
+      --accent2: #5ee8b0;
+      --accent3: #f07070;
+      --text: #e8e8f0;
+      --muted: #7a7a90;
+      --radius: 12px;
     }
 
-    .sidebar.open {
-      transform: translateX(0);
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
     }
 
-    .main {
-      margin-left: 0;
-      max-width: 100%;
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: .35;
     }
 
-    .content {
-      padding: 24px 20px 0;
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(14,14,16,.85);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .topbar {
-      padding: 12px 20px;
+    .nav-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: -.02em;
     }
 
-    .sidebar-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      transition: color .2s;
     }
-  }
+    .nav-links a:hover { color: var(--accent); }
 
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+    /* ── HERO ── */
+    .hero {
+      min-height: 92vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .section-card, h2, h3 {
-    animation: fadeIn 0.3s ease both;
-  }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(240,192,64,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 10% 80%, rgba(94,232,176,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 90% 70%, rgba(240,112,112,.06) 0%, transparent 60%);
+    }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg-primary); }
-  ::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-</style>
+    .hero-tag {
+      display: inline-block;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: .3rem 1rem;
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      animation: fadeUp .6s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.04em;
+      animation: fadeUp .7s .1s ease both;
+    }
+
+    .hero h1 em { font-style: italic; color: var(--accent); }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      max-width: 540px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    .hero-actions {
+      margin-top: 3rem;
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp .7s .3s ease both;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .7rem 1.6rem;
+      border-radius: 8px;
+      font-size: .9rem; font-weight: 500;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+      cursor: pointer; border: none;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0e0e10;
+      box-shadow: 0 0 0 0 rgba(240,192,64,.4);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 24px rgba(240,192,64,.3); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* floating math symbols */
+    .floats { position: absolute; inset: 0; pointer-events: none; }
+    .floats span {
+      position: absolute;
+      font-family: 'Fraunces', serif;
+      color: rgba(240,192,64,.06);
+      font-size: clamp(3rem, 6vw, 6rem);
+      font-weight: 900;
+      animation: drift 8s ease-in-out infinite;
+      user-select: none;
+    }
+    .floats span:nth-child(1)  { top: 10%; left:  5%; animation-delay: 0s;   font-size: 8rem; }
+    .floats span:nth-child(2)  { top: 25%; right: 8%; animation-delay: 1.5s; }
+    .floats span:nth-child(3)  { bottom: 20%; left: 12%; animation-delay: 3s; }
+    .floats span:nth-child(4)  { bottom: 10%; right: 5%; animation-delay: 2s; font-size: 9rem; }
+    .floats span:nth-child(5)  { top: 55%; left: 50%; animation-delay: .8s; }
+
+    @keyframes drift {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%       { transform: translateY(-20px) rotate(3deg); }
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .75rem; font-weight: 500;
+      color: var(--accent);
+      letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .section-label::before {
+      content: '';
+      width: 24px; height: 2px;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: .75rem;
+      color: var(--text);
+    }
+
+    p { color: var(--muted); margin-bottom: 1rem; }
+
+    /* ── THEORY CARD ── */
+    .theory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .theory-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .theory-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .theory-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .card-number {
+      font-family: 'DM Mono', monospace;
+      font-size: .75rem;
+      color: var(--accent);
+      opacity: .6;
+      margin-bottom: .5rem;
+    }
+
+    /* ── EQUATION DISPLAY ── */
+    .eq-block {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 1.05rem;
+      color: var(--text);
+      line-height: 2;
+    }
+
+    .eq-block .step {
+      display: flex; align-items: baseline; gap: 1rem;
+      padding: .2rem 0;
+    }
+
+    .eq-block .step-num {
+      font-size: .7rem;
+      color: var(--muted);
+      min-width: 22px;
+      user-select: none;
+    }
+
+    .eq-block .highlight { color: var(--accent); font-weight: 500; }
+    .eq-block .note {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-left: 2rem;
+    }
+
+    /* ── RULE PILLS ── */
+    .rules-list {
+      display: flex; flex-wrap: wrap; gap: .75rem;
+      margin: 2rem 0;
+    }
+
+    .rule-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: .4rem 1rem;
+      font-size: .85rem;
+      color: var(--text);
+      display: flex; align-items: center; gap: .5rem;
+    }
+
+    .rule-pill .icon { font-size: 1rem; }
+
+    /* ── EXERCISE SECTION ── */
+    .exercises-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .exercises-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .exercise-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+
+    .exercise-card:hover { border-color: var(--border); }
+
+    .ex-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .ex-header:hover { background: var(--surface2); }
+
+    .ex-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .ex-badge {
+      font-size: .7rem;
+      font-weight: 500;
+      padding: .2rem .6rem;
+      border-radius: 100px;
+      letter-spacing: .04em;
+    }
+
+    .badge-easy   { background: rgba(94,232,176,.15); color: var(--accent2); }
+    .badge-medium { background: rgba(240,192,64,.15);  color: var(--accent); }
+    .badge-hard   { background: rgba(240,112,112,.15); color: var(--accent3); }
+
+    .ex-body { padding: 1.25rem; display: none; }
+    .ex-body.open { display: block; }
+
+    .ex-body .eq {
+      font-family: 'DM Mono', monospace;
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: .6rem 1rem;
+      margin: .5rem 0;
+      font-size: .95rem;
+    }
+
+    .ex-body .solution-btn {
+      margin-top: 1rem;
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      padding: .5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: .85rem;
+      width: 100%;
+      transition: all .2s;
+    }
+
+    .ex-body .solution-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .solution {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(94,232,176,.05);
+      border: 1px solid rgba(94,232,176,.15);
+      border-radius: 8px;
+      display: none;
+    }
+
+    .solution.visible { display: block; }
+
+    .solution .ans {
+      font-family: 'DM Mono', monospace;
+      color: var(--accent2);
+      font-size: 1.05rem;
+      margin-top: .5rem;
+    }
+
+    .solution p { font-size: .85rem; margin-bottom: .3rem; }
+
+    /* ── METHODS ── */
+    .method-tabs {
+      display: flex; gap: .5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: .5rem 1.2rem;
+      border-radius: 8px;
+      font-size: .85rem; font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      transition: all .2s;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #0e0e10;
+      border-color: var(--accent);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 2rem;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 200;
+    }
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width: 0%;
+      transition: width .1s;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 1rem; }
+      .nav-links { display: none; }
+      .exercises-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="app-shell">
+<div class="progress-wrap"><div id="progress-bar"></div></div>
 
-  <!-- Sidebar TOC -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <div class="vault-name">📔 Mi Vault</div>
-      <div class="note-title">Práctica y Colaboración</div>
-    </div>
-    <div class="toc-title">En esta nota</div>
-    <ul class="toc-list" id="toc">
-      <li><a href="#datos">📋 Datos Generales</a></li>
-      <li><a href="#tips-orden" class="h3">💡 Tips – Revisión</a></li>
-      <li><a href="#tarea1">Tarea 1 – Portada</a></li>
-      <li><a href="#tarea2">Tarea 2 – 17 Abr</a></li>
-      <li><a href="#tarea3">Tarea 3 – Infografía</a></li>
-      <li><a href="#tarea4">Tarea 4 – Análisis</a></li>
-      <li><a href="#tarea5">Tarea 5 – Campaña</a></li>
-      <li><a href="#impresion">🖨️ Lista de Impresión</a></li>
-    </ul>
-  </aside>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">∑ Álgebra</div>
+  <ul class="nav-links">
+    <li><a href="#despejar">Despejar X</a></li>
+    <li><a href="#sistemas">Sistemas</a></li>
+    <li><a href="#ejercicios-x">Ejercicios</a></li>
+  </ul>
+</nav>
 
-  <!-- Main content -->
-  <div class="main">
-    <div class="topbar">
-      <span class="topbar-path">Vault / Materias / <span>Práctica y Colaboración Ciudadana</span></span>
-      <div class="progress-pill" id="progress-pill">
-        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-        <span id="progress-text">0 / 0</span>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="floats" aria-hidden="true">
+    <span>x</span><span>∑</span><span>=</span><span>∫</span><span>±</span>
+  </div>
+  <div class="hero-tag">Guía de Álgebra</div>
+  <h1>Despeja <em>x</em>,<br>Resuelve todo</h1>
+  <p class="hero-sub">Una guía completa con teoría clara, reglas esenciales y decenas de ejercicios resueltos paso a paso.</p>
+  <div class="hero-actions">
+    <a href="#despejar" class="btn btn-primary">Empezar →</a>
+    <a href="#ejercicios-x" class="btn btn-ghost">Ver ejercicios</a>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 1: DESPEJAR X
+════════════════════════════════════════ -->
+<section id="despejar">
+  <div class="section-label">Parte 1</div>
+  <h2>Cómo despejar X</h2>
+  <p>Despejar X significa aislar la variable en un lado de la ecuación, aplicando operaciones inversas. La regla de oro: <strong style="color:var(--accent)">lo que haces a un lado, lo haces al otro.</strong></p>
+
+  <!-- REGLAS -->
+  <div class="rules-list">
+    <div class="rule-pill"><span class="icon">➕</span> Suma → Resta al otro lado</div>
+    <div class="rule-pill"><span class="icon">✖️</span> Multiplicación → Divide al otro lado</div>
+    <div class="rule-pill"><span class="icon">✔️</span> Potencia → Raíz al otro lado</div>
+    <div class="rule-pill"><span class="icon">🔁</span> Misma operación en ambos lados</div>
+  </div>
+
+  <!-- TEORÍA CARDS -->
+  <div class="theory-grid reveal">
+    <div class="theory-card">
+      <div class="card-number">Regla 01</div>
+      <h3>Sumas y restas</h3>
+      <p>Si un número está sumando a x, pásalo restando al otro lado, y viceversa.</p>
+      <div class="eq-block" style="font-size:.9rem; line-height:1.9">
+        x + 5 = 12<br>
+        x = 12 − 5<br>
+        <span class="highlight">x = 7</span>
       </div>
     </div>
-
-    <div class="content">
-
-      <a href="#" class="wikilink">📅 2026-04-17</a>
-
-      <h1>GUÍA DE TAREAS<br><small style="font-size:16px;color:var(--text-secondary);font-weight:400;">Práctica y Colaboración Ciudadana</small></h1>
-
-      <hr>
-
-      <!-- DATOS GENERALES -->
-      <h2 id="datos">📋 Datos Generales y Evaluación</h2>
-      <div class="section-card" data-num="ℹ info">
-        <ul class="kv-list">
-          <li style="margin-bottom:8px"><strong>Criterios de evaluación:</strong>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-              <span class="tag">Asistencia 20%</span>
-              <span class="tag">Participación 10%</span>
-              <span class="tag">Trabajos Diarios 40%</span>
-              <span class="tag">Trabajo Final 30%</span>
-            </div>
-          </li>
-          <li><strong>Reglamento:</strong> Debe ir pegado justo después de la Portada (deja una hoja libre).</li>
-        </ul>
+    <div class="theory-card">
+      <div class="card-number">Regla 02</div>
+      <h3>Multiplicación y división</h3>
+      <p>Si un número está multiplicando a x, pásalo dividiendo, y viceversa.</p>
+      <div class="eq-block" style="font-size:.9rem; line-height:1.9">
+        3x = 21<br>
+        x = 21 ÷ 3<br>
+        <span class="highlight">x = 7</span>
       </div>
-
-      <hr>
-
-      <!-- DESCRIPCIÓN CRONOLÓGICA -->
-      <h2 id="descripcion">📝 Descripción Cronológica</h2>
-      <p style="color:var(--text-muted);font-size:13px;margin-top:-8px;margin-bottom:20px">Orden de la Libreta</p>
-
-      <!-- Tips generales -->
-      <h3 id="tips-orden">💡 Tips de Oro – Revisión de Libreta</h3>
-      <div class="callout tip">
-        <div class="callout-title">✦ Tips de Oro</div>
-        <ul class="task-list" id="tips-list">
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>El Filtro de la Portada:</strong> Si la portada no se relaciona con "Emociones y Violencia", la maestra no revisará el resto de la libreta. ¡Asegúrate de que la tuya esté lista!</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Hojas de Respeto:</strong> Deja el espacio para el reglamento justo después de la portada. Si no lo tienes, pon un Post-it avisando que ahí va.</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>El Orden es Ley:</strong> Revisa que el orden sea: Portada → Criterios/Reglamento → 17 Abr → 24 Abr → 01 May.</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Pegado de Rúbricas:</strong> Pega las rúbricas de cada sesión al final de su apunte correspondiente. La maestra las busca para validar la fecha.</label>
-          </li>
-        </ul>
+    </div>
+    <div class="theory-card">
+      <div class="card-number">Regla 03</div>
+      <h3>Potencias y raíces</h3>
+      <p>Para eliminar una potencia, aplica la raíz del mismo índice en ambos lados.</p>
+      <div class="eq-block" style="font-size:.9rem; line-height:1.9">
+        x² = 49<br>
+        √x² = √49<br>
+        <span class="highlight">x = ±7</span>
       </div>
+    </div>
+  </div>
 
-      <hr>
+  <!-- EJEMPLO PASO A PASO -->
+  <div style="margin-top:4rem" class="reveal">
+    <h3>Ejemplo completo paso a paso</h3>
+    <p>Resolvamos: <strong style="color:var(--text)">2x + 8 = 20</strong></p>
 
-      <!-- TAREA 1 -->
-      <h3 id="tarea1">Tarea 1: La Portada <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(Obligatoria)</span></h3>
-      <div class="section-card" data-num="📌 inicio de semestre">
-        <ul class="kv-list">
-          <li style="margin-bottom:6px"><strong>Fecha:</strong> Inicio de semestre.</li>
-          <li style="margin-bottom:10px"><strong>Instrucciones:</strong> Realizar un diseño creativo que responda a la pregunta: <em>"¿Qué relación tienen nuestras emociones con la violencia?"</em></li>
-        </ul>
-        <div class="callout warning">
-          <div class="callout-title">⚠ Importante</div>
-          Es el filtro de la maestra. Si no tiene relación con el tema, no te revisa lo demás.
-        </div>
-        <h4>Idea de diseño</h4>
-        <div class="obs-image">
-          <img src="Recursos/1778141143248.png" alt="Idea portada" onerror="this.parentElement.innerHTML='<div style=\'padding:16px\'>🖼️ <strong>1778141143248.png</strong><br><span style=\'font-size:11px\'>Coloca la imagen en la carpeta <code>Recursos/</code></span></div>'">
-          <div class="img-label">📎 1778141143248.png</div>
-        </div>
+    <div class="eq-block">
+      <div class="step">
+        <span class="step-num">①</span>
+        <span>2x + 8 = 20</span>
+        <span class="note">Ecuación original</span>
       </div>
-
-      <hr>
-
-      <!-- TAREA 2 -->
-      <h3 id="tarea2">Tarea 2: Primera Sesión <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(17 de Abril)</span></h3>
-      <div class="section-card" data-num="📅 17 abr">
-        <ul class="kv-list">
-          <li style="margin-bottom:6px"><strong>Descripción:</strong> Preguntas de diagnóstico inicial.</li>
-          <li style="margin-bottom:6px"><strong>¿Cómo se hace?:</strong> Contestar a mano el cuestionario dictado en clase.</li>
-          <li><strong>Dato Clave:</strong> Pegar la <em>Rúbrica de la Sesión 1</em> al terminar el apunte.</li>
-        </ul>
-
-        <h4>Preguntas del cuestionario</h4>
-        <ol>
-          <li>¿Qué entiendes por violencia?</li>
-          <li>¿Qué emociones consideras que pueden generar un conflicto?</li>
-          <li>Menciona una situación en la que hayas visto que alguien actuó mal por no controlar sus emociones.</li>
-          <li>¿Qué crees que ayude a mejorar la convivencia en la escuela?</li>
-          <li>¿Crees que una emoción pueda justificar una mala acción?</li>
-        </ol>
-
-        <h4>💡 Guía de Reflexión Crítica</h4>
-        <div class="callout info">
-          <div class="callout-title">💬 Para "¿Las emociones justifican nuestras acciones?"</div>
-          <ol style="margin-left:16px">
-            <li><strong>Postura clara:</strong> <em>No, las emociones son impulsos, las acciones son decisiones.</em></li>
-            <li><strong>Argumento:</strong> <em>Si los celos justificaran los gritos, no habría respeto en las parejas.</em></li>
-            <li><strong>Ejemplo real:</strong> Usa algo que te haya pasado en el taller, en casa o con amigos.</li>
-            <li><strong>Opinión contraria:</strong> Reconoce que otros creen que es difícil controlarse, pero que para eso se estudia la cultura de paz.</li>
-          </ol>
-        </div>
+      <div class="step">
+        <span class="step-num">②</span>
+        <span>2x = 20 − 8</span>
+        <span class="note">Restamos 8 en ambos lados</span>
       </div>
+      <div class="step">
+        <span class="step-num">③</span>
+        <span>2x = 12</span>
+        <span class="note">Simplificamos</span>
+      </div>
+      <div class="step">
+        <span class="step-num">④</span>
+        <span>x = 12 ÷ 2</span>
+        <span class="note">Dividimos entre 2 en ambos lados</span>
+      </div>
+      <div class="step">
+        <span class="step-num">✓</span>
+        <span class="highlight">x = 6</span>
+        <span class="note">¡Solución encontrada!</span>
+      </div>
+    </div>
+  </div>
 
-      <hr>
+  <!-- EJEMPLO CON FRACCIONES -->
+  <div style="margin-top:2.5rem" class="reveal">
+    <h3>Ejemplo con fracciones</h3>
+    <p>Resolvamos: <strong style="color:var(--text)">x/3 + 2 = 7</strong></p>
 
-      <!-- TAREA 3 -->
-      <h3 id="tarea3">Tarea 3: Infografía de Emociones <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(24 de Abril)</span></h3>
-      <div class="section-card" data-num="📅 24 abr">
-        <p><strong>Descripción:</strong> Esquema visual sobre identificación de sentimientos.</p>
+    <div class="eq-block">
+      <div class="step">
+        <span class="step-num">①</span>
+        <span>x/3 + 2 = 7</span>
+        <span class="note">Ecuación original</span>
+      </div>
+      <div class="step">
+        <span class="step-num">②</span>
+        <span>x/3 = 7 − 2</span>
+        <span class="note">Restamos 2 en ambos lados</span>
+      </div>
+      <div class="step">
+        <span class="step-num">③</span>
+        <span>x/3 = 5</span>
+        <span class="note">Simplificamos</span>
+      </div>
+      <div class="step">
+        <span class="step-num">④</span>
+        <span>x = 5 × 3</span>
+        <span class="note">Multiplicamos por 3 en ambos lados</span>
+      </div>
+      <div class="step">
+        <span class="step-num">✓</span>
+        <span class="highlight">x = 15</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <h5>¿Cómo se hace?</h5>
-        <ul>
-          <li>Debe ser un trabajo muy visual (colores, dibujos de siluetas o símbolos).</li>
-          <li>Debe explicar dónde se sienten las emociones en el cuerpo.</li>
-          <li>Debe estar pegada físicamente en la libreta; no puede estar suelta.</li>
-        </ul>
+<hr class="divider" />
 
-        <h4>Qué debe incluir obligatoriamente</h4>
+<!-- ══════════════════════════════════════
+     EJERCICIOS — DESPEJAR X
+════════════════════════════════════════ -->
+<section id="ejercicios-x">
+  <div class="section-label">Ejercicios</div>
+  <h2>Practica: Despejar X</h2>
+  <p>Haz clic en cada ejercicio para desplegarlo. Intenta resolverlo antes de ver la solución.</p>
 
-        <p><strong>El Mapa de las Emociones (Identificación):</strong></p>
-        <ul>
-          <li><strong>Dibujo:</strong> Una silueta humana.</li>
-          <li><strong>Contenido:</strong> Señalar con colores las zonas donde se sienten las emociones (nudo en la garganta por tristeza, puños cerrados por enojo, mariposas/nudos en el estómago por miedo o celos).</li>
-          <li><strong>Nota:</strong> Escribir que el primer paso para el autocontrol es reconocer la señal física.</li>
-        </ul>
+  <div class="exercises-grid" style="margin-top:2rem">
 
-        <p style="margin-top:14px"><strong>El Semáforo del Autocontrol:</strong></p>
-        <div class="semaforo">
-          <div class="semaforo-item rojo">
-            <div class="semaforo-dot"></div>
-            <div><strong>Rojo – Alto:</strong> Detente. No hables, no actúes, respira.</div>
-          </div>
-          <div class="semaforo-item amarillo">
-            <div class="semaforo-dot"></div>
-            <div><strong>Amarillo – Pensar:</strong> ¿Qué siento? ¿Cuáles serán las consecuencias si actúo así?</div>
-          </div>
-          <div class="semaforo-item verde">
-            <div class="semaforo-dot"></div>
-            <div><strong>Verde – Actuar:</strong> Buscar una solución pacífica o hablar de forma asertiva.</div>
-          </div>
-        </div>
-
-        <p style="margin-top:14px"><strong>Herramientas de "Primeros Auxilios" Emocionales:</strong></p>
-        <ul>
-          <li><strong>Técnica 4-7-8:</strong> Inhalar (4 seg), mantener (7 seg) y exhalar (8 seg).</li>
-          <li><strong>Tiempo Fuera:</strong> Alejarte de la situación que te enoja por al menos 5 minutos para enfriar la cabeza.</li>
-          <li><strong>Comunicación Asertiva:</strong> Expresar cómo te sientes sin insultar.</li>
-        </ul>
-
-        <blockquote>
-          "Tus emociones son mensajeros, no jefes. Tú decides cómo actuar"
-        </blockquote>
-
-        <h4>💡 Tip de Oro</h4>
-        <ul class="task-list" id="tip3-list">
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Relación directa:</strong> Asegúrate de que el título o una nota en tu infografía diga claramente: <em>"Identificación de emociones para prevenir la violencia"</em>. Esto amarra el diseño con el objetivo principal de la materia.</label>
-          </li>
-        </ul>
-
-        <h4>Idea de diseño</h4>
-        <div class="obs-image">
-          <img src="Recursos/1778141869227.png" alt="Idea infografía" onerror="this.parentElement.innerHTML='<div style=\'padding:16px\'>🖼️ <strong>1778141869227.png</strong><br><span style=\'font-size:11px\'>Coloca la imagen en la carpeta <code>Recursos/</code></span></div>'">
-          <div class="img-label">📎 1778141869227.png</div>
+    <!-- E1 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">x + 9 = 14</span>
+        <span class="ex-badge badge-easy">Fácil</span>
+      </div>
+      <div class="ex-body">
+        <p>Aísla x restando 9 en ambos lados.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>x + 9 = 14</p>
+          <p>x = 14 − 9</p>
+          <div class="ans">x = 5</div>
         </div>
       </div>
+    </div>
 
-      <hr>
-
-      <!-- TAREA 4 -->
-      <h3 id="tarea4">Tarea 4: Análisis Individual <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(01 de Mayo)</span></h3>
-      <div class="section-card" data-num="📅 01 may">
-        <p><strong>Descripción:</strong> Ejercicio de reflexión escrita <em>a mano</em> sobre cómo las emociones influyen en nuestras acciones.</p>
-
-        <h4>Instrucciones Detalladas</h4>
-        <ol>
-          <li><strong>Encabezado:</strong> Fecha (01 de mayo) y título: <em>"Identificando la violencia derivada de emociones mal gestionadas"</em>.</li>
-          <li><strong>Análisis del Caso:</strong> Elige <strong>UNO</strong> de la lista de abajo y responde 4 preguntas.</li>
-          <li><strong>Reflexión Crítica:</strong> Responde a la pregunta: <em>¿Las emociones justifican nuestras acciones?</em> (postura, argumentos, ejemplo real, opinión contraria).</li>
-          <li><strong>Autoevaluación:</strong> Responde las preguntas de la rúbrica.</li>
-        </ol>
-
-        <div class="callout info" style="margin-top:14px">
-          <div class="callout-title">📋 Preguntas de autoevaluación (Rúbrica)</div>
-          <ul style="margin-left:16px">
-            <li>¿Qué aprendí sobre mis emociones y cómo influyen en lo que hago?</li>
-            <li>¿Qué puedo mejorar al reaccionar ante situaciones difíciles?</li>
-            <li>¿Cómo aplico esto para evitar violencia en mi entorno?</li>
-            <li>¿De qué manera promuevo el respeto y la inclusión diariamente?</li>
-          </ul>
+    <!-- E2 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">3x = 27</span>
+        <span class="ex-badge badge-easy">Fácil</span>
+      </div>
+      <div class="ex-body">
+        <p>Divide ambos lados entre 3.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>3x = 27</p>
+          <p>x = 27 ÷ 3</p>
+          <div class="ans">x = 9</div>
         </div>
+      </div>
+    </div>
 
-        <h4>Listado de Casos – Elige uno</h4>
-        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Haz clic en un caso para ver su resolución completa (análisis + reflexión crítica + autoevaluación).</p>
-        <div class="case-grid">
-
-          <!-- CASO 1 -->
-          <div class="case-card" onclick="toggleCase(this)" id="caso1">
-            <div class="case-label">Caso 1 · Escuela</div>
-            <div class="case-title">Alumno que empuja y grita por burlas</div>
-            <div class="case-detail">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
-              <div class="case-kv"><strong>¿Qué emoción?</strong> Enojo e impotencia.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> De forma física y verbal: empujando y gritando a sus compañeros.</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Reportes escolares, deterioro de la convivencia y posible escalada a una pelea física.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Aplicar el "Tiempo Fuera" para enfriar el enojo y luego reportar la burla con un docente o poner un límite con comunicación asertiva.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
-              <div class="case-kv"><strong>Postura:</strong> No, las emociones no justifican las acciones. Sentir enojo es normal, pero empujar es una decisión.</div>
-              <div class="case-kv"><strong>Argumento:</strong> Si el enojo justificara los golpes, nadie estaría seguro en la escuela. La emoción avisa que algo nos molesta, no nos obliga a agredir.</div>
-              <div class="case-kv"><strong>Ejemplo real:</strong> Cuando alguien nos provoca en clase, la ira aparece sola, pero respirar antes de responder es algo que sí podemos controlar.</div>
-              <div class="case-kv"><strong>Opinión contraria:</strong> Algunos dirán que cuando las burlas son constantes es muy difícil aguantar, y tienen razón en que duele; pero para eso existe la cultura de paz: para aprender a reaccionar diferente.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
-              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que el enojo puede nublarnos y hacernos actuar de formas que luego nos traen problemas. Reconocer que me estoy enojando es el primer paso para no explotar.</div>
-              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Identificar antes la señal física del enojo (tensión en el pecho, puños cerrados) para pedir el tiempo fuera antes de que escale.</div>
-              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> Si alguien me molesta en la escuela, primero me alejo, respiro y después busco una forma de hablar sin agredir.</div>
-              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> No me uno cuando otros se burlan de alguien y, si veo que un compañero está a punto de perder el control, le digo que se calme antes de que pase algo.</div>
-            </div>
-          </div>
-
-          <!-- CASO 2 -->
-          <div class="case-card" onclick="toggleCase(this)" id="caso2">
-            <div class="case-label">Caso 2 · Pareja</div>
-            <div class="case-title">Discusión por revisar el celular por celos</div>
-            <div class="case-detail">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
-              <div class="case-kv"><strong>¿Qué emoción?</strong> Celos e inseguridad.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Invadiendo la privacidad de la otra persona y generando una discusión fuerte.</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Pérdida de confianza, relación tóxica y daño emocional para ambas partes.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Hablando honestamente sobre las inseguridades en lugar de actuar de forma impulsiva; estableciendo acuerdos de respeto y confianza.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
-              <div class="case-kv"><strong>Postura:</strong> No. Los celos son una emoción, pero revisar el celular de alguien sin permiso es una acción que viola la confianza y eso sí es una elección.</div>
-              <div class="case-kv"><strong>Argumento:</strong> Si los celos justificaran controlar a la pareja, no habría respeto en ninguna relación. El miedo a perder a alguien no te da derecho a invadir su privacidad.</div>
-              <div class="case-kv"><strong>Ejemplo real:</strong> Sentir celos de vez en cuando es humano, pero actuar sobre ellos sin comunicarse primero siempre termina haciendo más daño que bien.</div>
-              <div class="case-kv"><strong>Opinión contraria:</strong> Hay quienes piensan que si hay razones para desconfiar, revisar el celular es válido; sin embargo, eso rompe la base de cualquier relación sana: la confianza.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
-              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que los celos vienen de la inseguridad propia, no del comportamiento del otro, y que actuar desde esa inseguridad daña la relación más que cualquier otra cosa.</div>
-              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Aprender a comunicar lo que siento con palabras antes de tomar decisiones impulsivas que afecten a otra persona.</div>
-              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> Si siento celos o desconfianza, primero hablo con la persona involucrada de forma tranquila y honesta, sin acusaciones.</div>
-              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> Respetando la privacidad de los demás y promoviendo entre mis amigos que las relaciones sanas se basan en comunicación, no en control.</div>
-            </div>
-          </div>
-
-          <!-- CASO 3 -->
-          <div class="case-card" onclick="toggleCase(this)" id="caso3">
-            <div class="case-label">Caso 3 · Familia</div>
-            <div class="case-title">Joven que insulta a sus padres por frustración</div>
-            <div class="case-detail">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
-              <div class="case-kv"><strong>¿Qué emoción?</strong> Frustración.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Mediante insultos y falta de respeto hacia la autoridad familiar.</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Castigos, ruptura del ambiente de paz en el hogar y sentimientos de culpa posteriores.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Usar la técnica 4-7-8 antes de responder para que la frustración baje y después expresar el punto de vista de forma calmada.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
-              <div class="case-kv"><strong>Postura:</strong> No. La frustración es una emoción válida, pero insultar a los padres es una acción que uno elige aunque no lo parezca en el momento.</div>
-              <div class="case-kv"><strong>Argumento:</strong> Si la frustración justificara los insultos, cualquier persona podría herir a quienes la rodean sin responsabilidad. Aprender a controlarse es parte de crecer.</div>
-              <div class="case-kv"><strong>Ejemplo real:</strong> Hay momentos en casa en que uno se siente incomprendido y la tensión sube; respirar antes de hablar cambia completamente el resultado de esa conversación.</div>
-              <div class="case-kv"><strong>Opinión contraria:</strong> Algunos dicen que a veces los jóvenes explotan porque no se sienten escuchados, y puede ser cierto; pero insultar cierra la comunicación en lugar de abrirla.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
-              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que la frustración acumulada explota cuando no la expreso a tiempo. Si hablo de lo que me molesta antes de llegar al límite, evito las explosiones.</div>
-              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Pedir un espacio para calmarme en lugar de responder en caliente, y regresar a la conversación cuando ya pueda hablar sin gritar.</div>
-              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> Practicando la técnica 4-7-8 cuando sienta que la frustración está subiendo, antes de que se convierta en palabras que dañen.</div>
-              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> Hablando con respeto aunque esté enojado, y reconociendo cuando me equivoco para pedir disculpas y reparar el daño.</div>
-            </div>
-          </div>
-
-          <!-- CASO 4 -->
-          <div class="case-card" onclick="toggleCase(this)" id="caso4">
-            <div class="case-label">Caso 4 · Redes Sociales</div>
-            <div class="case-title">Estudiante que publica ofensas en internet</div>
-            <div class="case-detail">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
-              <div class="case-kv"><strong>¿Qué emoción?</strong> Hostilidad y resentimiento.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> Ciberacoso mediante publicaciones ofensivas dirigidas a otra persona.</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Daño a la reputación de la víctima, posibles sanciones escolares o legales por bullying digital.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Usar el semáforo: detenerse antes de publicar, pensar en las consecuencias y resolver el conflicto en privado y de frente.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
-              <div class="case-kv"><strong>Postura:</strong> No. El resentimiento puede ser muy intenso, pero publicar ofensas es una decisión consciente con consecuencias reales para otra persona.</div>
-              <div class="case-kv"><strong>Argumento:</strong> Lo que se publica en internet no desaparece. El daño a la reputación de alguien puede durar años, y eso no lo justifica ninguna emoción.</div>
-              <div class="case-kv"><strong>Ejemplo real:</strong> A veces uno siente el impulso de "desquitarse" en redes cuando algo le duele, pero ese segundo de satisfacción puede costar meses de problemas.</div>
-              <div class="case-kv"><strong>Opinión contraria:</strong> Hay quienes creen que en internet todo es más libre y que expresarse así es solo desahogarse; pero cuando va dirigido a una persona específica, deja de ser desahogo y se convierte en agresión.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
-              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que las redes sociales amplifican cualquier emoción negativa y que publicar cuando uno está enojado casi siempre termina mal. Pensar antes de postear es una forma de autocontrol.</div>
-              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Cerrar la app cuando esté alterado y esperar a que se me pase antes de escribir cualquier cosa sobre alguien.</div>
-              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> No compartir ni dar "me gusta" a publicaciones que atacan a otras personas, porque eso también es parte del problema.</div>
-              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> Usando las redes para cosas constructivas y hablando directamente con la persona si tengo un conflicto, en lugar de hacerlo público.</div>
-            </div>
-          </div>
-
-          <!-- CASO 5 -->
-          <div class="case-card" onclick="toggleCase(this)" id="caso5">
-            <div class="case-label">Caso 5 · Amistades</div>
-            <div class="case-title">Persona que habla mal por sentirse excluida</div>
-            <div class="case-detail">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-cyan);margin-bottom:6px">① Análisis del caso</div>
-              <div class="case-kv"><strong>¿Qué emoción?</strong> Tristeza y rechazo.</div>
-              <div class="case-kv"><strong>¿Cómo se manifiesta?</strong> De forma pasivo-agresiva, difamando a los demás para sentirse superior o vengarse.</div>
-              <div class="case-kv"><strong>¿Qué consecuencias?</strong> Aislamiento real del grupo, pérdida de credibilidad y creación de un ambiente escolar negativo.</div>
-              <div class="case-kv"><strong>¿Cómo pudo manejarse mejor?</strong> Validar la propia tristeza y preguntar directamente al grupo el motivo de la exclusión con asertividad, o buscar nuevos vínculos sociales.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-purple);margin:12px 0 6px">② Reflexión Crítica</div>
-              <div class="case-kv"><strong>Postura:</strong> No. Sentirse excluido duele muchísimo, pero hablar mal de otros para lidiar con ese dolor es una elección que acaba haciendo más daño.</div>
-              <div class="case-kv"><strong>Argumento:</strong> Difamar a alguien no resuelve la exclusión; al contrario, aleja más a las personas y confirma que algo no está bien en la forma de relacionarse.</div>
-              <div class="case-kv"><strong>Ejemplo real:</strong> Cuando uno se siente fuera de un grupo y empieza a criticar a sus integrantes, al final nadie quiere acercarse porque la actitud se nota negativa.</div>
-              <div class="case-kv"><strong>Opinión contraria:</strong> Algunos dirán que es normal desahogarse hablando mal de quien te lastimó; sin embargo, hay formas de desahogarse que no afectan a terceros ni empeoran la situación.</div>
-
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-green);margin:12px 0 6px">③ Autoevaluación</div>
-              <div class="case-kv"><strong>¿Qué aprendí?</strong> Que el rechazo duele, pero reaccionar con agresión pasiva lo único que hace es profundizar el problema. Reconocer y validar mi tristeza es el primer paso para manejarlo bien.</div>
-              <div class="case-kv"><strong>¿Qué puedo mejorar?</strong> Hablar de frente cuando me sienta excluido en lugar de guardar el resentimiento hasta que explote de forma indirecta.</div>
-              <div class="case-kv"><strong>¿Cómo lo aplico para evitar violencia?</strong> Si noto que alguien del grupo se está quedando fuera, incluirlo en lugar de ignorarlo, porque yo sé cómo se siente esa situación.</div>
-              <div class="case-kv"><strong>¿Cómo promuevo el respeto?</strong> No participando en chismes ni en comentarios negativos sobre otros, y promoviendo que los conflictos se resuelvan hablando directamente.</div>
-            </div>
-          </div>
-
+    <!-- E3 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">x − 7 = 11</span>
+        <span class="ex-badge badge-easy">Fácil</span>
+      </div>
+      <div class="ex-body">
+        <p>Suma 7 en ambos lados.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>x − 7 = 11</p>
+          <p>x = 11 + 7</p>
+          <div class="ans">x = 18</div>
         </div>
+      </div>
+    </div>
 
-        <h4>💡 Tips de Oro – Tarea 4</h4>
-        <ul class="task-list" id="tips4-list">
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Cero IA:</strong> La maestra Dayana fue muy clara. Si el texto se nota muy "robótico" o perfecto, bajará puntos.</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Tono Natural:</strong> Al escribir la resolución, usa palabras que tú usarías. No digas "gestión de la psique", mejor "aprender a controlarse" o "pensar antes de regarla".</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Escritura a Mano:</strong> Prohibido imprimir esta parte. Todo el análisis de los casos debe estar transcrito en la libreta con tu propia letra.</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Validación Emocional:</strong> Asegúrate de mencionar que sentir la emoción (enojo, celos, etc.) es normal; lo malo es la acción violenta que sigue.</label>
-          </li>
-        </ul>
+    <!-- E4 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">x/4 = 6</span>
+        <span class="ex-badge badge-easy">Fácil</span>
+      </div>
+      <div class="ex-body">
+        <p>Multiplica ambos lados por 4.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>x/4 = 6</p>
+          <p>x = 6 × 4</p>
+          <div class="ans">x = 24</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E5 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">2x + 5 = 15</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <p>Primero elimina la suma, luego la multiplicación.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>2x + 5 = 15</p>
+          <p>2x = 10</p>
+          <p>x = 10 ÷ 2</p>
+          <div class="ans">x = 5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E6 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">4x − 3 = 17</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>4x − 3 = 17</p>
+          <p>4x = 20</p>
+          <p>x = 20 ÷ 4</p>
+          <div class="ans">x = 5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E7 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">x/2 + 4 = 10</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>x/2 + 4 = 10</p>
+          <p>x/2 = 6</p>
+          <p>x = 6 × 2</p>
+          <div class="ans">x = 12</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E8 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">3(x + 2) = 18</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <p>Divide primero o distribuye el 3.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>3(x + 2) = 18</p>
+          <p>x + 2 = 18 ÷ 3 = 6</p>
+          <p>x = 6 − 2</p>
+          <div class="ans">x = 4</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E9 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">5x − 2 = 3x + 8</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <p>Junta las x en un lado y los números en el otro.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>5x − 3x = 8 + 2</p>
+          <p>2x = 10</p>
+          <div class="ans">x = 5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E10 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">x² = 64</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <p>Aplica raíz cuadrada (recuerda el ±).</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>√x² = √64</p>
+          <div class="ans">x = ±8</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E11 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">2(3x − 4) + 5 = 23</span>
+        <span class="ex-badge badge-hard">Difícil</span>
+      </div>
+      <div class="ex-body">
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>2(3x − 4) = 18</p>
+          <p>3x − 4 = 9</p>
+          <p>3x = 13</p>
+          <div class="ans">x = 13/3 ≈ 4.33</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E12 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">(x + 3)/5 = (2x − 1)/3</span>
+        <span class="ex-badge badge-hard">Difícil</span>
+      </div>
+      <div class="ex-body">
+        <p>Multiplica en cruz para eliminar fracciones.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>3(x + 3) = 5(2x − 1)</p>
+          <p>3x + 9 = 10x − 5</p>
+          <p>14 = 7x</p>
+          <div class="ans">x = 2</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end exercises-grid -->
+</section>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 2: SISTEMAS DE ECUACIONES
+════════════════════════════════════════ -->
+<section id="sistemas">
+  <div class="section-label">Parte 2</div>
+  <h2>Sistemas de ecuaciones</h2>
+  <p>Un sistema de ecuaciones es un conjunto de dos o más ecuaciones con las mismas variables. La solución es el par (x, y) que satisface <em>todas</em> las ecuaciones simultáneamente.</p>
+
+  <div class="method-tabs">
+    <button class="tab active" onclick="switchTab('sustitucion', this)">Sustitución</button>
+    <button class="tab" onclick="switchTab('eliminacion', this)">Eliminación</button>
+    <button class="tab" onclick="switchTab('grafica', this)">Método gráfico</button>
+  </div>
+
+  <!-- TAB: SUSTITUCIÓN -->
+  <div class="tab-content active" id="tab-sustitucion">
+    <div class="theory-card reveal">
+      <div class="card-number">Método 01</div>
+      <h3>Sustitución</h3>
+      <p>Despeja una variable en una ecuación y sustitúyela en la otra.</p>
+    </div>
+
+    <div class="reveal" style="margin-top:2rem">
+      <p><strong style="color:var(--text)">Ejemplo:</strong> Resolver el sistema:</p>
+      <div class="eq-block" style="font-size:.9rem">
+        Ecuación 1: &nbsp;&nbsp;y = 2x + 1<br>
+        Ecuación 2: &nbsp;&nbsp;3x + y = 16
       </div>
 
-      <hr>
-
-      <!-- TAREA 5 -->
-      <h3 id="tarea5">Tarea 5: Campaña de Concientización <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(08 de Mayo)</span></h3>
-      <div class="section-card" data-num="🏆 trabajo final 30%">
-        <ul class="kv-list">
-          <li style="margin-bottom:6px"><strong>Descripción:</strong> Proyecto final grupal (Valor: 30%).</li>
-          <li style="margin-bottom:6px"><strong>Tema Central:</strong> <em>"No todo lo que siento justifica cómo actúo"</em>.</li>
-          <li><strong>Objetivo:</strong> Promover una cultura de paz y transformación social en el CBT a través de soluciones reales.</li>
-        </ul>
-
-        <h4>Elementos Obligatorios</h4>
-        <ul>
-          <li><strong>Nombre de la campaña:</strong> Debe ser creativo, original y llamativo.</li>
-          <li><strong>Problema específico:</strong> Abordar una problemática real (ej. bullying, ciberacoso, violencia en el noviazgo o exclusión).</li>
-          <li><strong>Emoción base:</strong> Identificar qué sentimiento se está trabajando (frustración, celos, ira, envidia).</li>
-          <li><strong>Propuesta de transformación:</strong> Debe ser una solución <strong>aplicable y con impacto</strong> en el entorno escolar.</li>
-          <li><strong>Medio de difusión:</strong> Cartel, tríptico, video, podcast o infografía.</li>
-        </ul>
-
-        <h4>Requisitos de Exposición (Rúbrica)</h4>
-        <ul>
-          <li><strong>Dominio del tema:</strong> Explicar con seguridad, profundidad y <strong>SIN LEER</strong>.</li>
-          <li><strong>Pensamiento crítico:</strong> Analizar causas y consecuencias de la problemática elegida.</li>
-          <li><strong>Valores:</strong> Integrar conceptos de respeto, inclusión, solidaridad y tolerancia.</li>
-          <li><strong>Organización:</strong> El mensaje debe ser claro, ordenado y fácil de entender para el grupo.</li>
-        </ul>
-
-        <h4>Idea de diseño</h4>
-        <div class="obs-image">
-          <img src="Recursos/1778145441124.png" alt="Idea campaña" onerror="this.parentElement.innerHTML='<div style=\'padding:16px\'>🖼️ <strong>1778145441124.png</strong><br><span style=\'font-size:11px\'>Coloca la imagen en la carpeta <code>Recursos/</code></span></div>'">
-          <div class="img-label">📎 1778145441124.png</div>
+      <div class="eq-block">
+        <div class="step">
+          <span class="step-num">①</span>
+          <span>y = 2x + 1</span>
+          <span class="note">La ecuación 1 ya tiene y despejada</span>
         </div>
+        <div class="step">
+          <span class="step-num">②</span>
+          <span>3x + (2x + 1) = 16</span>
+          <span class="note">Sustituimos y en la ecuación 2</span>
+        </div>
+        <div class="step">
+          <span class="step-num">③</span>
+          <span>5x + 1 = 16</span>
+          <span class="note">Simplificamos</span>
+        </div>
+        <div class="step">
+          <span class="step-num">④</span>
+          <span>5x = 15  →  x = 3</span>
+          <span class="note">Despejamos x</span>
+        </div>
+        <div class="step">
+          <span class="step-num">⑤</span>
+          <span>y = 2(3) + 1 = 7</span>
+          <span class="note">Encontramos y sustituyendo x</span>
+        </div>
+        <div class="step">
+          <span class="step-num">✓</span>
+          <span class="highlight">x = 3, &nbsp; y = 7</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <h4>💡 Tips de Oro – Tarea 5</h4>
-        <ul class="task-list" id="tips5-list">
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Rúbrica en Mano:</strong> Es obligatorio llevar la rúbrica del 08 de mayo impresa para que la maestra asiente la calificación.</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Sin Lectura:</strong> Si leen el cartel o fichas, la calificación baja automáticamente de "Excelente" a "Regular".</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Trabajo Colaborativo:</strong> La maestra evaluará que todos los integrantes participen activamente y se note preparación previa.</label>
-          </li>
-          <li class="task-item" onclick="toggleTask(this)">
-            <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-            <label><strong>Uso del Tiempo:</strong> Respetar el tiempo asignado para la exposición (ni muy breve, ni excederse).</label>
-          </li>
-        </ul>
+  <!-- TAB: ELIMINACIÓN -->
+  <div class="tab-content" id="tab-eliminacion">
+    <div class="theory-card reveal">
+      <div class="card-number">Método 02</div>
+      <h3>Eliminación (suma / resta)</h3>
+      <p>Suma o resta las ecuaciones para eliminar una variable. Si es necesario, multiplica antes para igualar coeficientes.</p>
+    </div>
+
+    <div class="reveal" style="margin-top:2rem">
+      <p><strong style="color:var(--text)">Ejemplo:</strong></p>
+      <div class="eq-block" style="font-size:.9rem">
+        Ecuación 1: &nbsp;&nbsp;2x + 3y = 12<br>
+        Ecuación 2: &nbsp;&nbsp;4x − 3y = 6
       </div>
 
-      <hr>
-
-      <!-- LISTA DE IMPRESIÓN -->
-      <h2 id="impresion">🖨️ Lista de Impresión</h2>
-      <div style="display:flex;flex-direction:column;gap:6px">
-
-        <!-- Reglamento -->
-        <div class="task-item" onclick="toggleTask(this)">
-          <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-          <label><strong>Reglamento</strong> (para la hoja 2). — <em>Pendiente aún</em></label>
+      <div class="eq-block">
+        <div class="step">
+          <span class="step-num">①</span>
+          <span>Los coeficientes de y son 3 y −3 (opuestos)</span>
+          <span class="note">Podemos sumar directamente</span>
         </div>
-
-        <!-- Rúbrica 01 Mayo -->
-        <div class="task-item" onclick="toggleTask(this)">
-          <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-          <label><strong>Rúbrica Actividad 01 Mayo</strong> (para la tarea de los casos).</label>
+        <div class="step">
+          <span class="step-num">②</span>
+          <span>(2x + 3y) + (4x − 3y) = 12 + 6</span>
+          <span class="note">Sumamos ambas ecuaciones</span>
         </div>
-        <a class="file-embed" href="Rubricas/RUBRICA ACT 01 MAYO.pdf" download style="text-decoration:none;cursor:pointer;margin-left:26px;margin-top:-2px;" onmouseover="this.style.borderColor='var(--accent-cyan)'" onmouseout="this.style.borderColor='var(--border-accent)'">
-          <div class="file-icon">📄</div>
-          <div class="file-info" style="flex:1">
-            <div class="file-name">RUBRICA ACT 01 MAYO.pdf</div>
-            <div class="file-note">Rúbrica para la actividad del 01 de mayo</div>
-          </div>
-          <div style="font-size:18px;color:var(--accent-cyan);margin-left:auto;padding-left:12px">⬇</div>
-        </a>
-
-        <!-- Rúbrica 08 Mayo -->
-        <div class="task-item" style="margin-top:4px" onclick="toggleTask(this)">
-          <input type="checkbox" onclick="event.stopPropagation();toggleTask(this.parentElement)">
-          <label><strong>Rúbrica Trabajo Final 08 Mayo</strong> (para la exposición).</label>
+        <div class="step">
+          <span class="step-num">③</span>
+          <span>6x = 18  →  x = 3</span>
+          <span class="note">y se eliminó, despejamos x</span>
         </div>
-        <a class="file-embed" href="Rubricas/RÚBRICA DE EVALUACIÓN trabajo final 8 mayo.pdf" download style="text-decoration:none;cursor:pointer;margin-left:26px;margin-top:-2px;" onmouseover="this.style.borderColor='var(--accent-cyan)'" onmouseout="this.style.borderColor='var(--border-accent)'">
-          <div class="file-icon">📄</div>
-          <div class="file-info" style="flex:1">
-            <div class="file-name">RÚBRICA DE EVALUACIÓN trabajo final 8 mayo.pdf</div>
-            <div class="file-note">Rúbrica para el trabajo final del 08 de mayo</div>
-          </div>
-          <div style="font-size:18px;color:var(--accent-cyan);margin-left:auto;padding-left:12px">⬇</div>
-        </a>
-
+        <div class="step">
+          <span class="step-num">④</span>
+          <span>2(3) + 3y = 12  →  3y = 6</span>
+          <span class="note">Sustituimos x en la ecuación 1</span>
+        </div>
+        <div class="step">
+          <span class="step-num">✓</span>
+          <span class="highlight">x = 3, &nbsp; y = 2</span>
+        </div>
       </div>
+    </div>
+  </div>
 
-      <div style="height:60px"></div>
+  <!-- TAB: GRÁFICA -->
+  <div class="tab-content" id="tab-grafica">
+    <div class="theory-card reveal">
+      <div class="card-number">Método 03</div>
+      <h3>Método gráfico</h3>
+      <p>Grafica ambas ecuaciones como rectas. La solución es el punto donde se intersectan. Útil para visualizar, pero menos preciso con decimales.</p>
+    </div>
+    <div class="reveal" style="margin-top:1.5rem">
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:2rem; text-align:center;">
+        <canvas id="graphCanvas" width="500" height="300" style="max-width:100%; border-radius:8px;"></canvas>
+        <p style="margin-top:1rem; font-size:.85rem">Gráfica del sistema: <strong style="color:var(--text)">y = x + 1</strong> y <strong style="color:var(--text)">y = −x + 5</strong> → intersección en (2, 3)</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /app-shell -->
+<hr class="divider" />
 
-<button class="sidebar-toggle" onclick="toggleSidebar()" id="sidebarToggle">☰</button>
+<!-- ══════════════════════════════════════
+     EJERCICIOS — SISTEMAS
+════════════════════════════════════════ -->
+<section>
+  <div class="section-label">Ejercicios</div>
+  <h2>Practica: Sistemas</h2>
+
+  <div class="exercises-grid" style="margin-top:2rem">
+
+    <!-- S1 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">y = x + 2 &nbsp;&amp;&nbsp; x + y = 8</span>
+        <span class="ex-badge badge-easy">Fácil</span>
+      </div>
+      <div class="ex-body">
+        <p>Usa sustitución.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>x + (x + 2) = 8</p>
+          <p>2x = 6  →  x = 3</p>
+          <p>y = 3 + 2</p>
+          <div class="ans">x = 3, &nbsp; y = 5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">2x + y = 7 &nbsp;&amp;&nbsp; x − y = 2</span>
+        <span class="ex-badge badge-easy">Fácil</span>
+      </div>
+      <div class="ex-body">
+        <p>Suma las ecuaciones para eliminar y.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>3x = 9  →  x = 3</p>
+          <p>y = x − 2 = 1</p>
+          <div class="ans">x = 3, &nbsp; y = 1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">x + 2y = 10 &nbsp;&amp;&nbsp; x − y = 1</span>
+        <span class="ex-badge badge-easy">Fácil</span>
+      </div>
+      <div class="ex-body">
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>Restamos: 3y = 9  →  y = 3</p>
+          <p>x = 1 + 3 = 4</p>
+          <div class="ans">x = 4, &nbsp; y = 3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">3x + 2y = 16 &nbsp;&amp;&nbsp; x + y = 6</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <p>Multiplica la segunda por 2 y resta.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>3x + 2y = 16</p>
+          <p>2x + 2y = 12</p>
+          <p>Restando: x = 4</p>
+          <p>y = 6 − 4 = 2</p>
+          <div class="ans">x = 4, &nbsp; y = 2</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S5 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">4x − y = 5 &nbsp;&amp;&nbsp; 2x + 3y = 19</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>De ec.1: y = 4x − 5</p>
+          <p>2x + 3(4x − 5) = 19</p>
+          <p>14x = 34  →  x = 34/14 = 17/7</p>
+          <p>... o mejor: ×3 la ec.1:</p>
+          <p>12x − 3y = 15  +  2x + 3y = 19</p>
+          <p>14x = 34  →  x = 17/7 ≈ 2.43</p>
+          <div class="ans">x = 17/7, &nbsp; y = 4(17/7)−5 = 33/7</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">2x + 5y = 20 &nbsp;&amp;&nbsp; 3x − 2y = −1</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <p>Usa eliminación con MCM de coeficientes.</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>×3 la ec.1: 6x + 15y = 60</p>
+          <p>×2 la ec.2: 6x −  4y = −2</p>
+          <p>Restando: 19y = 62  →  y = 62/19</p>
+          <p>Aprox: y ≈ 3.26,  x ≈ 1.87</p>
+          <div class="ans">x = 5/19·7 ..., solución exacta: x = 65/38, y = 62/19</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">Sistema sin solución (paralelas)</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <div class="eq" style="color:var(--muted)">y = 2x + 1 &nbsp;&amp;&nbsp; y = 2x − 3</div>
+        <p style="margin-top:.75rem">¿Por qué no tiene solución?</p>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>Ambas tienen pendiente 2 pero diferente intercepto.</p>
+          <p>Son rectas paralelas: nunca se cruzan.</p>
+          <div class="ans">Sin solución (sistema inconsistente)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S8 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">Sistema con ∞ soluciones</span>
+        <span class="ex-badge badge-medium">Medio</span>
+      </div>
+      <div class="ex-body">
+        <div class="eq" style="color:var(--muted)">2x + 4y = 8 &nbsp;&amp;&nbsp; x + 2y = 4</div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>La ec.2 × 2 = ec.1: son la misma recta.</p>
+          <div class="ans">Infinitas soluciones (sistema dependiente)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S9 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">5x + 3y = 11 &nbsp;&amp;&nbsp; 2x − y = 3</span>
+        <span class="ex-badge badge-hard">Difícil</span>
+      </div>
+      <div class="ex-body">
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>De ec.2: y = 2x − 3</p>
+          <p>5x + 3(2x − 3) = 11</p>
+          <p>11x − 9 = 11  →  11x = 20</p>
+          <p>x = 20/11</p>
+          <p>y = 2(20/11) − 3 = 40/11 − 33/11</p>
+          <div class="ans">x = 20/11,  y = 7/11</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S10 -->
+    <div class="exercise-card">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">3 ecuaciones, 3 incógnitas</span>
+        <span class="ex-badge badge-hard">Difícil</span>
+      </div>
+      <div class="ex-body">
+        <div class="eq" style="color:var(--muted); line-height:1.8">
+          x + y + z = 6<br>
+          2x − y + z = 3<br>
+          x + 2y − z = 5
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="solution">
+          <p>Ec1 + Ec2: 3x + 2z = 9</p>
+          <p>Ec1 + Ec3: 2x + 3y = 11</p>
+          <p>Ec2 + Ec3: 3x + y + 2z = 8 ... </p>
+          <p>Resolviendo: x=1, y=2, z=3</p>
+          <div class="ans">x = 1,  y = 2,  z = 3</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>Hecho con ♥ para aprender Álgebra · <a href="https://github.com">Ver en GitHub</a></p>
+  <p style="margin-top:.5rem; font-size:.75rem; opacity:.5">Algebra Guide — Open Source</p>
+</footer>
 
 <script>
-  // Toggle task checkboxes
-  function toggleTask(el) {
-    const cb = el.querySelector('input[type="checkbox"]');
-    cb.checked = !cb.checked;
-    el.classList.toggle('done', cb.checked);
-    updateProgress();
-  }
-
-  // Update progress bar
-  function updateProgress() {
-    const all = document.querySelectorAll('.task-item input[type="checkbox"]');
-    const done = document.querySelectorAll('.task-item input[type="checkbox"]:checked');
-    const pct = all.length ? Math.round((done.length / all.length) * 100) : 0;
-    document.getElementById('progress-fill').style.width = pct + '%';
-    document.getElementById('progress-text').textContent = done.length + ' / ' + all.length;
-  }
-
-  // Toggle case card
-  function toggleCase(el) {
-    const wasSelected = el.classList.contains('selected');
-    document.querySelectorAll('.case-card').forEach(c => c.classList.remove('selected'));
-    if (!wasSelected) el.classList.add('selected');
-  }
-
-  // Sidebar on mobile
-  function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
-  }
-
-  // TOC active link on scroll
-  const sections = document.querySelectorAll('[id]');
-  const tocLinks = document.querySelectorAll('.toc-list a');
-
+  /* ── PROGRESS BAR ── */
   window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 80) current = s.id;
-    });
-    tocLinks.forEach(a => {
-      a.classList.remove('active');
-      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
-    });
+    const bar = document.getElementById('progress-bar');
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
   });
 
-  updateProgress();
+  /* ── REVEAL ON SCROLL ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── EXERCISE TOGGLE ── */
+  function toggleEx(header) {
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  }
+
+  /* ── SOLUTION TOGGLE ── */
+  function toggleSol(btn) {
+    const sol = btn.nextElementSibling;
+    sol.classList.toggle('visible');
+    btn.textContent = sol.classList.contains('visible') ? 'Ocultar solución' : 'Ver solución';
+  }
+
+  /* ── METHOD TABS ── */
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    if (id === 'grafica') drawGraph();
+  }
+
+  /* ── CANVAS GRAPH ── */
+  function drawGraph() {
+    const canvas = document.getElementById('graphCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2;
+    const scale = 40;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // background
+    ctx.fillStyle = '#16161a';
+    ctx.fillRect(0, 0, W, H);
+
+    // grid
+    ctx.strokeStyle = '#2a2a35';
+    ctx.lineWidth = 1;
+    for (let i = -10; i <= 10; i++) {
+      ctx.beginPath();
+      ctx.moveTo(cx + i * scale, 0);
+      ctx.lineTo(cx + i * scale, H);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, cy + i * scale);
+      ctx.lineTo(W, cy + i * scale);
+      ctx.stroke();
+    }
+
+    // axes
+    ctx.strokeStyle = '#7a7a90';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
+
+    // axis labels
+    ctx.fillStyle = '#7a7a90';
+    ctx.font = '11px DM Mono, monospace';
+    ctx.fillText('x', W - 16, cy - 8);
+    ctx.fillText('y', cx + 8, 14);
+
+    // function f1: y = x + 1
+    function drawLine(m, b, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      let started = false;
+      for (let px = 0; px <= W; px++) {
+        const x = (px - cx) / scale;
+        const y = m * x + b;
+        const py = cy - y * scale;
+        if (!started) { ctx.moveTo(px, py); started = true; }
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    drawLine(1, 1, '#f0c040');   // y = x + 1
+    drawLine(-1, 5, '#5ee8b0');  // y = -x + 5
+
+    // intersection at x=2, y=3
+    const ix = cx + 2 * scale;
+    const iy = cy - 3 * scale;
+
+    ctx.beginPath();
+    ctx.arc(ix, iy, 7, 0, Math.PI * 2);
+    ctx.fillStyle = '#f07070';
+    ctx.fill();
+    ctx.strokeStyle = '#0e0e10';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#e8e8f0';
+    ctx.font = '13px DM Mono, monospace';
+    ctx.fillText('(2, 3)', ix + 10, iy - 8);
+
+    // legend
+    ctx.fillStyle = '#f0c040';
+    ctx.fillRect(16, 16, 18, 3);
+    ctx.fillStyle = '#e8e8f0';
+    ctx.font = '11px DM Sans, sans-serif';
+    ctx.fillText('y = x + 1', 40, 20);
+
+    ctx.fillStyle = '#5ee8b0';
+    ctx.fillRect(16, 34, 18, 3);
+    ctx.fillStyle = '#e8e8f0';
+    ctx.fillText('y = −x + 5', 40, 38);
+  }
+
+  // draw graph if visible on load
+  if (document.getElementById('tab-grafica').classList.contains('active')) drawGraph();
 </script>
 </body>
 </html>
