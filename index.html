@@ -1084,14 +1084,48 @@
     </div>
 
     <!-- E2 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="3x = 27" data-answer="9" data-steps='["x = 27 / 3","x = 9"]' data-easy="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">3x = 27</span>
         <span class="ex-badge badge-easy">Fácil</span>
+        <span class="completed-check" id="check-e2" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Divide ambos lados entre 3.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e2', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e2', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e2-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e2-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e2', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e2-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e2-1"></div>
+              <div class="progress-dot" id="dot-e2-2"></div>
+            </div>
+            <div class="step-row" id="step-e2-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e2-step1" class="ex-input wide" placeholder="27 / 3" />
+              <button class="ex-verify-btn" onclick="checkStep('e2', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e2-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e2-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e2', 2)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e2" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e2')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>3x = 27</p>
           <p>x = 27 ÷ 3</p>
@@ -1101,14 +1135,48 @@
     </div>
 
     <!-- E3 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="x - 7 = 11" data-answer="18" data-steps='["x = 11 + 7","x = 18"]' data-easy="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">x − 7 = 11</span>
         <span class="ex-badge badge-easy">Fácil</span>
+        <span class="completed-check" id="check-e3" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Suma 7 en ambos lados.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e3', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e3', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e3-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e3-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e3', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e3-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e3-1"></div>
+              <div class="progress-dot" id="dot-e3-2"></div>
+            </div>
+            <div class="step-row" id="step-e3-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e3-step1" class="ex-input wide" placeholder="11 + 7" />
+              <button class="ex-verify-btn" onclick="checkStep('e3', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e3-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e3-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e3', 2)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e3" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e3')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>x − 7 = 11</p>
           <p>x = 11 + 7</p>
@@ -1118,14 +1186,48 @@
     </div>
 
     <!-- E4 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="x/4 = 6" data-answer="24" data-steps='["x = 6 * 4","x = 24"]' data-easy="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">x/4 = 6</span>
         <span class="ex-badge badge-easy">Fácil</span>
+        <span class="completed-check" id="check-e4" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Multiplica ambos lados por 4.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e4', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e4', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e4-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e4-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e4', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e4-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e4-1"></div>
+              <div class="progress-dot" id="dot-e4-2"></div>
+            </div>
+            <div class="step-row" id="step-e4-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e4-step1" class="ex-input wide" placeholder="6 * 4" />
+              <button class="ex-verify-btn" onclick="checkStep('e4', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e4-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e4-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e4', 2)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e4" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e4')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>x/4 = 6</p>
           <p>x = 6 × 4</p>
@@ -1135,14 +1237,62 @@
     </div>
 
     <!-- E5 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="2x + 5 = 15" data-answer="5" data-steps='["2x = 15 - 5","2x = 10","x = 10 / 2","x = 5"]' data-medium="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">2x + 5 = 15</span>
         <span class="ex-badge badge-medium">Medio</span>
+        <span class="completed-check" id="check-e5" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Primero elimina la suma, luego la multiplicación.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e5', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e5', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e5-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e5-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e5', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e5-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e5-1"></div>
+              <div class="progress-dot" id="dot-e5-2"></div>
+              <div class="progress-dot" id="dot-e5-3"></div>
+              <div class="progress-dot" id="dot-e5-4"></div>
+            </div>
+            <div class="step-row" id="step-e5-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">2x = </span>
+              <input type="text" id="input-e5-step1" class="ex-input wide" placeholder="15 - 5" />
+              <button class="ex-verify-btn" onclick="checkStep('e5', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e5-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">2x = </span>
+              <input type="text" id="input-e5-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e5', 2)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e5-3" style="display:none;">
+              <span class="step-number">Paso 3:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e5-step3" class="ex-input wide" placeholder="10 / 2" />
+              <button class="ex-verify-btn" onclick="checkStep('e5', 3)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e5-4" style="display:none;">
+              <span class="step-number">Paso 4:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e5-step4" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e5', 4)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e5" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e5')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>2x + 5 = 15</p>
           <p>2x = 10</p>
@@ -1153,13 +1303,61 @@
     </div>
 
     <!-- E6 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="4x - 3 = 17" data-answer="5" data-steps='["4x = 17 + 3","4x = 20","x = 20 / 4","x = 5"]' data-medium="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">4x − 3 = 17</span>
         <span class="ex-badge badge-medium">Medio</span>
+        <span class="completed-check" id="check-e6" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e6', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e6', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e6-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e6-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e6', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e6-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e6-1"></div>
+              <div class="progress-dot" id="dot-e6-2"></div>
+              <div class="progress-dot" id="dot-e6-3"></div>
+              <div class="progress-dot" id="dot-e6-4"></div>
+            </div>
+            <div class="step-row" id="step-e6-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">4x = </span>
+              <input type="text" id="input-e6-step1" class="ex-input wide" placeholder="17 + 3" />
+              <button class="ex-verify-btn" onclick="checkStep('e6', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e6-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">4x = </span>
+              <input type="text" id="input-e6-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e6', 2)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e6-3" style="display:none;">
+              <span class="step-number">Paso 3:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e6-step3" class="ex-input wide" placeholder="20 / 4" />
+              <button class="ex-verify-btn" onclick="checkStep('e6', 3)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e6-4" style="display:none;">
+              <span class="step-number">Paso 4:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e6-step4" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e6', 4)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e6" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e6')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>4x − 3 = 17</p>
           <p>4x = 20</p>
@@ -1170,13 +1368,61 @@
     </div>
 
     <!-- E7 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="x/2 + 4 = 10" data-answer="12" data-steps='["x/2 = 10 - 4","x/2 = 6","x = 6 * 2","x = 12"]' data-medium="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">x/2 + 4 = 10</span>
         <span class="ex-badge badge-medium">Medio</span>
+        <span class="completed-check" id="check-e7" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e7', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e7', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e7-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e7-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e7', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e7-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e7-1"></div>
+              <div class="progress-dot" id="dot-e7-2"></div>
+              <div class="progress-dot" id="dot-e7-3"></div>
+              <div class="progress-dot" id="dot-e7-4"></div>
+            </div>
+            <div class="step-row" id="step-e7-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">x/2 = </span>
+              <input type="text" id="input-e7-step1" class="ex-input wide" placeholder="10 - 4" />
+              <button class="ex-verify-btn" onclick="checkStep('e7', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e7-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">x/2 = </span>
+              <input type="text" id="input-e7-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e7', 2)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e7-3" style="display:none;">
+              <span class="step-number">Paso 3:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e7-step3" class="ex-input wide" placeholder="6 * 2" />
+              <button class="ex-verify-btn" onclick="checkStep('e7', 3)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e7-4" style="display:none;">
+              <span class="step-number">Paso 4:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e7-step4" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e7', 4)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e7" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e7')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>x/2 + 4 = 10</p>
           <p>x/2 = 6</p>
@@ -1187,14 +1433,62 @@
     </div>
 
     <!-- E8 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="3(x + 2) = 18" data-answer="4" data-steps='["x + 2 = 18 / 3","x + 2 = 6","x = 6 - 2","x = 4"]' data-medium="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">3(x + 2) = 18</span>
         <span class="ex-badge badge-medium">Medio</span>
+        <span class="completed-check" id="check-e8" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Divide primero o distribuye el 3.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e8', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e8', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e8-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e8-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e8', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e8-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e8-1"></div>
+              <div class="progress-dot" id="dot-e8-2"></div>
+              <div class="progress-dot" id="dot-e8-3"></div>
+              <div class="progress-dot" id="dot-e8-4"></div>
+            </div>
+            <div class="step-row" id="step-e8-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">x + 2 = </span>
+              <input type="text" id="input-e8-step1" class="ex-input wide" placeholder="18 / 3" />
+              <button class="ex-verify-btn" onclick="checkStep('e8', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e8-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">x + 2 = </span>
+              <input type="text" id="input-e8-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e8', 2)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e8-3" style="display:none;">
+              <span class="step-number">Paso 3:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e8-step3" class="ex-input wide" placeholder="6 - 2" />
+              <button class="ex-verify-btn" onclick="checkStep('e8', 3)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e8-4" style="display:none;">
+              <span class="step-number">Paso 4:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e8-step4" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e8', 4)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e8" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e8')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>3(x + 2) = 18</p>
           <p>x + 2 = 18 ÷ 3 = 6</p>
@@ -1205,14 +1499,62 @@
     </div>
 
     <!-- E9 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="5x - 2 = 3x + 8" data-answer="5" data-steps='["5x - 3x = 8 + 2","2x = 10","x = 10 / 2","x = 5"]' data-medium="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">5x − 2 = 3x + 8</span>
         <span class="ex-badge badge-medium">Medio</span>
+        <span class="completed-check" id="check-e9" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Junta las x en un lado y los números en el otro.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e9', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e9', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e9-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e9-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e9', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e9-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e9-1"></div>
+              <div class="progress-dot" id="dot-e9-2"></div>
+              <div class="progress-dot" id="dot-e9-3"></div>
+              <div class="progress-dot" id="dot-e9-4"></div>
+            </div>
+            <div class="step-row" id="step-e9-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">5x - 3x = </span>
+              <input type="text" id="input-e9-step1" class="ex-input" placeholder="8 + 2" />
+              <button class="ex-verify-btn" onclick="checkStep('e9', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e9-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">2x = </span>
+              <input type="text" id="input-e9-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e9', 2)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e9-3" style="display:none;">
+              <span class="step-number">Paso 3:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e9-step3" class="ex-input wide" placeholder="10 / 2" />
+              <button class="ex-verify-btn" onclick="checkStep('e9', 3)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e9-4" style="display:none;">
+              <span class="step-number">Paso 4:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e9-step4" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e9', 4)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e9" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e9')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>5x − 3x = 8 + 2</p>
           <p>2x = 10</p>
@@ -1222,14 +1564,49 @@
     </div>
 
     <!-- E10 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="x^2 = 64" data-answer="8" data-answer2="-8" data-steps='["sqrt(x^2) = sqrt(64)","x = 8 o x = -8"]' data-medium="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">x² = 64</span>
         <span class="ex-badge badge-medium">Medio</span>
+        <span class="completed-check" id="check-e10" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Aplica raíz cuadrada (recuerda el ±).</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e10', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e10', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e10-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e10-fast" class="ex-input wide" placeholder="±?" />
+              <button class="ex-verify-btn" onclick="checkExercisePow('e10')">Verificar</button>
+            </div>
+            <p style="font-size:.75rem;color:var(--muted);margin-top:.5rem;">Escribe "8" o "-8" o "±8"</p>
+          </div>
+          <div id="mode-e10-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e10-1"></div>
+              <div class="progress-dot" id="dot-e10-2"></div>
+            </div>
+            <div class="step-row" id="step-e10-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">√x² = </span>
+              <input type="text" id="input-e10-step1" class="ex-input" placeholder="√64" />
+              <button class="ex-verify-btn" onclick="checkStep('e10', 1)">Verificar paso</button>
+            </div>
+            <div class="step-row" id="step-e10-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e10-step2" class="ex-input wide" placeholder="±?" />
+              <button class="ex-verify-btn" onclick="checkStepPow('e10')">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e10" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e10')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>√x² = √64</p>
           <div class="ans">x = ±8</div>
@@ -1238,13 +1615,82 @@
     </div>
 
     <!-- E11 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="2(3x - 4) + 5 = 23" data-answer="4.333" data-answer-frac="13/3" data-steps='["2(3x - 4) = 23 - 5","2(3x - 4) = 18","3x - 4 = 18 / 2","3x - 4 = 9","3x = 9 + 4","3x = 13","x = 13 / 3"]' data-hard="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">2(3x − 4) + 5 = 23</span>
         <span class="ex-badge badge-hard">Difícil</span>
+        <span class="completed-check" id="check-e11" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e11', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e11', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e11-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e11-fast" class="ex-input wide" placeholder="13/3 o 4.33" />
+              <button class="ex-verify-btn" onclick="checkExerciseFrac('e11')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e11-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e11-1"></div>
+              <div class="progress-dot" id="dot-e11-2"></div>
+              <div class="progress-dot" id="dot-e11-3"></div>
+              <div class="progress-dot" id="dot-e11-4"></div>
+              <div class="progress-dot" id="dot-e11-5"></div>
+              <div class="progress-dot" id="dot-e11-6"></div>
+              <div class="progress-dot" id="dot-e11-7"></div>
+            </div>
+            <div class="step-row" id="step-e11-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">2(3x - 4) = </span>
+              <input type="text" id="input-e11-step1" class="ex-input" placeholder="23 - 5" />
+              <button class="ex-verify-btn" onclick="checkStep('e11', 1)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e11-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">2(3x - 4) = </span>
+              <input type="text" id="input-e11-step2" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e11', 2)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e11-3" style="display:none;">
+              <span class="step-number">Paso 3:</span>
+              <span class="ex-label">3x - 4 = </span>
+              <input type="text" id="input-e11-step3" class="ex-input wide" placeholder="18 / 2" />
+              <button class="ex-verify-btn" onclick="checkStep('e11', 3)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e11-4" style="display:none;">
+              <span class="step-number">Paso 4:</span>
+              <span class="ex-label">3x - 4 = </span>
+              <input type="text" id="input-e11-step4" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e11', 4)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e11-5" style="display:none;">
+              <span class="step-number">Paso 5:</span>
+              <span class="ex-label">3x = </span>
+              <input type="text" id="input-e11-step5" class="ex-input wide" placeholder="9 + 4" />
+              <button class="ex-verify-btn" onclick="checkStep('e11', 5)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e11-6" style="display:none;">
+              <span class="step-number">Paso 6:</span>
+              <span class="ex-label">3x = </span>
+              <input type="text" id="input-e11-step6" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e11', 6)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e11-7" style="display:none;">
+              <span class="step-number">Paso 7:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e11-step7" class="ex-input wide" placeholder="13 / 3" />
+              <button class="ex-verify-btn" onclick="checkStep('e11', 7)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e11" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e11')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>2(3x − 4) = 18</p>
           <p>3x − 4 = 9</p>
@@ -1255,14 +1701,76 @@
     </div>
 
     <!-- E12 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation="(x + 3)/5 = (2x - 1)/3" data-answer="2" data-steps='["3(x + 3) = 5(2x - 1)","3x + 9 = 10x - 5","9 + 5 = 10x - 3x","14 = 7x","x = 14 / 7","x = 2"]' data-hard="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">(x + 3)/5 = (2x − 1)/3</span>
         <span class="ex-badge badge-hard">Difícil</span>
+        <span class="completed-check" id="check-e12" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <p>Multiplica en cruz para eliminar fracciones.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('e12', 'fast', this)">Modo rápido</button>
+            <button class="mode-btn" onclick="setMode('e12', 'guided', this)">Paso a paso</button>
+          </div>
+          <div id="mode-e12-fast" class="mode-content">
+            <div class="ex-input-group">
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e12-fast" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkExercise('e12', 'fast')">Verificar</button>
+            </div>
+          </div>
+          <div id="mode-e12-guided" class="step-container">
+            <div class="progress-indicator">
+              <div class="progress-dot current" id="dot-e12-1"></div>
+              <div class="progress-dot" id="dot-e12-2"></div>
+              <div class="progress-dot" id="dot-e12-3"></div>
+              <div class="progress-dot" id="dot-e12-4"></div>
+              <div class="progress-dot" id="dot-e12-5"></div>
+              <div class="progress-dot" id="dot-e12-6"></div>
+            </div>
+            <div class="step-row" id="step-e12-1">
+              <span class="step-number">Paso 1:</span>
+              <span class="ex-label">3(x + 3) = </span>
+              <input type="text" id="input-e12-step1" class="ex-input wide" placeholder="5(2x - 1)" />
+              <button class="ex-verify-btn" onclick="checkStep('e12', 1)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e12-2" style="display:none;">
+              <span class="step-number">Paso 2:</span>
+              <span class="ex-label">3x + 9 = </span>
+              <input type="text" id="input-e12-step2" class="ex-input wide" placeholder="10x - 5" />
+              <button class="ex-verify-btn" onclick="checkStep('e12', 2)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e12-3" style="display:none;">
+              <span class="step-number">Paso 3:</span>
+              <span class="ex-label">9 + 5 = </span>
+              <input type="text" id="input-e12-step3" class="ex-input wide" placeholder="10x - 3x" />
+              <button class="ex-verify-btn" onclick="checkStep('e12', 3)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e12-4" style="display:none;">
+              <span class="step-number">Paso 4:</span>
+              <span class="ex-label">14 = </span>
+              <input type="text" id="input-e12-step4" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e12', 4)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e12-5" style="display:none;">
+              <span class="step-number">Paso 5:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e12-step5" class="ex-input wide" placeholder="14 / 7" />
+              <button class="ex-verify-btn" onclick="checkStep('e12', 5)">Verificar</button>
+            </div>
+            <div class="step-row" id="step-e12-6" style="display:none;">
+              <span class="step-number">Paso 6:</span>
+              <span class="ex-label">x = </span>
+              <input type="text" id="input-e12-step6" class="ex-input" placeholder="?" />
+              <button class="ex-verify-btn" onclick="checkStep('e12', 6)">Verificar</button>
+            </div>
+          </div>
+          <div id="feedback-e12" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('e12')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>3(x + 3) = 5(2x − 1)</p>
           <p>3x + 9 = 10x − 5</p>
@@ -2247,6 +2755,76 @@
     });
   });
 
+  // Special check for power exercises (x² = 64)
+  function checkExercisePow(exId) {
+    const input = document.getElementById(`input-${exId}-fast`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = input.closest('.exercise-card');
+
+    if (!input || !feedback) return;
+
+    const userVal = input.value.trim();
+    const isCorrect = userVal === '8' || userVal === '-8' || userVal === '±8' || 
+                      userVal === '+8' || userVal === '8 o -8' || userVal === '8, -8';
+
+    if (isCorrect) {
+      showFeedback(exId, 'correct', '¡Correcto! x = ±8. Recuerda que la raíz cuadrada tiene dos soluciones: positiva y negativa. 🎉');
+      markCompleted(exId);
+      celebrate(input);
+    } else {
+      showFeedback(exId, 'incorrect', 'Incorrecto. Recuerda aplicar raíz cuadrada a ambos lados. La solución es x = ±8 (positivo y negativo).');
+    }
+  }
+
+  function checkStepPow(exId) {
+    const input = document.getElementById(`input-${exId}-step2`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+
+    if (!input || !feedback) return;
+
+    const userVal = input.value.trim();
+    const isCorrect = userVal === '8' || userVal === '-8' || userVal === '±8' || 
+                      userVal === '+8' || userVal === '8 o -8' || userVal === '8, -8';
+
+    if (isCorrect) {
+      showFeedback(exId, 'correct', '¡Ejercicio completado! x = ±8. Bien hecho. 🎉');
+      markCompleted(exId);
+      celebrate(input);
+      input.disabled = true;
+      const dot = document.getElementById(`dot-${exId}-2`);
+      if (dot) dot.classList.add('completed');
+    } else {
+      showFeedback(exId, 'incorrect', 'Recuerda: √64 = ±8 (tanto 8 como -8 elevados al cuadrado dan 64).');
+    }
+  }
+
+  // Special check for fraction exercises (x = 13/3)
+  function checkExerciseFrac(exId) {
+    const input = document.getElementById(`input-${exId}-fast`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = input.closest('.exercise-card');
+    const answerFrac = card.dataset.answerFrac;
+    const answerDec = parseFloat(card.dataset.answer);
+
+    if (!input || !feedback) return;
+
+    const userVal = input.value.trim();
+    const userNum = parseFloat(userVal);
+
+    // Check fraction format
+    const isFrac = userVal === answerFrac || userVal === '13/3' || userVal === '13 / 3';
+    // Check decimal approximation
+    const isDec = !isNaN(userNum) && Math.abs(userNum - answerDec) < 0.1;
+
+    if (isFrac || isDec) {
+      showFeedback(exId, 'correct', `¡Correcto! x = 13/3 ≈ 4.33. ¡Excelente trabajo con fracciones! 🎉`);
+      markCompleted(exId);
+      celebrate(input);
+    } else {
+      showFeedback(exId, 'incorrect', `Incorrecto. La respuesta es x = 13/3 (o aproximadamente 4.33). Sigue los pasos cuidadosamente.`);
+    }
+  }
+
   // Enter key support for exercise inputs
   document.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && e.target.classList.contains('ex-input')) {
@@ -2255,7 +2833,15 @@
       if (match) {
         const exId = match[1];
         const type = match[2];
-        if (type === 'fast') {
+
+        // Special handlers for E10 and E11
+        if (exId === 'e10' && type === 'fast') {
+          checkExercisePow(exId);
+        } else if (exId === 'e10' && type === 'step2') {
+          checkStepPow(exId);
+        } else if (exId === 'e11' && type === 'fast') {
+          checkExerciseFrac(exId);
+        } else if (type === 'fast') {
           checkExercise(exId, 'fast');
         } else {
           const stepNum = parseInt(type.replace('step', ''));
