@@ -861,6 +861,39 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+
+    /* Modo libre - Textarea */
+    .ex-textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: .9rem;
+      resize: vertical;
+      margin-bottom: .75rem;
+      transition: border-color .2s;
+    }
+
+    .ex-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .ex-verify-btn.full-width {
+      width: 100%;
+    }
+
+    .mode-content {
+      animation: fadeIn .2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -1037,37 +1070,24 @@
 
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e1', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e1', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e1', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e1', 'free', this)">✏️ Modo libre</button>
           </div>
 
           <!-- Modo Rápido -->
           <div id="mode-e1-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e1-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e1-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e1', 'fast')">Verificar</button>
             </div>
           </div>
 
-          <!-- Modo Guiado -->
-          <div id="mode-e1-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e1-1"></div>
-              <div class="progress-dot" id="dot-e1-2"></div>
-            </div>
-            <div class="step-row" id="step-e1-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e1-step1" class="ex-input wide" placeholder="14 - 9" />
-              <button class="ex-verify-btn" onclick="checkStep('e1', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e1-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e1-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e1', 2)">Verificar</button>
-            </div>
+          <!-- Modo Libre -->
+          <div id="mode-e1-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e1-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí...&#10;&#10;Ejemplo:&#10;x + 9 = 14&#10;x = 14 - 9&#10;x = 5"></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e1')">Verificar mi desarrollo</button>
           </div>
 
           <div id="feedback-e1" class="ex-feedback"></div>
@@ -1094,33 +1114,20 @@
         <p>Divide ambos lados entre 3.</p>
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e2', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e2', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e2', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e2', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e2-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e2-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e2-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e2', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e2-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e2-1"></div>
-              <div class="progress-dot" id="dot-e2-2"></div>
-            </div>
-            <div class="step-row" id="step-e2-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e2-step1" class="ex-input wide" placeholder="27 / 3" />
-              <button class="ex-verify-btn" onclick="checkStep('e2', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e2-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e2-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e2', 2)">Verificar</button>
-            </div>
+          <div id="mode-e2-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e2-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e2')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e2" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e2')">💡 Pista</button>
@@ -1145,33 +1152,20 @@
         <p>Suma 7 en ambos lados.</p>
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e3', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e3', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e3', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e3', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e3-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e3-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e3-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e3', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e3-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e3-1"></div>
-              <div class="progress-dot" id="dot-e3-2"></div>
-            </div>
-            <div class="step-row" id="step-e3-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e3-step1" class="ex-input wide" placeholder="11 + 7" />
-              <button class="ex-verify-btn" onclick="checkStep('e3', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e3-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e3-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e3', 2)">Verificar</button>
-            </div>
+          <div id="mode-e3-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e3-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e3')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e3" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e3')">💡 Pista</button>
@@ -1196,33 +1190,20 @@
         <p>Multiplica ambos lados por 4.</p>
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e4', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e4', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e4', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e4', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e4-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e4-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e4-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e4', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e4-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e4-1"></div>
-              <div class="progress-dot" id="dot-e4-2"></div>
-            </div>
-            <div class="step-row" id="step-e4-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e4-step1" class="ex-input wide" placeholder="6 * 4" />
-              <button class="ex-verify-btn" onclick="checkStep('e4', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e4-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e4-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e4', 2)">Verificar</button>
-            </div>
+          <div id="mode-e4-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e4-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e4')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e4" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e4')">💡 Pista</button>
@@ -1247,47 +1228,20 @@
         <p>Primero elimina la suma, luego la multiplicación.</p>
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e5', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e5', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e5', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e5', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e5-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e5-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e5-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e5', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e5-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e5-1"></div>
-              <div class="progress-dot" id="dot-e5-2"></div>
-              <div class="progress-dot" id="dot-e5-3"></div>
-              <div class="progress-dot" id="dot-e5-4"></div>
-            </div>
-            <div class="step-row" id="step-e5-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">2x = </span>
-              <input type="text" id="input-e5-step1" class="ex-input wide" placeholder="15 - 5" />
-              <button class="ex-verify-btn" onclick="checkStep('e5', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e5-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">2x = </span>
-              <input type="text" id="input-e5-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e5', 2)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e5-3" style="display:none;">
-              <span class="step-number">Paso 3:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e5-step3" class="ex-input wide" placeholder="10 / 2" />
-              <button class="ex-verify-btn" onclick="checkStep('e5', 3)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e5-4" style="display:none;">
-              <span class="step-number">Paso 4:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e5-step4" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e5', 4)">Verificar</button>
-            </div>
+          <div id="mode-e5-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e5-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e5')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e5" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e5')">💡 Pista</button>
@@ -1312,47 +1266,20 @@
       <div class="ex-body">
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e6', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e6', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e6', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e6', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e6-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e6-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e6-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e6', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e6-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e6-1"></div>
-              <div class="progress-dot" id="dot-e6-2"></div>
-              <div class="progress-dot" id="dot-e6-3"></div>
-              <div class="progress-dot" id="dot-e6-4"></div>
-            </div>
-            <div class="step-row" id="step-e6-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">4x = </span>
-              <input type="text" id="input-e6-step1" class="ex-input wide" placeholder="17 + 3" />
-              <button class="ex-verify-btn" onclick="checkStep('e6', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e6-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">4x = </span>
-              <input type="text" id="input-e6-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e6', 2)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e6-3" style="display:none;">
-              <span class="step-number">Paso 3:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e6-step3" class="ex-input wide" placeholder="20 / 4" />
-              <button class="ex-verify-btn" onclick="checkStep('e6', 3)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e6-4" style="display:none;">
-              <span class="step-number">Paso 4:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e6-step4" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e6', 4)">Verificar</button>
-            </div>
+          <div id="mode-e6-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e6-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e6')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e6" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e6')">💡 Pista</button>
@@ -1377,47 +1304,20 @@
       <div class="ex-body">
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e7', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e7', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e7', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e7', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e7-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e7-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e7-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e7', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e7-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e7-1"></div>
-              <div class="progress-dot" id="dot-e7-2"></div>
-              <div class="progress-dot" id="dot-e7-3"></div>
-              <div class="progress-dot" id="dot-e7-4"></div>
-            </div>
-            <div class="step-row" id="step-e7-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">x/2 = </span>
-              <input type="text" id="input-e7-step1" class="ex-input wide" placeholder="10 - 4" />
-              <button class="ex-verify-btn" onclick="checkStep('e7', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e7-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">x/2 = </span>
-              <input type="text" id="input-e7-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e7', 2)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e7-3" style="display:none;">
-              <span class="step-number">Paso 3:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e7-step3" class="ex-input wide" placeholder="6 * 2" />
-              <button class="ex-verify-btn" onclick="checkStep('e7', 3)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e7-4" style="display:none;">
-              <span class="step-number">Paso 4:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e7-step4" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e7', 4)">Verificar</button>
-            </div>
+          <div id="mode-e7-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e7-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e7')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e7" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e7')">💡 Pista</button>
@@ -1443,47 +1343,20 @@
         <p>Divide primero o distribuye el 3.</p>
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e8', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e8', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e8', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e8', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e8-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e8-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e8-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e8', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e8-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e8-1"></div>
-              <div class="progress-dot" id="dot-e8-2"></div>
-              <div class="progress-dot" id="dot-e8-3"></div>
-              <div class="progress-dot" id="dot-e8-4"></div>
-            </div>
-            <div class="step-row" id="step-e8-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">x + 2 = </span>
-              <input type="text" id="input-e8-step1" class="ex-input wide" placeholder="18 / 3" />
-              <button class="ex-verify-btn" onclick="checkStep('e8', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e8-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">x + 2 = </span>
-              <input type="text" id="input-e8-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e8', 2)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e8-3" style="display:none;">
-              <span class="step-number">Paso 3:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e8-step3" class="ex-input wide" placeholder="6 - 2" />
-              <button class="ex-verify-btn" onclick="checkStep('e8', 3)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e8-4" style="display:none;">
-              <span class="step-number">Paso 4:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e8-step4" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e8', 4)">Verificar</button>
-            </div>
+          <div id="mode-e8-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e8-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e8')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e8" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e8')">💡 Pista</button>
@@ -1509,47 +1382,20 @@
         <p>Junta las x en un lado y los números en el otro.</p>
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e9', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e9', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e9', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e9', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e9-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e9-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e9-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e9', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e9-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e9-1"></div>
-              <div class="progress-dot" id="dot-e9-2"></div>
-              <div class="progress-dot" id="dot-e9-3"></div>
-              <div class="progress-dot" id="dot-e9-4"></div>
-            </div>
-            <div class="step-row" id="step-e9-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">5x - 3x = </span>
-              <input type="text" id="input-e9-step1" class="ex-input" placeholder="8 + 2" />
-              <button class="ex-verify-btn" onclick="checkStep('e9', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e9-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">2x = </span>
-              <input type="text" id="input-e9-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e9', 2)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e9-3" style="display:none;">
-              <span class="step-number">Paso 3:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e9-step3" class="ex-input wide" placeholder="10 / 2" />
-              <button class="ex-verify-btn" onclick="checkStep('e9', 3)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e9-4" style="display:none;">
-              <span class="step-number">Paso 4:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e9-step4" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e9', 4)">Verificar</button>
-            </div>
+          <div id="mode-e9-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e9-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e9')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e9" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e9')">💡 Pista</button>
@@ -1574,34 +1420,21 @@
         <p>Aplica raíz cuadrada (recuerda el ±).</p>
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e10', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e10', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e10', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e10', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e10-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e10-fast" class="ex-input wide" placeholder="±?" />
+              <input type="text" id="input-e10-fast" class="ex-input wide" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercisePow('e10')">Verificar</button>
             </div>
-            <p style="font-size:.75rem;color:var(--muted);margin-top:.5rem;">Escribe "8" o "-8" o "±8"</p>
+            <p style="font-size:.75rem;color:var(--muted);margin-top:.5rem;">Puedes escribir "8", "-8" o "±8"</p>
           </div>
-          <div id="mode-e10-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e10-1"></div>
-              <div class="progress-dot" id="dot-e10-2"></div>
-            </div>
-            <div class="step-row" id="step-e10-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">√x² = </span>
-              <input type="text" id="input-e10-step1" class="ex-input" placeholder="√64" />
-              <button class="ex-verify-btn" onclick="checkStep('e10', 1)">Verificar paso</button>
-            </div>
-            <div class="step-row" id="step-e10-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e10-step2" class="ex-input wide" placeholder="±?" />
-              <button class="ex-verify-btn" onclick="checkStepPow('e10')">Verificar</button>
-            </div>
+          <div id="mode-e10-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e10-free" class="ex-textarea" rows="5" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeModePow('e10')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e10" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e10')">💡 Pista</button>
@@ -1624,68 +1457,20 @@
       <div class="ex-body">
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e11', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e11', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e11', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e11', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e11-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e11-fast" class="ex-input wide" placeholder="13/3 o 4.33" />
+              <input type="text" id="input-e11-fast" class="ex-input wide" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExerciseFrac('e11')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e11-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e11-1"></div>
-              <div class="progress-dot" id="dot-e11-2"></div>
-              <div class="progress-dot" id="dot-e11-3"></div>
-              <div class="progress-dot" id="dot-e11-4"></div>
-              <div class="progress-dot" id="dot-e11-5"></div>
-              <div class="progress-dot" id="dot-e11-6"></div>
-              <div class="progress-dot" id="dot-e11-7"></div>
-            </div>
-            <div class="step-row" id="step-e11-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">2(3x - 4) = </span>
-              <input type="text" id="input-e11-step1" class="ex-input" placeholder="23 - 5" />
-              <button class="ex-verify-btn" onclick="checkStep('e11', 1)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e11-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">2(3x - 4) = </span>
-              <input type="text" id="input-e11-step2" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e11', 2)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e11-3" style="display:none;">
-              <span class="step-number">Paso 3:</span>
-              <span class="ex-label">3x - 4 = </span>
-              <input type="text" id="input-e11-step3" class="ex-input wide" placeholder="18 / 2" />
-              <button class="ex-verify-btn" onclick="checkStep('e11', 3)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e11-4" style="display:none;">
-              <span class="step-number">Paso 4:</span>
-              <span class="ex-label">3x - 4 = </span>
-              <input type="text" id="input-e11-step4" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e11', 4)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e11-5" style="display:none;">
-              <span class="step-number">Paso 5:</span>
-              <span class="ex-label">3x = </span>
-              <input type="text" id="input-e11-step5" class="ex-input wide" placeholder="9 + 4" />
-              <button class="ex-verify-btn" onclick="checkStep('e11', 5)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e11-6" style="display:none;">
-              <span class="step-number">Paso 6:</span>
-              <span class="ex-label">3x = </span>
-              <input type="text" id="input-e11-step6" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e11', 6)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e11-7" style="display:none;">
-              <span class="step-number">Paso 7:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e11-step7" class="ex-input wide" placeholder="13 / 3" />
-              <button class="ex-verify-btn" onclick="checkStep('e11', 7)">Verificar</button>
-            </div>
+          <div id="mode-e11-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e11-free" class="ex-textarea" rows="6" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeModeFrac('e11')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e11" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e11')">💡 Pista</button>
@@ -1711,61 +1496,20 @@
         <p>Multiplica en cruz para eliminar fracciones.</p>
         <div class="ex-interactive">
           <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('e12', 'fast', this)">Modo rápido</button>
-            <button class="mode-btn" onclick="setMode('e12', 'guided', this)">Paso a paso</button>
+            <button class="mode-btn active" onclick="setMode('e12', 'fast', this)">⚡ Rápido</button>
+            <button class="mode-btn" onclick="setMode('e12', 'free', this)">✏️ Modo libre</button>
           </div>
           <div id="mode-e12-fast" class="mode-content">
             <div class="ex-input-group">
               <span class="ex-label">x = </span>
-              <input type="text" id="input-e12-fast" class="ex-input" placeholder="?" />
+              <input type="text" id="input-e12-fast" class="ex-input" placeholder="Escribe tu respuesta..." />
               <button class="ex-verify-btn" onclick="checkExercise('e12', 'fast')">Verificar</button>
             </div>
           </div>
-          <div id="mode-e12-guided" class="step-container">
-            <div class="progress-indicator">
-              <div class="progress-dot current" id="dot-e12-1"></div>
-              <div class="progress-dot" id="dot-e12-2"></div>
-              <div class="progress-dot" id="dot-e12-3"></div>
-              <div class="progress-dot" id="dot-e12-4"></div>
-              <div class="progress-dot" id="dot-e12-5"></div>
-              <div class="progress-dot" id="dot-e12-6"></div>
-            </div>
-            <div class="step-row" id="step-e12-1">
-              <span class="step-number">Paso 1:</span>
-              <span class="ex-label">3(x + 3) = </span>
-              <input type="text" id="input-e12-step1" class="ex-input wide" placeholder="5(2x - 1)" />
-              <button class="ex-verify-btn" onclick="checkStep('e12', 1)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e12-2" style="display:none;">
-              <span class="step-number">Paso 2:</span>
-              <span class="ex-label">3x + 9 = </span>
-              <input type="text" id="input-e12-step2" class="ex-input wide" placeholder="10x - 5" />
-              <button class="ex-verify-btn" onclick="checkStep('e12', 2)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e12-3" style="display:none;">
-              <span class="step-number">Paso 3:</span>
-              <span class="ex-label">9 + 5 = </span>
-              <input type="text" id="input-e12-step3" class="ex-input wide" placeholder="10x - 3x" />
-              <button class="ex-verify-btn" onclick="checkStep('e12', 3)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e12-4" style="display:none;">
-              <span class="step-number">Paso 4:</span>
-              <span class="ex-label">14 = </span>
-              <input type="text" id="input-e12-step4" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e12', 4)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e12-5" style="display:none;">
-              <span class="step-number">Paso 5:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e12-step5" class="ex-input wide" placeholder="14 / 7" />
-              <button class="ex-verify-btn" onclick="checkStep('e12', 5)">Verificar</button>
-            </div>
-            <div class="step-row" id="step-e12-6" style="display:none;">
-              <span class="step-number">Paso 6:</span>
-              <span class="ex-label">x = </span>
-              <input type="text" id="input-e12-step6" class="ex-input" placeholder="?" />
-              <button class="ex-verify-btn" onclick="checkStep('e12', 6)">Verificar</button>
-            </div>
+          <div id="mode-e12-free" class="mode-content" style="display:none;">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-e12-free" class="ex-textarea" rows="6" placeholder="Resuelve paso a paso aquí..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkFreeMode('e12')">Verificar mi desarrollo</button>
           </div>
           <div id="feedback-e12" class="ex-feedback"></div>
           <button class="hint-btn" onclick="showHint('e12')">💡 Pista</button>
@@ -2557,11 +2301,6 @@
   const progress = JSON.parse(localStorage.getItem('algebra_progress') || '{}');
 
   function setMode(exId, mode, btn) {
-    const container = document.querySelector(`[data-equation][id="${exId}"]`) || 
-                      document.querySelector(`[data-equation]`).closest(`#mode-${exId}-fast`)?.closest('.exercise-card');
-    const card = document.querySelector(`[data-equation][id="${exId}"]`) || 
-                 document.querySelector(`.exercise-card:has(#mode-${exId}-fast)`);
-
     // Update buttons
     const buttons = btn.parentElement.querySelectorAll('.mode-btn');
     buttons.forEach(b => b.classList.remove('active'));
@@ -2569,19 +2308,102 @@
 
     // Toggle visibility
     const fastMode = document.getElementById(`mode-${exId}-fast`);
-    const guidedMode = document.getElementById(`mode-${exId}-guided`);
+    const freeMode = document.getElementById(`mode-${exId}-free`);
 
     if (fastMode) fastMode.style.display = mode === 'fast' ? 'block' : 'none';
-    if (guidedMode) {
-      guidedMode.style.display = mode === 'guided' ? 'block' : 'none';
-      guidedMode.classList.toggle('visible', mode === 'guided');
-    }
+    if (freeMode) freeMode.style.display = mode === 'free' ? 'block' : 'none';
 
     // Clear feedback
     const feedback = document.getElementById(`feedback-${exId}`);
     if (feedback) {
       feedback.classList.remove('visible', 'correct', 'incorrect', 'hint');
     }
+  }
+
+  // Modo libre - Verificar desarrollo completo
+  function checkFreeMode(exId) {
+    const textarea = document.getElementById(`input-${exId}-free`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = textarea.closest('.exercise-card');
+    const answer = card.dataset.answer;
+    const equation = card.dataset.equation;
+    const steps = JSON.parse(card.dataset.steps || '[]');
+
+    if (!textarea || !feedback) return;
+
+    const text = textarea.value.trim();
+
+    if (!text) {
+      showFeedback(exId, 'incorrect', 'Escribe tu desarrollo antes de verificar.');
+      return;
+    }
+
+    // Buscar el resultado final en el texto (última línea que tenga x = ...)
+    const lines = text.split('\n');
+    let finalAnswer = null;
+
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const line = lines[i].trim();
+      const match = line.match(/x\s*=\s*([+-]?\d+\.?\d*)/);
+      if (match) {
+        finalAnswer = parseFloat(match[1]);
+        break;
+      }
+    }
+
+    if (finalAnswer === null) {
+      showFeedback(exId, 'incorrect', 'No encontré tu respuesta final. Asegúrate de terminar con "x = [número]".');
+      return;
+    }
+
+    const correctValue = parseFloat(answer);
+    const tolerance = 1e-9;
+    const isCorrect = Math.abs(finalAnswer - correctValue) < tolerance;
+
+    if (isCorrect) {
+      showFeedback(exId, 'correct', `¡Excelente! Tu desarrollo es correcto y llegaste a x = ${answer}. ¡Muy bien hecho! 🎉`);
+      markCompleted(exId);
+      celebrate(textarea);
+    } else {
+      const explanation = analyzeDevelopmentError(text, equation, steps, finalAnswer, correctValue);
+      showFeedback(exId, 'incorrect', explanation);
+    }
+  }
+
+  // Analizar errores en modo libre
+  function analyzeDevelopmentError(text, equation, steps, userAnswer, correctAnswer) {
+    const diff = userAnswer - correctAnswer;
+    const absDiff = Math.abs(diff);
+    const lines = text.toLowerCase().split('\n');
+
+    // Buscar errores comunes en el desarrollo
+    const hasSignError = lines.some(line => {
+      // Detectar si movieron un número con el signo incorrecto
+      if (equation.includes('+') && line.includes('-')) {
+        // Podría ser moviendo +9 como -9 (correcto) o como +9 (error)
+        const wrongMove = line.match(/=.*\+\d+.*-/);
+        if (wrongMove) return true;
+      }
+      return false;
+    });
+
+    if (hasSignError) {
+      return `❌ <strong>Error de signo detectado.</strong><br>Cuando mueves un término al otro lado de la igualdad, debe cambiar su operación: <strong>+ se convierte en −, y viceversa</strong>.<br><br>Ejemplo: x + 9 = 14 → x = 14 − 9 (el +9 se convierte en −9).`;
+    }
+
+    if (absDiff === 1 || absDiff === 2) {
+      return `❌ Casi lo logras. Error por ${absDiff} unidad. Revisa tu aritmética: ¿sumaste o restaste correctamente?`;
+    }
+
+    if (userAnswer === -correctAnswer) {
+      return `❌ Tu respuesta es el negativo de la correcta. ¿Olvidaste cambiar el signo al mover un término?`;
+    }
+
+    if (correctAnswer !== 0 && Math.abs(userAnswer / correctAnswer - 1) < 0.5) {
+      return `❌ Estás cerca. Tu resultado es ${userAnswer}, debería ser ${correctAnswer}. Revisa tus operaciones aritméticas.`;
+    }
+
+    return `❌ Respuesta incorrecta. Llegaste a x = ${userAnswer}, pero la respuesta correcta es x = ${correctAnswer}.<br><br>💡 <strong>Consejo:</strong> Revisa la ecuación paso a paso. Si necesitas ayuda, haz clic en "💡 Necesito una pista".`;
   }
 
   function checkExercise(exId, mode) {
@@ -2821,7 +2643,66 @@
       markCompleted(exId);
       celebrate(input);
     } else {
-      showFeedback(exId, 'incorrect', `Incorrecto. La respuesta es x = 13/3 (o aproximadamente 4.33). Sigue los pasos cuidadosamente.`);
+      showFeedback(exId, 'incorrect', `Incorrecto. La respuesta es x = 13/3 (o aproximadamente 4.33). Revisa tu desarrollo.`);
+    }
+  }
+
+  // Modo libre para ejercicios con potencias (E10: x² = 64)
+  function checkFreeModePow(exId) {
+    const textarea = document.getElementById(`input-${exId}-free`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+
+    if (!textarea || !feedback) return;
+
+    const text = textarea.value.trim().toLowerCase();
+
+    if (!text) {
+      showFeedback(exId, 'incorrect', 'Escribe tu desarrollo antes de verificar.');
+      return;
+    }
+
+    // Buscar respuestas válidas: 8, -8, ±8, +8, -8, etc.
+    const has8 = text.includes('= 8') || text.includes('=8') || text.includes('±8') || 
+                 text.includes('+8') || text.includes('-8') || text.includes('= -8');
+    const hasNeg8 = text.includes('-8') || text.includes('= -8');
+
+    if (has8) {
+      if (hasNeg8) {
+        showFeedback(exId, 'correct', '¡Correcto! x = ±8. Recuerda que la raíz cuadrada tiene dos soluciones. 🎉');
+      } else {
+        showFeedback(exId, 'correct', '¡Correcto! x = 8. ⚠️ Nota: Recuerda que también x = -8 es solución (±8).');
+      }
+      markCompleted(exId);
+      celebrate(textarea);
+    } else {
+      showFeedback(exId, 'incorrect', 'No encontré la respuesta correcta. Recuerda aplicar raíz cuadrada: √x² = √64 → x = ±8.');
+    }
+  }
+
+  // Modo libre para ejercicios con fracciones (E11: x = 13/3)
+  function checkFreeModeFrac(exId) {
+    const textarea = document.getElementById(`input-${exId}-free`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+
+    if (!textarea || !feedback) return;
+
+    const text = textarea.value.trim();
+
+    if (!text) {
+      showFeedback(exId, 'incorrect', 'Escribe tu desarrollo antes de verificar.');
+      return;
+    }
+
+    // Buscar 13/3 o 4.33
+    const hasFrac = text.includes('13/3') || text.includes('13 / 3');
+    const hasDec = text.includes('4.33') || text.includes('4,33') || text.includes('4.333');
+
+    if (hasFrac || hasDec) {
+      showFeedback(exId, 'correct', '¡Excelente! Llegaste a x = 13/3 ≈ 4.33. ¡Gran trabajo con fracciones! 🎉');
+      markCompleted(exId);
+      celebrate(textarea);
+    } else {
+      showFeedback(exId, 'incorrect', 'No encontré la respuesta correcta. Deberías llegar a x = 13/3 (aproximadamente 4.33). Revisa tu desarrollo paso a paso.');
     }
   }
 
