@@ -3229,8 +3229,20 @@ ${stepsTable || 'No se detectaron pasos con ='}
       }
     }
 
+    // DEBUG: Ver qué está pasando
+    console.log('=== DEBUG checkQuadraticMode ===');
+    console.log('Ejercicio:', exId);
+    console.log('Ecuación:', equation);
+    console.log('Soluciones requeridas:', requiredSolutions);
+    console.log('Soluciones encontradas:', foundSolutions);
+    console.log('Tiene ambas soluciones:', hasBothSolutions);
+    console.log('Soluciones faltantes:', missingSolutions);
+
     // Analizar desarrollo para detectar pasos lógicos
     const analysis = analyzeQuadraticDevelopment(lines, equation, requiredSolutions);
+    
+    console.log('Análisis de desarrollo:', analysis);
+    console.log('===================================');
     
     const isCorrect = hasBothSolutions && analysis.hasValidLogic;
     const feedbackEl = document.getElementById(`feedback-${exId}`);
