@@ -2096,15 +2096,28 @@
     </div>
 
     <!-- S7 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation-system="y=2x+1,y=2x-3" data-solution-type="no-solution" data-medium="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">Sistema sin solución (paralelas)</span>
         <span class="ex-badge badge-medium">Medio</span>
+        <span class="completed-check" id="check-s7" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <div class="eq" style="color:var(--muted)">y = 2x + 1 &nbsp;&amp;&nbsp; y = 2x − 3</div>
-        <p style="margin-top:.75rem">¿Por qué no tiene solución?</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <p style="margin-top:.75rem">¿Por qué no tiene solución? Explica tu razonamiento.</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('s7', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-s7-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Explica por qué este sistema no tiene solución:</p>
+            <textarea id="input-s7-free" class="ex-textarea" rows="6" placeholder="Análisis del sistema:&#10;&#10;1. Identifica las pendientes&#10;2. Identifica los interceptos&#10;3. ¿Qué significa que sean iguales/diferentes?&#10;4. Conclusión: ¿Por qué no hay solución?"></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkSystemSpecialMode('s7')">Verificar respuesta</button>
+          </div>
+          <div id="feedback-s7" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('s7')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>Ambas tienen pendiente 2 pero diferente intercepto.</p>
           <p>Son rectas paralelas: nunca se cruzan.</p>
@@ -2114,14 +2127,28 @@
     </div>
 
     <!-- S8 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation-system="2x+4y=8,x+2y=4" data-solution-type="infinite-solutions" data-medium="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">Sistema con ∞ soluciones</span>
         <span class="ex-badge badge-medium">Medio</span>
+        <span class="completed-check" id="check-s8" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <div class="eq" style="color:var(--muted)">2x + 4y = 8 &nbsp;&amp;&nbsp; x + 2y = 4</div>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <p style="margin-top:.75rem">¿Por qué tiene infinitas soluciones? Explica tu razonamiento.</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('s8', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-s8-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Explica por qué este sistema tiene infinitas soluciones:</p>
+            <textarea id="input-s8-free" class="ex-textarea" rows="6" placeholder="Análisis del sistema:&#10;&#10;1. Compara las dos ecuaciones&#10;2. ¿Son proporcionales?&#10;3. ¿Qué significa geométricamente?&#10;4. Conclusión: ¿Por qué hay infinitas soluciones?"></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkSystemSpecialMode('s8')">Verificar respuesta</button>
+          </div>
+          <div id="feedback-s8" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('s8')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>La ec.2 × 2 = ec.1: son la misma recta.</p>
           <div class="ans">Infinitas soluciones (sistema dependiente)</div>
@@ -2163,10 +2190,11 @@
     </div>
 
     <!-- S10 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation-system="x+y+z=6,2x-y+z=3,x+2y-z=5" data-solution-x="1" data-solution-y="2" data-solution-z="3" data-method="eliminación" data-hard="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">3 ecuaciones, 3 incógnitas</span>
         <span class="ex-badge badge-hard">Difícil</span>
+        <span class="completed-check" id="check-s10" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
         <div class="eq" style="color:var(--muted); line-height:1.8">
@@ -2174,7 +2202,20 @@
           2x − y + z = 3<br>
           x + 2y − z = 5
         </div>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <p style="margin-top:.75rem">Resuelve usando eliminación. Encuentra x, y, z.</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('s10', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-s10-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Resuelve el sistema de 3 ecuaciones:</p>
+            <textarea id="input-s10-free" class="ex-textarea" rows="8" placeholder="Ecuación 1: x + y + z = 6&#10;Ecuación 2: 2x - y + z = 3&#10;Ecuación 3: x + 2y - z = 5&#10;&#10;Desarrollo (suma/resta ecuaciones):&#10;...&#10;&#10;Solución: x = ..., y = ..., z = ..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkSystem3Mode('s10')">Verificar desarrollo</button>
+          </div>
+          <div id="feedback-s10" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('s10')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>Ec1 + Ec2: 3x + 2z = 9</p>
           <p>Ec1 + Ec3: 2x + 3y = 11</p>
@@ -3456,6 +3497,151 @@ ${stepsTable || 'No se detectaron pasos con ='}
     const userAnswer = foundX !== null && foundY !== null ? `x=${foundX}, y=${foundY}` : 'incompleto';
     const correctAnswer = `x=${solutionX}, y=${solutionY}`;
     await getGeminiFeedback(exId, text, equationSystem, correctAnswer, userAnswer, isCorrect);
+  }
+
+  // Modo libre para sistemas especiales (S7: sin solución, S8: infinitas soluciones)
+  async function checkSystemSpecialMode(exId) {
+    const textarea = document.getElementById(`input-${exId}-free`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = textarea.closest('.exercise-card');
+    const solutionType = card.dataset.solutionType;
+
+    if (!textarea || !feedback) return;
+
+    const text = textarea.value.trim().toLowerCase();
+
+    if (!text) {
+      showFeedback(exId, 'incorrect', 'Escribe tu explicación antes de verificar.');
+      return;
+    }
+
+    // Verificar que mencione conceptos clave según el tipo
+    let isCorrect = false;
+    let feedbackMsg = '';
+
+    if (solutionType === 'no-solution') {
+      // S7: Sin solución - debe mencionar pendientes iguales, interceptos diferentes, paralelas
+      const hasParallel = text.match(/paralela|parallel/);
+      const hasSameSlope = text.match(/misma pendiente|pendientes iguales|pendiente.*2|slope/);
+      const hasDifferentIntercept = text.match(/diferente intercepto|intercepto.*diferente|diferente.*1.*3/);
+      const hasNoSolution = text.match(/sin solución|no tiene solución|no hay solución|inconsistente/);
+      
+      const score = (hasParallel ? 1 : 0) + (hasSameSlope ? 1 : 0) + 
+                    (hasDifferentIntercept ? 1 : 0) + (hasNoSolution ? 1 : 0);
+      
+      if (score >= 3) {
+        isCorrect = true;
+        feedbackMsg = '✅ ¡Correcto! Identificaste que son rectas paralelas con la misma pendiente pero diferente intercepto. 🎯';
+      } else if (score >= 2) {
+        feedbackMsg = '⚠️ Casi. Mencionaste algunos conceptos clave, pero falta ser más específico sobre por qué no hay solución.';
+      } else {
+        feedbackMsg = '❌ Tu explicación necesita más detalle. Recuerda: ¿Qué tienen en común las ecuaciones? ¿Por qué eso impide una solución?';
+      }
+    } else if (solutionType === 'infinite-solutions') {
+      // S8: Infinitas soluciones - debe mencionar proporcionalidad, misma recta, ecuaciones equivalentes
+      const hasSameLine = text.match(/misma recta|misma línea|linea igual|same line/);
+      const hasProportional = text.match(/proporcional|multiplicar|×2|son la misma|equivalente/);
+      const hasInfinite = text.match(/infinitas soluciones|infinitas|muchas soluciones/);
+      const hasDependent = text.match(/dependiente|sistema dependiente/);
+      
+      const score = (hasSameLine ? 1 : 0) + (hasProportional ? 1 : 0) + 
+                    (hasInfinite ? 1 : 0) + (hasDependent ? 1 : 0);
+      
+      if (score >= 3) {
+        isCorrect = true;
+        feedbackMsg = '✅ ¡Correcto! Identificaste que son la misma recta (ecuaciones proporcionales), por eso hay infinitas soluciones. 🎯';
+      } else if (score >= 2) {
+        feedbackMsg = '⚠️ Casi. Mencionaste algunos conceptos, pero necesitas explicar mejor por qué hay infinitas soluciones.';
+      } else {
+        feedbackMsg = '❌ Tu explicación necesita más detalle. Pista: ¿Qué pasa si multiplicas una ecuación por 2?';
+      }
+    }
+
+    const feedbackEl = document.getElementById(`feedback-${exId}`);
+
+    if (isCorrect) {
+      showFeedback(exId, 'correct', feedbackMsg);
+      markCompleted(exId);
+      celebrate(feedbackEl);
+    } else {
+      showFeedback(exId, 'incorrect', feedbackMsg);
+    }
+  }
+
+  // Modo libre para sistema 3x3 (S10: 3 ecuaciones, 3 incógnitas)
+  async function checkSystem3Mode(exId) {
+    const textarea = document.getElementById(`input-${exId}-free`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = textarea.closest('.exercise-card');
+    const solutionX = parseFloat(card.dataset.solutionX);
+    const solutionY = parseFloat(card.dataset.solutionY);
+    const solutionZ = parseFloat(card.dataset.solutionZ);
+
+    if (!textarea || !feedback) return;
+
+    const text = textarea.value.trim();
+
+    if (!text) {
+      showFeedback(exId, 'incorrect', 'Escribe tu desarrollo antes de verificar.');
+      return;
+    }
+
+    // Buscar soluciones x = ..., y = ..., z = ... en el texto
+    const lines = text.split('\n');
+    let foundX = null;
+    let foundY = null;
+    let foundZ = null;
+
+    for (const line of lines) {
+      const xMatch = line.match(/x\s*=\s*([+-]?\d+\.?\d*)/);
+      const yMatch = line.match(/y\s*=\s*([+-]?\d+\.?\d*)/);
+      const zMatch = line.match(/z\s*=\s*([+-]?\d+\.?\d*)/);
+      
+      if (xMatch && foundX === null) {
+        foundX = parseFloat(xMatch[1]);
+      }
+      if (yMatch && foundY === null) {
+        foundY = parseFloat(yMatch[1]);
+      }
+      if (zMatch && foundZ === null) {
+        foundZ = parseFloat(zMatch[1]);
+      }
+    }
+
+    const tolerance = 0.01;
+    const xCorrect = foundX !== null && Math.abs(foundX - solutionX) < tolerance;
+    const yCorrect = foundY !== null && Math.abs(foundY - solutionY) < tolerance;
+    const zCorrect = foundZ !== null && Math.abs(foundZ - solutionZ) < tolerance;
+    const isCorrect = xCorrect && yCorrect && zCorrect;
+
+    const feedbackEl = document.getElementById(`feedback-${exId}`);
+
+    if (!getAIMode()) {
+      // Modo simple sin IA
+      if (!isCorrect) {
+        let msg = '❌ ';
+        const incorrect = [];
+        if (!xCorrect) incorrect.push(`x (tienes ${foundX !== null ? foundX : '?'}, debería ser ${solutionX})`);
+        if (!yCorrect) incorrect.push(`y (tienes ${foundY !== null ? foundY : '?'}, debería ser ${solutionY})`);
+        if (!zCorrect) incorrect.push(`z (tienes ${foundZ !== null ? foundZ : '?'}, debería ser ${solutionZ})`);
+        
+        msg += incorrect.join(', ') + ' son incorrectos. ';
+        msg += `Revisa tu desarrollo paso a paso.`;
+        showFeedback(exId, 'incorrect', msg);
+        return;
+      }
+      showFeedback(exId, 'correct', 
+        `✅ ¡Correcto! x = ${solutionX}, y = ${solutionY}, z = ${solutionZ}. ¡Excelente trabajo con 3 ecuaciones! 🎉`);
+      markCompleted(exId);
+      celebrate(feedbackEl);
+      return;
+    }
+
+    // Modo IA - enviar a Gemini
+    const userAnswer = (foundX !== null && foundY !== null && foundZ !== null) ? 
+                       `x=${foundX}, y=${foundY}, z=${foundZ}` : 'incompleto';
+    const correctAnswer = `x=${solutionX}, y=${solutionY}, z=${solutionZ}`;
+    await getGeminiFeedback(exId, text, card.dataset.equationSystem, correctAnswer, userAnswer, isCorrect);
   }
 
   // Modo libre para ejercicios con potencias (E10: x² = 64)
