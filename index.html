@@ -2747,6 +2747,31 @@
       return;
     }
 
+    // NUEVO: Validar que el desarrollo corresponda a la ecuación del ejercicio
+    // Extraer números de la ecuación original (ej: "x + 9 = 14" → ["9", "14"])
+    const eqNumbers = (equation || '').match(/\d+/g) || [];
+    if (eqNumbers.length >= 2) {
+      // Contar cuántos de esos números aparecen en el desarrollo
+      const textNoSpaces = text.replace(/\s/g, '');
+      const matchCount = eqNumbers.filter(num => textNoSpaces.includes(num)).length;
+      // Si menos del 50% de los números clave aparecen, el desarrollo no corresponde
+      if (matchCount < Math.ceil(eqNumbers.length / 2)) {
+        showFeedback(exId, 'incorrect', 
+          `❌ Tu desarrollo no corresponde a la ecuación <code>${equation}</code>.<br>` +
+          `Asegúrate de estar resolviendo <strong>esta</strong> ecuación, no otra.`);
+        return;
+      }
+      // Detectar si tiene términos cuadráticos (x², ²) en un ejercicio lineal
+      const equationHasSquare = /x²|x\^2|²/.test(equation);
+      const textHasSquare = /x²|x\^2|²/.test(text);
+      if (textHasSquare && !equationHasSquare) {
+        showFeedback(exId, 'incorrect', 
+          `❌ Estás usando términos cuadráticos (x²) pero esta ecuación es <strong>lineal</strong>: <code>${equation}</code>.<br>` +
+          `Si quieres resolver una cuadrática, busca un ejercicio marcado como "Cuadrática".`);
+        return;
+      }
+    }
+
     const correctValue = parseFloat(answer);
     const tolerance = 1e-9;
     const isCorrect = Math.abs(finalAnswer - correctValue) < tolerance;
