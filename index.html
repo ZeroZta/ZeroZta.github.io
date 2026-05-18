@@ -3667,9 +3667,11 @@ ${explanation}
     insertMath('\n');
   }
 
-  // Auto-open keyboard on focus for exercise inputs
+  // Auto-open keyboard on focus for exercise inputs and solver
   document.addEventListener('focusin', (e) => {
-    if (e.target.classList.contains('ex-input') || e.target.classList.contains('ex-textarea')) {
+    if (e.target.classList.contains('ex-input') || 
+        e.target.classList.contains('ex-textarea') ||
+        e.target.classList.contains('solver-input')) {
       openMathKeyboard(e.target);
     }
   });
@@ -3678,7 +3680,8 @@ ${explanation}
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.math-keyboard-overlay') && 
         !e.target.classList.contains('ex-input') && 
-        !e.target.classList.contains('ex-textarea')) {
+        !e.target.classList.contains('ex-textarea') &&
+        !e.target.classList.contains('solver-input')) {
       closeMathKeyboard();
     }
   });
