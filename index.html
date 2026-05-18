@@ -1673,6 +1673,100 @@
       </div>
     </div>
 
+    <!-- Q1: Ecuación cuadrática - Completa el cuadrado implícito -->
+    <div class="exercise-card" data-equation="x² + 18x + 81 = 14²" data-answer="-23,5" data-answer-type="quadratic" data-solutions="-23,5" data-steps='["x² + 18x + 81 = 196","x² + 18x = 115","x² + 18x - 115 = 0","(x + 23)(x - 5) = 0","x + 23 = 0  o  x - 5 = 0","x = -23  o  x = 5"]' data-hard="true">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">x² + 18x + 81 = 14²</span>
+        <span class="ex-badge badge-hard">Cuadrática</span>
+        <span class="completed-check" id="check-q1" style="display:none;">✓</span>
+      </div>
+      <div class="ex-body">
+        <p>Reconoce el trinomio cuadrado perfecto. Debes mostrar ambas soluciones.</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('q1', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-q1-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo (debe incluir ambas soluciones):</p>
+            <textarea id="input-q1-free" class="ex-textarea" rows="7" placeholder="1. Simplifica 14²&#10;2. Identifica el trinomio cuadrado&#10;3. Despeja x&#10;4. Muestra ambas soluciones: x = ..., x = ..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkQuadraticMode('q1')">Verificar desarrollo</button>
+          </div>
+          <div id="feedback-q1" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('q1')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
+        <div class="solution">
+          <p>x² + 18x + 81 = 196</p>
+          <p>x² + 18x = 115</p>
+          <p>x² + 18x - 115 = 0</p>
+          <p>(x + 23)(x - 5) = 0</p>
+          <div class="ans">x = -23  o  x = 5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2: Ecuación cuadrática - Factorización simple -->
+    <div class="exercise-card" data-equation="x² - 5x + 6 = 0" data-answer="2,3" data-answer-type="quadratic" data-solutions="2,3" data-steps='["x² - 5x + 6 = 0","(x - 2)(x - 3) = 0","x - 2 = 0  o  x - 3 = 0","x = 2  o  x = 3"]' data-medium="true">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">x² - 5x + 6 = 0</span>
+        <span class="ex-badge badge-medium">Cuadrática</span>
+        <span class="completed-check" id="check-q2" style="display:none;">✓</span>
+      </div>
+      <div class="ex-body">
+        <p>Factoriza el trinomio. Busca dos números que multiplicados den 6 y sumados den -5.</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('q2', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-q2-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-q2-free" class="ex-textarea" rows="6" placeholder="1. Factoriza el trinomio&#10;2. Aplica propiedad del producto cero&#10;3. Resuelve cada ecuación&#10;4. Ambas soluciones: x = ..., x = ..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkQuadraticMode('q2')">Verificar desarrollo</button>
+          </div>
+          <div id="feedback-q2" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('q2')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
+        <div class="solution">
+          <p>(x - 2)(x - 3) = 0</p>
+          <p>x - 2 = 0  →  x = 2</p>
+          <p>x - 3 = 0  →  x = 3</p>
+          <div class="ans">x = 2  o  x = 3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3: Ecuación cuadrática - Diferencia de cuadrados -->
+    <div class="exercise-card" data-equation="2x² - 8 = 0" data-answer="-2,2" data-answer-type="quadratic" data-solutions="-2,2" data-steps='["2x² - 8 = 0","2x² = 8","x² = 4","x = ±√4","x = -2  o  x = 2"]' data-medium="true">
+      <div class="ex-header" onclick="toggleEx(this)">
+        <span class="ex-title">2x² - 8 = 0</span>
+        <span class="ex-badge badge-medium">Cuadrática</span>
+        <span class="completed-check" id="check-q3" style="display:none;">✓</span>
+      </div>
+      <div class="ex-body">
+        <p>Despeja x² primero, luego aplica raíz cuadrada (recuerda el ±).</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('q3', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-q3-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-q3-free" class="ex-textarea" rows="6" placeholder="1. Despeja x²&#10;2. Aplica raíz cuadrada&#10;3. Considera ambos signos (+y -)&#10;4. Ambas soluciones: x = ..., x = ..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkQuadraticMode('q3')">Verificar desarrollo</button>
+          </div>
+          <div id="feedback-q3" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('q3')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
+        <div class="solution">
+          <p>2x² = 8</p>
+          <p>x² = 4</p>
+          <p>x = ±2</p>
+          <div class="ans">x = -2  o  x = 2</div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- end exercises-grid -->
 </section>
 
@@ -1813,50 +1907,92 @@
   <div class="exercises-grid" style="margin-top:2rem">
 
     <!-- S1 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation-system="y=x+2,x+y=8" data-solution-x="3" data-solution-y="5" data-method="sustitución" data-easy="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">y = x + 2 &nbsp;&amp;&nbsp; x + y = 8</span>
         <span class="ex-badge badge-easy">Fácil</span>
+        <span class="completed-check" id="check-s1" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
-        <p>Usa sustitución.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <p>Usa sustitución. Escribe tu desarrollo completo.</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('s1', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-s1-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-s1-free" class="ex-textarea" rows="6" placeholder="Ecuación 1: y = x + 2&#10;Ecuación 2: x + y = 8&#10;&#10;Desarrollo:&#10;...&#10;&#10;Solución: x = ..., y = ..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkSystemMode('s1')">Verificar desarrollo</button>
+          </div>
+          <div id="feedback-s1" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('s1')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
           <p>x + (x + 2) = 8</p>
           <p>2x = 6  →  x = 3</p>
-          <p>y = 3 + 2</p>
+          <p>y = 3 + 2 = 5</p>
           <div class="ans">x = 3, &nbsp; y = 5</div>
         </div>
       </div>
     </div>
 
     <!-- S2 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation-system="2x+y=7,x-y=2" data-solution-x="3" data-solution-y="1" data-method="eliminación" data-easy="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">2x + y = 7 &nbsp;&amp;&nbsp; x − y = 2</span>
         <span class="ex-badge badge-easy">Fácil</span>
+        <span class="completed-check" id="check-s2" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
-        <p>Suma las ecuaciones para eliminar y.</p>
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <p>Suma las ecuaciones para eliminar y. Escribe tu desarrollo.</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('s2', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-s2-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-s2-free" class="ex-textarea" rows="6" placeholder="Ecuación 1: 2x + y = 7&#10;Ecuación 2: x - y = 2&#10;&#10;Desarrollo:&#10;...&#10;&#10;Solución: x = ..., y = ..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkSystemMode('s2')">Verificar desarrollo</button>
+          </div>
+          <div id="feedback-s2" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('s2')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
+          <p>(2x + y) + (x − y) = 7 + 2</p>
           <p>3x = 9  →  x = 3</p>
-          <p>y = x − 2 = 1</p>
+          <p>3 − y = 2  →  y = 1</p>
           <div class="ans">x = 3, &nbsp; y = 1</div>
         </div>
       </div>
     </div>
 
     <!-- S3 -->
-    <div class="exercise-card">
+    <div class="exercise-card" data-equation-system="x+2y=10,x-y=1" data-solution-x="4" data-solution-y="3" data-method="eliminación" data-easy="true">
       <div class="ex-header" onclick="toggleEx(this)">
         <span class="ex-title">x + 2y = 10 &nbsp;&amp;&nbsp; x − y = 1</span>
         <span class="ex-badge badge-easy">Fácil</span>
+        <span class="completed-check" id="check-s3" style="display:none;">✓</span>
       </div>
       <div class="ex-body">
-        <button class="solution-btn" onclick="toggleSol(this)">Ver solución</button>
+        <p>Resta las ecuaciones para eliminar x. Escribe tu desarrollo.</p>
+        <div class="ex-interactive">
+          <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('s3', 'free', this)">✏️ Modo libre</button>
+          </div>
+          <div id="mode-s3-free" class="mode-content">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;">Escribe tu desarrollo completo:</p>
+            <textarea id="input-s3-free" class="ex-textarea" rows="6" placeholder="Ecuación 1: x + 2y = 10&#10;Ecuación 2: x - y = 1&#10;&#10;Desarrollo:&#10;...&#10;&#10;Solución: x = ..., y = ..."></textarea>
+            <button class="ex-verify-btn full-width" onclick="checkSystemMode('s3')">Verificar desarrollo</button>
+          </div>
+          <div id="feedback-s3" class="ex-feedback"></div>
+          <button class="hint-btn" onclick="showHint('s3')">💡 Pista</button>
+        </div>
+        <button class="solution-btn" onclick="toggleSol(this)">Ver solución completa</button>
         <div class="solution">
-          <p>Restamos: 3y = 9  →  y = 3</p>
+          <p>Restamos: (x + 2y) - (x - y) = 10 - 1</p>
+          <p>3y = 9  →  y = 3</p>
           <p>x = 1 + 3 = 4</p>
           <div class="ans">x = 4, &nbsp; y = 3</div>
         </div>
@@ -3033,6 +3169,229 @@ ${stepsTable || 'No se detectaron pasos con ='}
     } else {
       showFeedback(exId, 'incorrect', `Incorrecto. La respuesta es x = 13/3 (o aproximadamente 4.33). Revisa tu desarrollo.`);
     }
+  }
+
+  // Modo libre para ecuaciones cuadráticas - Requiere desarrollo completo con ambas soluciones
+  async function checkQuadraticMode(exId) {
+    const textarea = document.getElementById(`input-${exId}-free`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = textarea.closest('.exercise-card');
+    const equation = card.dataset.equation;
+    const solutions = card.dataset.solutions ? card.dataset.solutions.split(',') : [];
+
+    if (!textarea || !feedback) return;
+
+    const text = textarea.value.trim();
+
+    if (!text) {
+      showFeedback(exId, 'incorrect', 'Escribe tu desarrollo antes de verificar.');
+      return;
+    }
+
+    // Buscar todas las soluciones x = ... en el texto
+    const lines = text.split('\n');
+    const foundSolutions = [];
+    let lastLineWithX = -1;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      // Buscar x = número o x = -número
+      const matches = line.match(/x\s*=\s*([+-]?\d+\.?\d*)/g);
+      if (matches) {
+        matches.forEach(match => {
+          const numMatch = match.match(/x\s*=\s*([+-]?\d+\.?\d*)/);
+          if (numMatch) {
+            foundSolutions.push(parseFloat(numMatch[1]));
+            lastLineWithX = i;
+          }
+        });
+      }
+      // También buscar formato "x = 5, x = -23" o "x = 5 o x = -23"
+      const multiMatch = line.match(/x\s*=\s*([+-]?\d+\.?\d*)\s*(?:,|o|y)\s*x\s*=\s*([+-]?\d+\.?\d*)/);
+      if (multiMatch) {
+        foundSolutions.push(parseFloat(multiMatch[1]), parseFloat(multiMatch[2]));
+        lastLineWithX = i;
+      }
+    }
+
+    // Verificar que se encontraron ambas soluciones esperadas
+    const requiredSolutions = solutions.map(s => parseFloat(s));
+    const tolerance = 0.01;
+    
+    let hasBothSolutions = true;
+    let missingSolutions = [];
+    
+    for (const required of requiredSolutions) {
+      const found = foundSolutions.some(s => Math.abs(s - required) < tolerance);
+      if (!found) {
+        hasBothSolutions = false;
+        missingSolutions.push(required);
+      }
+    }
+
+    // Analizar desarrollo para detectar pasos lógicos
+    const analysis = analyzeQuadraticDevelopment(lines, equation, requiredSolutions);
+    
+    const isCorrect = hasBothSolutions && analysis.hasValidLogic;
+    const feedbackEl = document.getElementById(`feedback-${exId}`);
+
+    if (!getAIMode()) {
+      // Modo simple sin IA
+      if (!hasBothSolutions) {
+        const missingStr = missingSolutions.join(', ');
+        showFeedback(exId, 'incorrect', 
+          `❌ Faltan soluciones. Encontré: ${foundSolutions.join(', ') || 'ninguna'}. ` +
+          `Deberías llegar a: x = ${requiredSolutions.join(' y x = ')}.`);
+        return;
+      }
+      if (!analysis.hasValidLogic) {
+        showFeedback(exId, 'incorrect', 
+          `⚠️ Tienes las soluciones correctas, pero el desarrollo tiene saltos lógicos. ` +
+          `Asegúrate de mostrar: ${analysis.missingSteps.join(', ')}.`);
+        return;
+      }
+      showFeedback(exId, 'correct', 
+        `✅ ¡Correcto! Ambas soluciones: x = ${requiredSolutions.join(' y x = ')}. ¡Bien hecho! 🎉`);
+      markCompleted(exId);
+      celebrate(feedbackEl);
+      return;
+    }
+
+    // Modo IA - enviar a Gemini para análisis detallado
+    await getGeminiFeedback(exId, text, equation, requiredSolutions.join(','), foundSolutions.join(','), isCorrect);
+  }
+
+  // Analizar desarrollo de ecuación cuadrática
+  function analyzeQuadraticDevelopment(lines, equation, requiredSolutions) {
+    const text = lines.join(' ').toLowerCase();
+    const hasValidLogic = {
+      standardForm: false,      // Forma ax² + bx + c = 0
+      factorization: false,   // (x + a)(x + b) = 0
+      quadraticFormula: false, // Uso de fórmula general
+      squareRoot: false,        // √ para x² = k
+      bothSolutions: false
+    };
+    
+    const missingSteps = [];
+
+    // Detectar forma estándar
+    if (text.match(/=\s*0/)) {
+      hasValidLogic.standardForm = true;
+    }
+
+    // Detectar factorización
+    if (text.match(/\(x\s*[+-]\s*\d+\)\s*\(x\s*[+-]\s*\d+\)/) || 
+        text.match(/\(x\s*[+-]\s*\d+\)²/)) {
+      hasValidLogic.factorization = true;
+    }
+
+    // Detectar fórmula cuadrática
+    if (text.match(/formula|[-±]\s*b\s*±|2a|\/\s*2|discriminante/)) {
+      hasValidLogic.quadraticFormula = true;
+    }
+
+    // Detectar raíz cuadrada (para ecuaciones tipo x² = k)
+    if (text.match(/√|raíz|sqrt|±\s*\d/)) {
+      hasValidLogic.squareRoot = true;
+    }
+
+    // Verificar si tiene lógica válida según el tipo de ecuación
+    const isPureQuadratic = equation && equation.match(/^[^=]*x²\s*[=+-]/);
+    const hasLogic = hasValidLogic.standardForm || 
+                     hasValidLogic.factorization || 
+                     hasValidLogic.quadraticFormula ||
+                     (isPureQuadratic && hasValidLogic.squareRoot);
+
+    // Determinar pasos faltantes
+    if (!hasValidLogic.standardForm && !isPureQuadratic) {
+      missingSteps.push('forma estándar (ax² + bx + c = 0)');
+    }
+    if (!hasValidLogic.factorization && !hasValidLogic.quadraticFormula && !isPureQuadratic) {
+      missingSteps.push('factorización o fórmula cuadrática');
+    }
+    if (isPureQuadratic && !hasValidLogic.squareRoot) {
+      missingSteps.push('aplicación de raíz cuadrada (±)');
+    }
+
+    return {
+      hasValidLogic: hasLogic,
+      hasBothSolutions: true, // Se verifica aparte
+      method: hasValidLogic.factorization ? 'factorización' : 
+              hasValidLogic.quadraticFormula ? 'fórmula cuadrática' : 
+              hasValidLogic.squareRoot ? 'raíz cuadrada' : 'desconocido',
+      missingSteps,
+      details: hasValidLogic
+    };
+  }
+
+  // Modo libre para sistemas de ecuaciones
+  async function checkSystemMode(exId) {
+    const textarea = document.getElementById(`input-${exId}-free`);
+    const feedback = document.getElementById(`feedback-${exId}`);
+    const card = textarea.closest('.exercise-card');
+    const equationSystem = card.dataset.equationSystem;
+    const solutionX = parseFloat(card.dataset.solutionX);
+    const solutionY = parseFloat(card.dataset.solutionY);
+
+    if (!textarea || !feedback) return;
+
+    const text = textarea.value.trim();
+
+    if (!text) {
+      showFeedback(exId, 'incorrect', 'Escribe tu desarrollo antes de verificar.');
+      return;
+    }
+
+    // Buscar soluciones x = ... y y = ... en el texto
+    const lines = text.split('\n');
+    let foundX = null;
+    let foundY = null;
+
+    for (const line of lines) {
+      const xMatch = line.match(/x\s*=\s*([+-]?\d+\.?\d*)/);
+      const yMatch = line.match(/y\s*=\s*([+-]?\d+\.?\d*)/);
+      
+      if (xMatch && foundX === null) {
+        foundX = parseFloat(xMatch[1]);
+      }
+      if (yMatch && foundY === null) {
+        foundY = parseFloat(yMatch[1]);
+      }
+    }
+
+    const tolerance = 0.01;
+    const xCorrect = foundX !== null && Math.abs(foundX - solutionX) < tolerance;
+    const yCorrect = foundY !== null && Math.abs(foundY - solutionY) < tolerance;
+    const isCorrect = xCorrect && yCorrect;
+
+    const feedbackEl = document.getElementById(`feedback-${exId}`);
+
+    if (!getAIMode()) {
+      // Modo simple sin IA
+      if (!isCorrect) {
+        let msg = '❌ ';
+        if (!xCorrect && !yCorrect) {
+          msg += `Ambas soluciones son incorrectas. `;
+        } else if (!xCorrect) {
+          msg += `x es incorrecto (tienes ${foundX !== null ? foundX : '?'}, debería ser ${solutionX}). `;
+        } else if (!yCorrect) {
+          msg += `y es incorrecto (tienes ${foundY !== null ? foundY : '?'}, debería ser ${solutionY}). `;
+        }
+        msg += `Revisa tu desarrollo paso a paso.`;
+        showFeedback(exId, 'incorrect', msg);
+        return;
+      }
+      showFeedback(exId, 'correct', 
+        `✅ ¡Correcto! x = ${solutionX}, y = ${solutionY}. ¡Bien hecho! 🎉`);
+      markCompleted(exId);
+      celebrate(feedbackEl);
+      return;
+    }
+
+    // Modo IA - enviar a Gemini
+    const userAnswer = foundX !== null && foundY !== null ? `x=${foundX}, y=${foundY}` : 'incompleto';
+    const correctAnswer = `x=${solutionX}, y=${solutionY}`;
+    await getGeminiFeedback(exId, text, equationSystem, correctAnswer, userAnswer, isCorrect);
   }
 
   // Modo libre para ejercicios con potencias (E10: x² = 64)
