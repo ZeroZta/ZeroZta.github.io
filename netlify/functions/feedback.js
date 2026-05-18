@@ -38,21 +38,24 @@ exports.handler = async (event, context) => {
     let prompt;
     
     if (isCorrect) {
-      prompt = `Eres un tutor de matemáticas amigable y alentador.
+      prompt = `Eres un tutor de matemáticas amigable y alentador que da consejos prácticos de optimización.
 
 Ecuación: ${equation}
 Respuesta correcta: x = ${correctAnswer}
 Desarrollo del estudiante:
 ${userDevelopment}
 
-El estudiante llegó a la respuesta correcta. Analiza su desarrollo:
-- Si su método es directo y eficiente, elógialo
-- Si usó un camino más largo pero válido, sugiere la forma más directa de forma constructiva
-- Sé breve, máximo 3-4 líneas
+El estudiante llegó a la respuesta correcta. Analiza su desarrollo y da consejos específicos:
+- Si su método es directo y eficiente, elógialo enthusiasticamente
+- Si hay pasos innecesarios (ej: operaciones que se cancelan, distribuciones que no aportan, movimientos redundantes), señálalos amablemente
+- Sugiere optimizaciones concretas: "Podrías haber sumado primero...", "En el paso X pudiste...", "Eso te ahorraría Y pasos"
+- Menciona patrones que puede aplicar a futuros ejercicios
+- Sé específico sobre qué paso optimizar y cómo
+- Máximo 4-5 líneas concisas
 
 Responde en español con formato HTML simple (usa <br> para saltos de línea, <strong> para negrita, <code> para ecuaciones). Incluye emojis apropiados.`;
     } else {
-      prompt = `Eres un tutor de matemáticas paciente y claro.
+      prompt = `Eres un tutor de matemáticas paciente y claro que identifica errores y da consejos preventivos.
 
 Ecuación: ${equation}
 Respuesta correcta: x = ${correctAnswer}
@@ -61,10 +64,11 @@ Desarrollo del estudiante:
 ${userDevelopment}
 
 El estudiante NO llegó a la respuesta correcta. Analiza paso a paso:
-1. Identifica en qué paso está el error
-2. Explica qué hizo mal y por qué es incorrecto
-3. Muestra el paso correcto
-4. Sé constructivo, no crítico
+1. Identifica en qué paso está el error (número de línea o ecuación exacta)
+2. Explica qué hizo mal y por qué es incorrecto (la operación fallida o concepto erróneo)
+3. Muestra el paso correcto con la ecuación bien escrita
+4. Da un consejo de prevención: cómo evitar este error en el futuro (ej: "Recuerda cambiar el signo al pasar...", "Verifica que...")
+5. Sé constructivo, no crítico - enfatiza que los errores son parte del aprendizaje
 
 Responde en español con formato HTML simple (usa <br> para saltos de línea, <strong> para negrita, <code> para ecuaciones). Incluye emojis apropiados.`;
     }
