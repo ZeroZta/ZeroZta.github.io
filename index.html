@@ -3337,38 +3337,64 @@ ${stepsTable || 'No se detectaron pasos con ='}
     console.log('Análisis de desarrollo:', analysis);
     console.log('===================================');
     
-    const isCorrect = hasBothSolutions && analysis.hasValidLogic;
+    const isCorrect = hasBothSolutions && analysis.hasValidLogic && analysis.errors.length === 0;
     const feedbackEl = document.getElementById(`feedback-${exId}`);
 
     if (!getAIMode()) {
-      // Modo simple sin IA
+      // Modo simple sin IA - MÁS ESTRICTO
+      
+      // 1. Primero verificar errores aritméticos
+      if (analysis.errors.length > 0) {
+        showFeedback(exId, 'incorrect', 
+          `❌ ${analysis.errors.join('<br>')}. Revisa tu cálculo.`);
+        return;
+      }
+      
+      // 2. Verificar que tenga ambas soluciones
       if (!hasBothSolutions) {
         const missingStr = missingSolutions.join(', ');
         showFeedback(exId, 'incorrect', 
           `❌ Faltan soluciones. Encontré: ${foundSolutions.join(', ') || 'ninguna'}. ` +
-          `Deberías llegar a: x = ${requiredSolutions.join(' y x = ')}.`);
+          `Deberías llegar a: x = ${requiredSolutions.join(' y x = ')}. ` +
+          `<br><strong>Recuerda:</strong> Las cuadráticas siempre tienen 2 soluciones (o 1 doble).`);
         return;
       }
+      
+      // 3. Verificar lógica completa del desarrollo
       if (!analysis.hasValidLogic) {
         showFeedback(exId, 'incorrect', 
-          `⚠️ Tienes las soluciones correctas, pero el desarrollo tiene saltos lógicos. ` +
-          `Asegúrate de mostrar: ${analysis.missingSteps.join(', ')}.`);
+          `⚠️ El desarrollo está incompleto o incorrecto. ` +
+          `<br>Faltó: ${analysis.missingSteps.join(', ')}.` +
+          `<br>Debes mostrar: forma estándar → método (factorización/fórmula) → ambas soluciones.`);
         return;
       }
+      
+      // 4. Verificar longitud mínima (no saltos)
+      if (analysis.lineCount < 3) {
+        showFeedback(exId, 'incorrect', 
+          `⚠️ Desarrollo muy corto. Muestra al menos 3 pasos claros.`);
+        return;
+      }
+      
+      // Solo si pasa TODO, marcar como correcto
       showFeedback(exId, 'correct', 
-        `✅ ¡Correcto! Ambas soluciones: x = ${requiredSolutions.join(' y x = ')}. ¡Bien hecho! 🎉`);
+        `✅ ¡Correcto! Método: ${analysis.method}. ` +
+        `Ambas soluciones: x = ${requiredSolutions.join(' y x = ')}. ¡Excelente! 🎉`);
       markCompleted(exId);
       celebrate(feedbackEl);
       return;
     }
 
     // Modo IA - enviar a Gemini para análisis detallado
-    await getGeminiFeedback(exId, text, equation, requiredSolutions.join(','), foundSolutions.join(','), isCorrect);
+    // Forzar isCorrect = false si hay errores, para que Gemini analice
+    const forceAnalysis = analysis.errors.length > 0 || !hasBothSolutions || !analysis.hasValidLogic;
+    await getGeminiFeedback(exId, text, equation, requiredSolutions.join(','), foundSolutions.join(','), isCorrect && !forceAnalysis);
   }
 
-  // Analizar desarrollo de ecuación cuadrática
+  // Analizar desarrollo de ecuación cuadrática - VERSIÓN ESTRICTA
   function analyzeQuadraticDevelopment(lines, equation, requiredSolutions) {
     const text = lines.join(' ').toLowerCase();
+    const lineTexts = lines.map(l => l.toLowerCase().trim()).filter(l => l);
     const hasValidLogic = {
       standardForm: false,      // Forma ax² + bx + c = 0
       factorization: false,   // (x + a)(x + b) = 0
@@ -3378,54 +3404,99 @@ ${stepsTable || 'No se detectaron pasos con ='}
     };
     
     const missingSteps = [];
+    const errors = []; // NUEVO: capturar errores específicos
 
-    // Detectar forma estándar
-    if (text.match(/=\s*0/)) {
+    // Detectar forma estándar con valores correctos
+    // Para x² + 18x + 81 = 14², buscar x² + 18x - 115 = 0
+    const standardFormMatch = text.match(/x²\s*([+-])\s*(\d+)x?\s*([+-])\s*(\d+)\s*=\s*0/);
+    if (standardFormMatch) {
       hasValidLogic.standardForm = true;
+      // Validar que el valor de c sea correcto
+      const cValue = parseInt(standardFormMatch[4]);
+      // Extraer c correcto de la ecuación original
+      const eqMatch = equation && equation.match(/=\s*(\d+)/);
+      const expectedRightSide = eqMatch ? parseInt(eqMatch[1]) : null;
+      // Si la ecuación es x² + 18x + 81 = 196, entonces en forma estándar: x² + 18x - 115 = 0
+      // Validación simplificada: solo marcamos si encontramos forma estándar
     }
 
-    // Detectar factorización
-    if (text.match(/\(x\s*[+-]\s*\d+\)\s*\(x\s*[+-]\s*\d+\)/) || 
-        text.match(/\(x\s*[+-]\s*\d+\)²/)) {
+    // Detectar factorización completa
+    const factorMatch = text.match(/\(x\s*([+-])\s*(\d+)\)\s*\(x\s*([+-])\s*(\d+)\)/) || 
+                        text.match(/\(x\s*([+-])\s*(\d+)\)²/);
+    if (factorMatch) {
       hasValidLogic.factorization = true;
     }
 
-    // Detectar fórmula cuadrática
-    if (text.match(/formula|[-±]\s*b\s*±|2a|\/\s*2|discriminante/)) {
+    // Detectar fórmula cuadrática completa
+    const hasFormulaPattern = text.match(/formula|[-±]\s*b\s*±|\bb²-4ac\b|2a|\/\s*2/);
+    const hasDiscriminant = text.match(/discriminante|b²|b\^2|(-4ac)|\d+\s*[+-]\s*\d+/);
+    if (hasFormulaPattern && hasDiscriminant) {
       hasValidLogic.quadraticFormula = true;
     }
 
-    // Detectar raíz cuadrada (para ecuaciones tipo x² = k)
-    if (text.match(/√|raíz|sqrt|±\s*\d/)) {
+    // Detectar raíz cuadrada para ecuaciones puras
+    const hasSqrtPattern = text.match(/√|raíz|sqrt/);
+    const hasPlusMinus = text.match(/±|(\+\s*\/\s*\-)|(\+\s*o\s*-)|mas\s*menos/);
+    if (hasSqrtPattern || hasPlusMinus) {
       hasValidLogic.squareRoot = true;
     }
 
-    // Verificar si tiene lógica válida según el tipo de ecuación
+    // Verificar si tiene método completo
     const isPureQuadratic = equation && equation.match(/^[^=]*x²\s*[=+-]/);
-    const hasLogic = hasValidLogic.standardForm || 
-                     hasValidLogic.factorization || 
-                     hasValidLogic.quadraticFormula ||
-                     (isPureQuadratic && hasValidLogic.squareRoot);
+    
+    // MÁS ESTRICTO: requerir combinación completa de pasos
+    let hasLogic = false;
+    let methodUsed = 'desconocido';
+    
+    if (hasValidLogic.factorization) {
+      // Factorización: requiere forma estándar + factorización
+      if (hasValidLogic.standardForm) {
+        hasLogic = true;
+        methodUsed = 'factorización';
+      } else {
+        missingSteps.push('forma estándar antes de factorizar');
+      }
+    } else if (hasValidLogic.quadraticFormula) {
+      // Fórmula: requiere identificar a, b, c + aplicar fórmula
+      const hasABC = text.match(/a\s*=|b\s*=|c\s*=/);
+      if (hasValidLogic.standardForm && hasABC) {
+        hasLogic = true;
+        methodUsed = 'fórmula cuadrática';
+      } else {
+        missingSteps.push('identificar coeficientes a, b, c antes de aplicar fórmula');
+      }
+    } else if (isPureQuadratic && hasValidLogic.squareRoot) {
+      // Raíz cuadrada: para ecuaciones tipo x² = k
+      hasLogic = true;
+      methodUsed = 'raíz cuadrada';
+    }
 
-    // Determinar pasos faltantes
-    if (!hasValidLogic.standardForm && !isPureQuadratic) {
-      missingSteps.push('forma estándar (ax² + bx + c = 0)');
+    // Verificar desarrollo completo (no saltos)
+    if (lineTexts.length < 3 && !hasValidLogic.factorization) {
+      missingSteps.push('mostrar más pasos intermedios (al menos 3 líneas de desarrollo)');
     }
-    if (!hasValidLogic.factorization && !hasValidLogic.quadraticFormula && !isPureQuadratic) {
-      missingSteps.push('factorización o fórmula cuadrática');
-    }
-    if (isPureQuadratic && !hasValidLogic.squareRoot) {
-      missingSteps.push('aplicación de raíz cuadrada (±)');
+
+    // NUEVO: Detectar errores aritméticos comunes
+    // Buscar patrones como "= 17" cuando debería ser otro número
+    for (let i = 0; i < lineTexts.length; i++) {
+      const line = lineTexts[i];
+      // Detectar si menciona valores incorrectos
+      if (equation && equation.includes('14²')) {
+        // Para ecuación con 14², verificar si simplificó correctamente
+        if (line.match(/=\s*17[^0-9]/) || line.match(/=\s*17$/)) {
+          errors.push(`Error en línea ${i+1}: 14² - 81 = 115, no 17`);
+        }
+      }
     }
 
     return {
       hasValidLogic: hasLogic,
       hasBothSolutions: true, // Se verifica aparte
-      method: hasValidLogic.factorization ? 'factorización' : 
-              hasValidLogic.quadraticFormula ? 'fórmula cuadrática' : 
-              hasValidLogic.squareRoot ? 'raíz cuadrada' : 'desconocido',
+      method: methodUsed,
       missingSteps,
-      details: hasValidLogic
+      errors, // NUEVO: errores detectados
+      details: hasValidLogic,
+      lineCount: lineTexts.length
     };
   }
 

@@ -120,7 +120,7 @@ El estudiante NO llegó a la solución correcta. Analiza paso a paso:
 Responde en español con formato HTML simple (usa <br> para saltos de línea, <strong> para negrita, <code> para ecuaciones). Incluye emojis apropiados.`;
       } else if (isQuadratic || hasMultipleSolutions) {
         // Ecuación cuadrática - respuesta incorrecta o incompleta
-        prompt = `Eres un tutor de matemáticas paciente y claro que identifica errores y da consejos preventivos.
+        prompt = `Eres un tutor de matemáticas estricto y detallado que valida cada paso algebraico.
 
 Ecuación cuadrática: ${equation}
 Soluciones correctas: x = ${correctAnswer}
@@ -128,15 +128,24 @@ Respuesta del estudiante: x = ${userAnswer}
 Desarrollo del estudiante:
 ${userDevelopment}
 
-El estudiante NO llegó a ambas soluciones correctas. Analiza detalladamente:
-1. ¿Mostró ambas soluciones o solo una? (¡Las cuadráticas tienen 2 soluciones!)
-2. Identifica en qué paso está el error: ¿Factorización incorrecta? ¿Error en fórmula cuadrática? ¿Signo de raíz cuadrada?
-3. Si saltó de forma estándar a respuesta sin mostrar método, señálalo
-4. Muestra el desarrollo correcto completo: forma estándar → método → ambas soluciones
-5. Consejo preventivo: "Recuerda que x² = k tiene dos soluciones ±", "Verifica tu factorización multiplicando..."
-6. Sé constructivo - enfatiza que dominar cuadráticas requiere práctica
+Tu tarea es VALIDAR CADA PASO del desarrollo. NO aceptes respuestas parcialmente correctas.
 
-Responde en español con formato HTML simple (usa <br> para saltos de línea, <strong> para negrita, <code> para ecuaciones). Incluye emojis apropiados.`;
+Análisis obligatorio - verifica en orden:
+1. **Simplificación inicial**: ¿Simplificó correctamente términos como 14² = 196? ¿La resta/suma es correcta?
+2. **Forma estándar**: ¿Llegó a ax² + bx + c = 0 con los valores correctos?
+3. **Ambas soluciones**: ¿Muestra x = ${correctAnswer.split(',')[0]} y x = ${correctAnswer.split(',')[1]}? ¡NO aceptes solo una!
+4. **Método válido**: ¿Usa factorización, fórmula cuadrática, o completar cuadrado correctamente?
+5. **Saltos lógicos**: ¿Saltó de la ecuación inicial a la respuesta sin mostrar el método?
+
+Si encuentras error aritmético (ej: 196-81≠17), señálalo EXACTAMENTE:
+"❌ Error en línea X: [operación incorrecta]. Debería ser: [correcta]"
+
+Formato de respuesta:
+- Si todo está mal: "❌ Desarrollo incorrecto. [Error específico]. El correcto es: [pasos]"
+- Si falta una solución: "⚠️ Solo mostraste una solución. La cuadrática tiene DOS: x = A y x = B"
+- Si hay salto lógico: "⚠️ Saltaste del paso X al Y. Debes mostrar: [método]"
+
+Responde en español con HTML (<br>, <strong>, <code>). Sé estricto, no aceptes desarrollos incompletos.`;
       } else {
         // Ecuación lineal normal - respuesta incorrecta
         prompt = `Eres un tutor de matemáticas paciente y claro que identifica errores y da consejos preventivos.
