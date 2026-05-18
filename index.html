@@ -896,11 +896,9 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── AI TOGGLE ── */
+    /* ── AI TOGGLE (removed) ── */
     .ai-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      display: none;
       font-size: 0.75rem;
       color: var(--muted);
       cursor: pointer;
@@ -1054,11 +1052,6 @@
     <li><a href="#ejercicios-x">Ejercicios</a></li>
     <li><a href="#solver">Solver</a></li>
   </ul>
-  <label class="ai-toggle" title="Activar/desactivar feedback con IA">
-    <input type="checkbox" id="ai-mode-toggle" checked onchange="toggleAIMode()">
-    <span class="switch"></span>
-    <span class="label-text">🤖 IA</span>
-  </label>
 </nav>
 
 <!-- HERO -->
@@ -2713,7 +2706,7 @@
   }
 
   // Modo libre - Verificar desarrollo completo
-  async function checkFreeMode(exId) {
+  function checkFreeMode(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
     const card = textarea.closest('.exercise-card');
@@ -2778,89 +2771,328 @@
     const isCorrect = Math.abs(finalAnswer - correctValue) < tolerance;
 
     if (isCorrect) {
-      // Usar Gemini API para feedback inteligente
-      await getGeminiFeedback(exId, text, equation, answer, finalAnswer, true);
+      getGeminiFeedback(exId, text, equation, answer, finalAnswer, true);
     } else {
-      // Usar Gemini API para feedback de error
-      await getGeminiFeedback(exId, text, equation, correctValue.toString(), finalAnswer, false);
+      getGeminiFeedback(exId, text, equation, correctValue.toString(), finalAnswer, false);
     }
   }
 
-  // Llamar al backend para obtener feedback de Gemini
-  async function getGeminiFeedback(exId, userDevelopment, equation, correctAnswer, userAnswer, isCorrect) {
-    const feedbackEl = document.getElementById(`feedback-${exId}`);
-    
-    // Check if AI mode is enabled
-    if (!getAIMode()) {
-      // Use simple feedback instead of AI
-      const fallbackMsg = isCorrect 
-        ? `✅ ¡Correcto! x = ${correctAnswer}. ¡Bien hecho! 🎉`
-        : `❌ Incorrecto. La respuesta es x = ${correctAnswer}. Revisa tu desarrollo.`;
-      showFeedback(exId, isCorrect ? 'correct' : 'incorrect', fallbackMsg);
-      if (isCorrect) {
-        markCompleted(exId);
-        celebrate(feedbackEl);
+  /* ═══════════════════════════════════════════════════════
+     MOTOR DE FEEDBACK LOCAL PRO — sin Gemini, sin costos
+     Detecta errores específicos, explica con markdown
+  ═══════════════════════════════════════════════════════ */
+
+  const _openingsCorrect = [
+    '¡Excelente trabajo! 🎉', '¡Lo lograste! ✨', '¡Perfecto! 🎯',
+    '¡Muy bien! 💪', '¡Eso es! 🌟'
+  ];
+  const _openingsAlmost = [
+    'Casi... 🤔', 'Estás muy cerca 👀', 'Vamos a revisar esto 🔍',
+    'Hmm, encontré un detalle 🧐', 'Hay un error, ¡pero puedes corregirlo! 💡'
+  ];
+  const _tips = [
+    '💡 **Tip:**', '🎯 **Recuerda:**', '📌 **Importante:**', '⚡ **Truco:**'
+  ];
+  const _rand = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  // ── Detectar errores aritméticos en el texto del usuario ──
+  function detectArithmeticErrors(lines, equation) {
+    const errors = [];
+    const squareMap = {14:196,13:169,12:144,11:121,10:100,9:81,8:64,7:49,6:36,5:25,4:16,3:9,2:4,15:225,16:256,20:400};
+
+    lines.forEach((line, i) => {
+      const l = line.trim();
+      if (!l) return;
+
+      // Detectar X² = valor incorrecto (ej: 14² = 17)
+      const sqMatch = l.match(/(\d+)[²^2]\s*=\s*([+-]?\d+)/);
+      if (sqMatch) {
+        const base = parseInt(sqMatch[1]);
+        const stated = parseInt(sqMatch[2]);
+        const correct = squareMap[base] || base * base;
+        if (stated !== correct) {
+          errors.push({ line: i+1, text: l, type: 'square',
+            msg: `\`${base}² = ${stated}\` está mal. ${base}² = **${correct}**` });
+        }
       }
-      return;
+
+      // Detectar suma/resta sencilla mal hecha (ej: 196 - 81 = 17)
+      const subMatch = l.match(/(\d+)\s*[-−]\s*(\d+)\s*=\s*([+-]?\d+)/);
+      if (subMatch) {
+        const a = parseInt(subMatch[1]), b = parseInt(subMatch[2]), stated = parseInt(subMatch[3]);
+        if (a - b !== stated) {
+          errors.push({ line: i+1, text: l, type: 'arithmetic',
+            msg: `\`${a} - ${b} = ${stated}\` está mal. ${a} - ${b} = **${a-b}**` });
+        }
+      }
+      const addMatch = l.match(/(\d+)\s*[+]\s*(\d+)\s*=\s*([+-]?\d+)/);
+      if (addMatch) {
+        const a = parseInt(addMatch[1]), b = parseInt(addMatch[2]), stated = parseInt(addMatch[3]);
+        if (a + b !== stated) {
+          errors.push({ line: i+1, text: l, type: 'arithmetic',
+            msg: `\`${a} + ${b} = ${stated}\` está mal. ${a} + ${b} = **${a+b}**` });
+        }
+      }
+    });
+    return errors;
+  }
+
+  // ── Detectar error de operación inversa (x + 9 = 14 → x = 14 + 9) ──
+  function detectInverseOpError(lines, equation) {
+    const eqMatch = equation && equation.match(/x\s*([+-])\s*(\d+)\s*=\s*(\d+)/);
+    if (!eqMatch) return null;
+    const op = eqMatch[1], num = parseInt(eqMatch[2]), rhs = parseInt(eqMatch[3]);
+    const wrongOp = op === '+' ? '+' : '-';
+    for (let i = 0; i < lines.length; i++) {
+      const l = lines[i].trim();
+      const pattern = new RegExp(`x\\s*=\\s*${rhs}\\s*[${wrongOp}${wrongOp === '+' ? '\\+' : '\\-'}]\\s*${num}`);
+      if (pattern.test(l)) {
+        const correctOp = op === '+' ? '-' : '+';
+        const correctVal = op === '+' ? rhs - num : rhs + num;
+        return { line: i+1, text: l,
+          msg: `Aplicaste la operación inversa incorrecta.\n\nEn \`${equation}\`, el \`${op}${num}\` pasa al otro lado como \`${correctOp}${num}\`:\n\n\`x = ${rhs} ${correctOp} ${num} = **${correctVal}**\`` };
+      }
     }
-    
-    // Mostrar estado de carga
-    showFeedback(exId, isCorrect ? 'correct' : 'incorrect', 
-      `🤖 Analizando tu desarrollo${isCorrect ? '' : ' y buscando errores'}...<br><small>Esto tomará unos segundos</small>`);
+    return null;
+  }
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seg timeout
+  // ── Detectar si el usuario usó método de sustitución o eliminación ──
+  function detectSystemMethod(text) {
+    const t = text.toLowerCase();
+    if (t.match(/sustituye?ndo|sustitu[íi]|y\s*=\s*[^,\n]+x|x\s*=\s*[^,\n]+y/)) return 'sustitución';
+    if (t.match(/multiplica|×\s*\d|elimin|sumando|restando ec/)) return 'eliminación';
+    if (t.match(/igualando|iguala/)) return 'igualación';
+    return null;
+  }
 
-      const response = await fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userDevelopment,
-          equation,
-          correctAnswer,
-          userAnswer,
-          isCorrect
-        }),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      if (data.fallback) {
-        // Usar feedback local como fallback
-        const fallbackMsg = isCorrect 
-          ? `✅ ¡Correcto! x = ${correctAnswer}. ¡Bien hecho! 🎉`
-          : `❌ Incorrecto. La respuesta es x = ${correctAnswer}. Revisa tu desarrollo.`;
-        showFeedback(exId, isCorrect ? 'correct' : 'incorrect', fallbackMsg);
+  // ── Generar feedback para ecuaciones LINEALES ──
+  function buildLinearFeedback(lines, equation, correctAnswer, finalAnswer, isCorrect) {
+    if (isCorrect) {
+      const op = detectSystemMethod(lines.join('\n'));
+      const steps = lines.filter(l => l.trim()).length;
+      let msg = `${_rand(_openingsCorrect)}\n\nTu respuesta **x = ${correctAnswer}** es correcta ✓\n\n`;
+      if (steps <= 2) {
+        msg += `Lo resolviste en ${steps} pasos. ¡Muy directo! ⚡\n\n`;
+      } else if (steps > 4) {
+        msg += `Llegaste a la respuesta, aunque podrías haberlo hecho en menos pasos. `;
+        msg += `Intenta ir directamente al despeje sin pasos intermedios innecesarios. 📝\n\n`;
       } else {
-        showFeedback(exId, isCorrect ? 'correct' : 'incorrect', data.feedback);
+        msg += `Buen desarrollo, claro y ordenado. 📝\n\n`;
       }
-
-      if (isCorrect) {
-        markCompleted(exId);
-        celebrate(feedbackEl);
-      }
-
-    } catch (error) {
-      console.error('Gemini API error:', error);
-      // Fallback a mensaje simple
-      const fallbackMsg = isCorrect 
-        ? `✅ ¡Correcto! x = ${correctAnswer}. ¡Bien hecho! 🎉`
-        : `❌ Incorrecto. La respuesta es x = ${correctAnswer}. Revisa tu desarrollo.`;
-      showFeedback(exId, isCorrect ? 'correct' : 'incorrect', fallbackMsg);
-      
-      if (isCorrect) {
-        markCompleted(exId);
-        celebrate(feedbackEl);
-      }
+      msg += `${_rand(_tips)} "Lo que suma pasa restando, lo que multiplica pasa dividiendo." 🔄`;
+      return msg;
     }
+
+    // Buscar errores específicos
+    const arithErrors = detectArithmeticErrors(lines, equation);
+    const invErr = detectInverseOpError(lines, equation);
+    let msg = `${_rand(_openingsAlmost)}\n\n`;
+
+    if (arithErrors.length > 0) {
+      const e = arithErrors[0];
+      msg += `**📍 Error en la línea ${e.line}:**\n> \`${e.text}\`\n\n`;
+      msg += `**🔍 ¿Qué pasó?**\n${e.msg}\n\n`;
+      msg += `**✅ Corrige ese paso y vuelve a intentarlo.**\n\n`;
+      msg += `${_rand(_tips)} Verifica cada operación antes de pasar a la siguiente línea.`;
+    } else if (invErr) {
+      msg += `**📍 Error en la línea ${invErr.line}:**\n> \`${invErr.text}\`\n\n`;
+      msg += `**🔍 ¿Qué pasó?**\n${invErr.msg}\n\n`;
+      msg += `${_rand(_tips)} Cuando despejas, aplica la operación **opuesta** a la que tiene el término.`;
+    } else {
+      msg += `**🔍 Tu resultado:** x = ${finalAnswer !== null ? finalAnswer : '?'}\n`;
+      msg += `**✅ Resultado correcto:** x = ${correctAnswer}\n\n`;
+      msg += `Revisa tus operaciones línea por línea. `;
+      msg += `El error suele estar en cómo pasas términos de un lado al otro.\n\n`;
+      msg += `${_rand(_tips)} "Despeja verificando: sustituye tu x en la ecuación original. ¿Da igual en ambos lados?"`;
+    }
+    return msg;
+  }
+
+  // ── Generar feedback para ecuaciones CUADRÁTICAS ──
+  function buildQuadraticFeedback(lines, equation, requiredSolutions, foundSolutions, isCorrect, analysis) {
+    const solStr = requiredSolutions.join(' y x = ');
+    if (isCorrect) {
+      let msg = `${_rand(_openingsCorrect)}\n\n`;
+      msg += `Encontraste **ambas** soluciones: x = ${solStr} ✓\n\n`;
+      if (analysis && analysis.method !== 'desconocido') {
+        msg += `Usaste **${analysis.method}**. `;
+        if (analysis.method === 'factorización') msg += `¡El método más elegante para este tipo! 🎩\n\n`;
+        else if (analysis.method === 'fórmula cuadrática') msg += `La fórmula general siempre funciona, aunque para esta era posible factorizar directamente. 📐\n\n`;
+        else msg += `Buen método. 📝\n\n`;
+      }
+      msg += `${_rand(_tips)} Siempre verifica: sustituye cada solución en la ecuación original. Si da 0, ¡es correcta!`;
+      return msg;
+    }
+
+    let msg = `${_rand(_openingsAlmost)}\n\n`;
+
+    // Error aritmético primero
+    if (analysis && analysis.errors && analysis.errors.length > 0) {
+      const e = analysis.errors[0];
+      msg += `**📍 ${e}**\n\n`;
+      msg += `Este error aritmético afecta todo tu desarrollo.\n\n`;
+      msg += `**✅ Desarrollo correcto:**\n`;
+      msg += `\`\`\`\n${equation}\n`;
+      // Mostrar el primer paso corregido si tiene 14²
+      if (equation.includes('14²')) {
+        msg += `→ 14² = 196\n→ x² + 18x + 81 = 196\n→ x² + 18x = 115\n→ x² + 18x - 115 = 0\n→ (x + 23)(x - 5) = 0\n`;
+      }
+      msg += `\`\`\`\n\n`;
+      msg += `${_rand(_tips)} Calcula los cuadrados **primero** antes de operar con otros términos.`;
+      return msg;
+    }
+
+    // Solo encontró una solución
+    if (foundSolutions.length > 0 && foundSolutions.length < requiredSolutions.length) {
+      const missing = requiredSolutions.filter(r => !foundSolutions.some(f => Math.abs(f - r) < 0.01));
+      msg += `⚠️ Solo mostraste **una** solución: x = ${foundSolutions.join(', ')}\n\n`;
+      msg += `**Te faltó:** x = ${missing.join(', ')}\n\n`;
+      msg += `Las ecuaciones cuadráticas **siempre tienen 2 soluciones** (o una doble).\n\n`;
+      msg += `Cuando factorizas \`(x + a)(x + b) = 0\`, cada factor da una solución:\n`;
+      msg += `- \`x + a = 0\` → x = -a\n`;
+      msg += `- \`x + b = 0\` → x = -b\n\n`;
+      msg += `${_rand(_tips)} Nunca termines en una sola solución. Si factorizas, las dos son válidas.`;
+      return msg;
+    }
+
+    // Desarrollo incompleto / sin método
+    if (analysis && !analysis.hasValidLogic) {
+      const missing = (analysis.missingSteps || []).join(', ');
+      msg += `Tu desarrollo está incompleto.\n\n`;
+      if (missing) msg += `**Faltó:** ${missing}\n\n`;
+      msg += `**📋 Pasos necesarios:**\n`;
+      msg += `1. Simplificar (calcular cuadrados, mover términos)\n`;
+      msg += `2. Llevar a forma estándar: \`ax² + bx + c = 0\`\n`;
+      msg += `3. Factorizar o usar fórmula cuadrática\n`;
+      msg += `4. Despejar **ambas** soluciones\n\n`;
+      msg += `${_rand(_tips)} La forma estándar (= 0) es el punto de partida para cualquier método.`;
+      return msg;
+    }
+
+    // Respuesta genérica
+    msg += `**Soluciones correctas:** x = ${solStr}\n\n`;
+    msg += `Revisa cada paso de tu factorización o fórmula cuadrática.\n\n`;
+    msg += `${_rand(_tips)} Verifica multiplicando: \`(x + 23)(x - 5) = x² + 18x - 115\`. ¿Coincide con tu forma estándar?`;
+    return msg;
+  }
+
+  // ── Generar feedback para SISTEMAS de ecuaciones ──
+  function buildSystemFeedback(lines, equationSystem, solutionX, solutionY, foundX, foundY, isCorrect) {
+    const method = detectSystemMethod(lines.join('\n'));
+    const eqs = (equationSystem || '').split(',');
+
+    if (isCorrect) {
+      let msg = `${_rand(_openingsCorrect)}\n\n`;
+      msg += `**x = ${solutionX}, y = ${solutionY}** ✓\n\n`;
+      if (method) {
+        msg += `Usaste **${method}**. `;
+        if (method === 'sustitución' && eqs.length === 2) {
+          msg += `¡Buen método! Funciona especialmente bien cuando una variable está ya despejada. 🎯\n\n`;
+        } else if (method === 'eliminación') {
+          msg += `¡Eficiente! Eliminación brilla cuando los coeficientes se pueden igualar fácilmente. ⚡\n\n`;
+        } else {
+          msg += `Método válido. 📝\n\n`;
+        }
+      }
+      msg += `${_rand(_tips)} Siempre verifica: sustituye x e y en **ambas** ecuaciones originales.`;
+      return msg;
+    }
+
+    let msg = `${_rand(_openingsAlmost)}\n\n`;
+    const arithErrors = detectArithmeticErrors(lines, '');
+
+    if (arithErrors.length > 0) {
+      const e = arithErrors[0];
+      msg += `**📍 Error aritmético en la línea ${e.line}:**\n> \`${e.text}\`\n\n`;
+      msg += `**🔍 ¿Qué pasó?**\n${e.msg}\n\n`;
+      msg += `Ese error se propaga al resto del cálculo.\n\n`;
+      msg += `${_rand(_tips)} Verifica cada operación numérica antes de continuar.`;
+      return msg;
+    }
+
+    // Identificar cuál variable está mal
+    const xWrong = foundX !== null && Math.abs(foundX - solutionX) > 0.01;
+    const yWrong = foundY !== null && Math.abs(foundY - solutionY) > 0.01;
+    const xMissing = foundX === null;
+    const yMissing = foundY === null;
+
+    if (xMissing || yMissing) {
+      const missing = xMissing ? 'x' : 'y';
+      msg += `⚠️ No encontré el valor de **${missing}** en tu desarrollo.\n\n`;
+      msg += `Recuerda que debes resolver para **ambas** variables.\n\n`;
+      msg += `${_rand(_tips)} Después de encontrar una variable, sustitúyela en cualquiera de las ecuaciones originales para hallar la otra.`;
+      return msg;
+    }
+
+    if (xWrong && yWrong) {
+      msg += `Tus valores (x = ${foundX}, y = ${foundY}) no son correctos.\n\n`;
+      msg += `**✅ Debería ser:** x = ${solutionX}, y = ${solutionY}\n\n`;
+    } else if (xWrong) {
+      msg += `**y = ${foundY}** está correcto ✓, pero **x = ${foundX}** no.\n\n`;
+      msg += `**✅ x debería ser:** ${solutionX}\n\n`;
+      msg += `Revisa el paso donde despejaste x.\n\n`;
+    } else if (yWrong) {
+      msg += `**x = ${foundX}** está correcto ✓, pero **y = ${foundY}** no.\n\n`;
+      msg += `**✅ y debería ser:** ${solutionY}\n\n`;
+      msg += `Revisa el paso donde sustituiste x para hallar y.\n\n`;
+    }
+
+    if (method === 'sustitución') {
+      msg += `${_rand(_tips)} En sustitución: asegúrate de sustituir **exactamente** la expresión despejada, sin simplificaciones apresuradas.`;
+    } else if (method === 'eliminación') {
+      msg += `${_rand(_tips)} En eliminación: verifica que multiplicaste correctamente para igualar coeficientes, y que la suma/resta de ecuaciones es correcta.`;
+    } else {
+      msg += `${_rand(_tips)} Sustituye tus valores en las **dos** ecuaciones originales para comprobar.`;
+    }
+    return msg;
+  }
+
+  // ── Función principal que reemplaza getGeminiFeedback ──
+  function getGeminiFeedback(exId, userDevelopment, equation, correctAnswer, userAnswer, isCorrect) {
+    const feedbackEl = document.getElementById(`feedback-${exId}`);
+    const lines = (userDevelopment || '').split('\n');
+    const isSystem = equation && equation.includes(',');
+    const isQuadratic = equation && (equation.includes('x²') || equation.includes('x^2'));
+
+    let feedbackText = '';
+
+    if (isSystem) {
+      const sX = parseFloat(correctAnswer.match(/x=?([+-]?\d+\.?\d*)/)?.[1] || '0');
+      const sY = parseFloat(correctAnswer.match(/y=?([+-]?\d+\.?\d*)/)?.[1] || '0');
+      const fX = userAnswer ? parseFloat((userAnswer.match(/x=?([+-]?\d+\.?\d*)/) || [])[1]) : null;
+      const fY = userAnswer ? parseFloat((userAnswer.match(/y=?([+-]?\d+\.?\d*)/) || [])[1]) : null;
+      feedbackText = buildSystemFeedback(lines, equation, sX, sY, isNaN(fX) ? null : fX, isNaN(fY) ? null : fY, isCorrect);
+    } else if (isQuadratic) {
+      const solutions = correctAnswer.split(',').map(s => parseFloat(s.trim()));
+      const foundNums = (userAnswer || '').split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+      const analysis = analyzeQuadraticDevelopment(lines, equation, solutions);
+      feedbackText = buildQuadraticFeedback(lines, equation, solutions, foundNums, isCorrect, analysis);
+    } else {
+      const finalNum = parseFloat(userAnswer);
+      feedbackText = buildLinearFeedback(lines, equation, correctAnswer, isNaN(finalNum) ? null : finalNum, isCorrect);
+    }
+
+    // Convertir markdown a HTML básico
+    const html = markdownToHtml(feedbackText);
+    showFeedback(exId, isCorrect ? 'correct' : 'incorrect', html);
+
+    if (isCorrect) {
+      markCompleted(exId);
+      if (feedbackEl) celebrate(feedbackEl);
+    }
+  }
+
+  // ── Convertir markdown simple a HTML ──
+  function markdownToHtml(text) {
+    return text
+      .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
+      .replace(/^>\s*(.+)$/gm, '<blockquote>$1</blockquote>')
+      .replace(/^[-*]\s+(.+)$/gm, '• $1')
+      .replace(/\n/g, '<br>');
   }
 
   // Analizar cada paso del desarrollo del usuario
@@ -3291,7 +3523,7 @@ ${stepsTable || 'No se detectaron pasos con ='}
   }
 
   // Modo libre para ecuaciones cuadráticas - Requiere desarrollo completo con ambas soluciones
-  async function checkQuadraticMode(exId) {
+  function checkQuadraticMode(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
     const card = textarea.closest('.exercise-card');
@@ -3366,55 +3598,7 @@ ${stepsTable || 'No se detectaron pasos con ='}
     const isCorrect = hasBothSolutions && analysis.hasValidLogic && analysis.errors.length === 0;
     const feedbackEl = document.getElementById(`feedback-${exId}`);
 
-    if (!getAIMode()) {
-      // Modo simple sin IA - MÁS ESTRICTO
-      
-      // 1. Primero verificar errores aritméticos
-      if (analysis.errors.length > 0) {
-        showFeedback(exId, 'incorrect', 
-          `❌ ${analysis.errors.join('<br>')}. Revisa tu cálculo.`);
-        return;
-      }
-      
-      // 2. Verificar que tenga ambas soluciones
-      if (!hasBothSolutions) {
-        const missingStr = missingSolutions.join(', ');
-        showFeedback(exId, 'incorrect', 
-          `❌ Faltan soluciones. Encontré: ${foundSolutions.join(', ') || 'ninguna'}. ` +
-          `Deberías llegar a: x = ${requiredSolutions.join(' y x = ')}. ` +
-          `<br><strong>Recuerda:</strong> Las cuadráticas siempre tienen 2 soluciones (o 1 doble).`);
-        return;
-      }
-      
-      // 3. Verificar lógica completa del desarrollo
-      if (!analysis.hasValidLogic) {
-        showFeedback(exId, 'incorrect', 
-          `⚠️ El desarrollo está incompleto o incorrecto. ` +
-          `<br>Faltó: ${analysis.missingSteps.join(', ')}.` +
-          `<br>Debes mostrar: forma estándar → método (factorización/fórmula) → ambas soluciones.`);
-        return;
-      }
-      
-      // 4. Verificar longitud mínima (no saltos)
-      if (analysis.lineCount < 3) {
-        showFeedback(exId, 'incorrect', 
-          `⚠️ Desarrollo muy corto. Muestra al menos 3 pasos claros.`);
-        return;
-      }
-      
-      // Solo si pasa TODO, marcar como correcto
-      showFeedback(exId, 'correct', 
-        `✅ ¡Correcto! Método: ${analysis.method}. ` +
-        `Ambas soluciones: x = ${requiredSolutions.join(' y x = ')}. ¡Excelente! 🎉`);
-      markCompleted(exId);
-      celebrate(feedbackEl);
-      return;
-    }
-
-    // Modo IA - enviar a Gemini para análisis detallado
-    // Forzar isCorrect = false si hay errores, para que Gemini analice
-    const forceAnalysis = analysis.errors.length > 0 || !hasBothSolutions || !analysis.hasValidLogic;
-    await getGeminiFeedback(exId, text, equation, requiredSolutions.join(','), foundSolutions.join(','), isCorrect && !forceAnalysis);
+    getGeminiFeedback(exId, text, equation, requiredSolutions.join(','), foundSolutions.join(','), isCorrect);
   }
 
   // Analizar desarrollo de ecuación cuadrática - VERSIÓN ESTRICTA
@@ -3527,7 +3711,7 @@ ${stepsTable || 'No se detectaron pasos con ='}
   }
 
   // Modo libre para sistemas de ecuaciones
-  async function checkSystemMode(exId) {
+  function checkSystemMode(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
     const card = textarea.closest('.exercise-card');
@@ -3568,36 +3752,13 @@ ${stepsTable || 'No se detectaron pasos con ='}
 
     const feedbackEl = document.getElementById(`feedback-${exId}`);
 
-    if (!getAIMode()) {
-      // Modo simple sin IA
-      if (!isCorrect) {
-        let msg = '❌ ';
-        if (!xCorrect && !yCorrect) {
-          msg += `Ambas soluciones son incorrectas. `;
-        } else if (!xCorrect) {
-          msg += `x es incorrecto (tienes ${foundX !== null ? foundX : '?'}, debería ser ${solutionX}). `;
-        } else if (!yCorrect) {
-          msg += `y es incorrecto (tienes ${foundY !== null ? foundY : '?'}, debería ser ${solutionY}). `;
-        }
-        msg += `Revisa tu desarrollo paso a paso.`;
-        showFeedback(exId, 'incorrect', msg);
-        return;
-      }
-      showFeedback(exId, 'correct', 
-        `✅ ¡Correcto! x = ${solutionX}, y = ${solutionY}. ¡Bien hecho! 🎉`);
-      markCompleted(exId);
-      celebrate(feedbackEl);
-      return;
-    }
-
-    // Modo IA - enviar a Gemini
     const userAnswer = foundX !== null && foundY !== null ? `x=${foundX}, y=${foundY}` : 'incompleto';
     const correctAnswer = `x=${solutionX}, y=${solutionY}`;
-    await getGeminiFeedback(exId, text, equationSystem, correctAnswer, userAnswer, isCorrect);
+    getGeminiFeedback(exId, text, equationSystem, correctAnswer, userAnswer, isCorrect);
   }
 
   // Modo libre para sistemas especiales (S7: sin solución, S8: infinitas soluciones)
-  async function checkSystemSpecialMode(exId) {
+  function checkSystemSpecialMode(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
     const card = textarea.closest('.exercise-card');
@@ -3628,16 +3789,35 @@ ${stepsTable || 'No se detectaron pasos con ='}
       
       if (score >= 3) {
         isCorrect = true;
-        feedbackMsg = '✅ ¡Correcto! Identificaste que son rectas paralelas con la misma pendiente pero diferente intercepto. 🎯';
+        feedbackMsg = '<strong>¡Excelente! 🎯</strong><br><br>' +
+          'Identificaste correctamente los tres puntos clave:<br>' +
+          '• Las rectas tienen la <strong>misma pendiente</strong> (m = 2)<br>' +
+          '• Tienen <strong>interceptos diferentes</strong> (b = 1 y b = 3)<br>' +
+          '• Por eso son <strong>paralelas</strong> y nunca se cruzan → sin solución<br><br>' +
+          '<strong>💡 Tip:</strong> En cualquier sistema, si las pendientes son iguales y los interceptos distintos = sin solución. Si todo es igual = infinitas soluciones.';
       } else if (score >= 2) {
-        feedbackMsg = '⚠️ Casi. Mencionaste algunos conceptos clave, pero falta ser más específico sobre por qué no hay solución.';
+        feedbackMsg = '<strong>Casi... 🤔</strong><br><br>' +
+          'Mencionaste ' + score + ' de 4 conceptos clave.<br><br>' +
+          '<strong>🔍 Asegúrate de mencionar:</strong><br>' +
+          '• Que la pendiente es la misma (ambas tienen <code>2x</code>)<br>' +
+          '• Que los términos independientes son diferentes (1 vs 3)<br>' +
+          '• Que las rectas son paralelas → nunca se intersectan<br>' +
+          '• Conclusión: sistema <strong>inconsistente</strong> (sin solución)<br><br>' +
+          '<strong>📌 Importante:</strong> Despeja y en cada ecuación: y = 2x - 1 y y = 2x - 3. ¿Ves que son paralelas?';
       } else {
-        feedbackMsg = '❌ Tu explicación necesita más detalle. Recuerda: ¿Qué tienen en común las ecuaciones? ¿Por qué eso impide una solución?';
+        feedbackMsg = '<strong>Vamos a revisar esto 🔍</strong><br><br>' +
+          'Tu explicación necesita más desarrollo.<br><br>' +
+          '<strong>📋 Guía para analizar este sistema:</strong><br>' +
+          '1. Despeja <code>y</code> en cada ecuación: ¿qué pendiente tiene cada una?<br>' +
+          '2. Compara las pendientes: ¿son iguales o diferentes?<br>' +
+          '3. Compara los interceptos: ¿son iguales o diferentes?<br>' +
+          '4. Si pendientes iguales + interceptos diferentes → rectas <strong>paralelas</strong> → sin solución<br><br>' +
+          '<strong>⚡ Truco:</strong> Si al intentar resolver el sistema llegas a algo absurdo como <code>0 = 2</code>, confirma que no hay solución.';
       }
     } else if (solutionType === 'infinite-solutions') {
       // S8: Infinitas soluciones - debe mencionar proporcionalidad, misma recta, ecuaciones equivalentes
-      const hasSameLine = text.match(/misma recta|misma línea|linea igual|same line/);
-      const hasProportional = text.match(/proporcional|multiplicar|×2|son la misma|equivalente/);
+      const hasSameLine = text.match(/misma recta|misma l[ií]nea|linea igual|same line/);
+      const hasProportional = text.match(/proporcional|multiplicar|[x×]\s*2|son la misma|equivalente/);
       const hasInfinite = text.match(/infinitas soluciones|infinitas|muchas soluciones/);
       const hasDependent = text.match(/dependiente|sistema dependiente/);
       
@@ -3646,11 +3826,31 @@ ${stepsTable || 'No se detectaron pasos con ='}
       
       if (score >= 3) {
         isCorrect = true;
-        feedbackMsg = '✅ ¡Correcto! Identificaste que son la misma recta (ecuaciones proporcionales), por eso hay infinitas soluciones. 🎯';
+        feedbackMsg = '<strong>¡Lo lograste! ✨</strong><br><br>' +
+          'Identificaste perfectamente el caso de infinitas soluciones:<br>' +
+          '• Las dos ecuaciones son <strong>proporcionales</strong> (una es múltiplo de la otra)<br>' +
+          '• Representan la <strong>misma recta</strong> en la gráfica<br>' +
+          '• Cada punto de esa recta es una solución válida → <strong>infinitas soluciones</strong><br>' +
+          '• Sistema <strong>dependiente</strong><br><br>' +
+          '<strong>🎯 Recuerda:</strong> Si al resolver llegas a algo como <code>0 = 0</code>, son la misma ecuación.';
       } else if (score >= 2) {
-        feedbackMsg = '⚠️ Casi. Mencionaste algunos conceptos, pero necesitas explicar mejor por qué hay infinitas soluciones.';
+        feedbackMsg = '<strong>Casi... 🤔</strong><br><br>' +
+          'Mencionaste ' + score + ' de 4 conceptos clave.<br><br>' +
+          '<strong>🔍 Asegúrate de incluir:</strong><br>' +
+          '• Que una ecuación es múltiplo de la otra (×2)<br>' +
+          '• Que representan la misma recta<br>' +
+          '• Que hay <strong>infinitas</strong> soluciones (no solo una)<br>' +
+          '• El nombre técnico: sistema <strong>dependiente</strong><br><br>' +
+          '<strong>💡 Tip:</strong> Multiplica la primera ecuación por 2: ¿obtienes la segunda?';
       } else {
-        feedbackMsg = '❌ Tu explicación necesita más detalle. Pista: ¿Qué pasa si multiplicas una ecuación por 2?';
+        feedbackMsg = '<strong>Vamos a revisar esto 🔍</strong><br><br>' +
+          'Tu explicación necesita más desarrollo.<br><br>' +
+          '<strong>📋 Guía para analizar este sistema:</strong><br>' +
+          '1. Multiplica la primera ecuación por 2<br>' +
+          '2. Compara con la segunda ecuación: ¿son idénticas?<br>' +
+          '3. Si son idénticas → la misma recta → infinitas soluciones<br>' +
+          '4. Concluye: sistema <strong>dependiente</strong>, solución general: cualquier punto de la recta<br><br>' +
+          '<strong>⚡ Truco:</strong> Si al resolver llegas a <code>0 = 0</code> o <code>1 = 1</code>, son la misma ecuación.';
       }
     }
 
@@ -3666,7 +3866,7 @@ ${stepsTable || 'No se detectaron pasos con ='}
   }
 
   // Modo libre para sistema 3x3 (S10: 3 ecuaciones, 3 incógnitas)
-  async function checkSystem3Mode(exId) {
+  function checkSystem3Mode(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
     const card = textarea.closest('.exercise-card');
@@ -3713,36 +3913,14 @@ ${stepsTable || 'No se detectaron pasos con ='}
 
     const feedbackEl = document.getElementById(`feedback-${exId}`);
 
-    if (!getAIMode()) {
-      // Modo simple sin IA
-      if (!isCorrect) {
-        let msg = '❌ ';
-        const incorrect = [];
-        if (!xCorrect) incorrect.push(`x (tienes ${foundX !== null ? foundX : '?'}, debería ser ${solutionX})`);
-        if (!yCorrect) incorrect.push(`y (tienes ${foundY !== null ? foundY : '?'}, debería ser ${solutionY})`);
-        if (!zCorrect) incorrect.push(`z (tienes ${foundZ !== null ? foundZ : '?'}, debería ser ${solutionZ})`);
-        
-        msg += incorrect.join(', ') + ' son incorrectos. ';
-        msg += `Revisa tu desarrollo paso a paso.`;
-        showFeedback(exId, 'incorrect', msg);
-        return;
-      }
-      showFeedback(exId, 'correct', 
-        `✅ ¡Correcto! x = ${solutionX}, y = ${solutionY}, z = ${solutionZ}. ¡Excelente trabajo con 3 ecuaciones! 🎉`);
-      markCompleted(exId);
-      celebrate(feedbackEl);
-      return;
-    }
-
-    // Modo IA - enviar a Gemini
-    const userAnswer = (foundX !== null && foundY !== null && foundZ !== null) ? 
+    const userAnswer3 = (foundX !== null && foundY !== null && foundZ !== null) ? 
                        `x=${foundX}, y=${foundY}, z=${foundZ}` : 'incompleto';
-    const correctAnswer = `x=${solutionX}, y=${solutionY}, z=${solutionZ}`;
-    await getGeminiFeedback(exId, text, card.dataset.equationSystem, correctAnswer, userAnswer, isCorrect);
+    const correctAnswer3 = `x=${solutionX}, y=${solutionY}, z=${solutionZ}`;
+    getGeminiFeedback(exId, text, card.dataset.equationSystem, correctAnswer3, userAnswer3, isCorrect);
   }
 
   // Modo libre para ejercicios con potencias (E10: x² = 64)
-  async function checkFreeModePow(exId) {
+  function checkFreeModePow(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
 
@@ -3761,16 +3939,14 @@ ${stepsTable || 'No se detectaron pasos con ='}
     const hasNeg8 = text.includes('-8') || text.includes('= -8');
 
     if (has8) {
-      // Usar Gemini API para feedback inteligente
-      await getGeminiFeedback(exId, text, 'x² = 64', '±8', '8', hasNeg8);
+      getGeminiFeedback(exId, text, 'x² = 64', '±8', '8', hasNeg8);
     } else {
-      // Usar Gemini API para explicar el error
-      await getGeminiFeedback(exId, text, 'x² = 64', '±8', '?', false);
+      getGeminiFeedback(exId, text, 'x² = 64', '±8', '?', false);
     }
   }
 
   // Modo libre para ejercicios con fracciones (E11: x = 13/3)
-  async function checkFreeModeFrac(exId) {
+  function checkFreeModeFrac(exId) {
     const textarea = document.getElementById(`input-${exId}-free`);
     const feedback = document.getElementById(`feedback-${exId}`);
 
@@ -3788,11 +3964,9 @@ ${stepsTable || 'No se detectaron pasos con ='}
     const hasDec = text.includes('4.33') || text.includes('4,33') || text.includes('4.333');
 
     if (hasFrac || hasDec) {
-      // Usar Gemini API para feedback inteligente aunque sea correcto
-      await getGeminiFeedback(exId, text, '2(3x - 4) + 5 = 23', '13/3', '13/3', true);
+      getGeminiFeedback(exId, text, '2(3x - 4) + 5 = 23', '13/3', '13/3', true);
     } else {
-      // Usar Gemini API para detectar errores
-      await getGeminiFeedback(exId, text, '2(3x - 4) + 5 = 23', '13/3', '?', false);
+      getGeminiFeedback(exId, text, '2(3x - 4) + 5 = 23', '13/3', '?', false);
     }
   }
 
@@ -3918,32 +4092,6 @@ ${explanation}
 **Respuesta correcta:** x = 13/3 ≈ 4.33`;
   }
 
-  // AI Mode management
-  function getAIMode() {
-    return localStorage.getItem('ai_feedback_mode') !== 'false';
-  }
-
-  function setAIMode(enabled) {
-    localStorage.setItem('ai_feedback_mode', enabled ? 'true' : 'false');
-    const toggle = document.getElementById('ai-mode-toggle');
-    if (toggle) toggle.checked = enabled;
-  }
-
-  function toggleAIMode() {
-    const toggle = document.getElementById('ai-mode-toggle');
-    const enabled = toggle ? toggle.checked : true;
-    setAIMode(enabled);
-    console.log('AI Mode:', enabled ? 'ON' : 'OFF');
-  }
-
-  function initAIMode() {
-    const enabled = getAIMode();
-    const toggle = document.getElementById('ai-mode-toggle');
-    if (toggle) toggle.checked = enabled;
-  }
-
-  // Initialize AI mode on page load
-  initAIMode();
 
   // Math Keyboard functions
   let currentMathInput = null;
